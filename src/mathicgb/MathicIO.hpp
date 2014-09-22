@@ -468,13 +468,14 @@ void MathicIO<M, BF>::writeTerm(
   bool writeSignEvenIfPositive,
   std::ostream& out
 ) {
+  Coefficient coef1 = coef;
   if (ring.field().isNegative(coef)) {
     out << "-";
-    coef = ring.field().negativeNonZero(coef);
+    coef1 = ring.field().negativeNonZero(coef);
   } else if (writeSignEvenIfPositive)
     out << '+';
-  if (!ring.field().isOne(coef)) {
-    out << unchar(coef.value());
+  if (!ring.field().isOne(coef1)) {
+    out << unchar(coef1.value());
     if (ring.monoid().isIdentity(mono)) {
       if (writeComponent)
         this->writeComponent(ring.monoid(), mono, out);

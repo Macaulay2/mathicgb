@@ -249,9 +249,9 @@ private:
     mAdvancedBuchbergerLcmCriterionGraph;
 
   friend void mathic::PairQueueNamespace::constructPairData<QueueConfiguration>
-    (void*, Index, Index, QueueConfiguration&);
+  (void*, mathic::PairQueueNamespace::Index, mathic::PairQueueNamespace::Index, QueueConfiguration&);
   friend void mathic::PairQueueNamespace::destructPairData<QueueConfiguration>
-    (OrderMonoid::Mono*, Index, Index, QueueConfiguration&);
+  (OrderMonoid::Mono*, mathic::PairQueueNamespace::Index, mathic::PairQueueNamespace::Index, QueueConfiguration&);
 };
 
 MATHICGB_NAMESPACE_END

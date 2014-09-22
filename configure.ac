@@ -12,13 +12,13 @@ AC_LANG([C++])
 # Require C++11 support
 AX_CXX_COMPILE_STDCXX_11(, [mandatory])
 
+AM_PROG_AR
 
 dnl ----- The gtest dependency
 
 AC_ARG_WITH([gtest], AS_HELP_STRING(
     [--with-gtest], [use gtest, which is required for running the unit tests
-      with make check. The value download, which is the default, downloads
-      gtest if a gtest source directory cannot be found. Per the recommendation
+      with make check. Per the recommendation
       of the gtest documentation, gtest is compiled with the tests, so an
       installed gtest is not usable - you need the gtest source. GTEST_PATH
       indicates where to look for gtest and it is also where gtest
@@ -33,7 +33,8 @@ AS_IF([test "x$GTEST_VERSION" == "x"], [GTEST_VERSION="1.6.0"])
 AS_IF([test "x$with_gtest" == "x"], [with_gtest="download"])
 
 AS_IF([test "x$with_gtest" == "xdownload"],
-  [with_gtest="yes"; AC_CHECK_FILE([$GTEST_PATH/gtest/src/gtest-all.cc], [], [
+  [with_gtest="yes"; AC_CHECK_FILE([$GTEST_PATH/src/gtest-all.cc], [], [
+    echo "downloading of gtest disabled" >&2; exit 1
     mkdir -p "$GTEST_PATH";
     (
       cd $GTEST_PATH;
@@ -44,7 +45,7 @@ AS_IF([test "x$with_gtest" == "xdownload"],
       rm -rf gtest/
       mv gtest-$GTEST_VERSION/ gtest/
     );
-    if test ! -e "$GTEST_PATH/gtest/src/gtest-all.cc"; then
+    if test ! -e "$GTEST_PATH/src/gtest-all.cc"; then
       AC_MSG_WARN([Failed to download or extract gtest.]);
       with_gtest="no";
     else
@@ -52,7 +53,7 @@ AS_IF([test "x$with_gtest" == "xdownload"],
     fi
   ])],
   [test "x$with_gtest" == "xyes"], [
-    AC_CHECK_FILE([$GTEST_PATH/gtest/src/gtest-all.cc], [], [
+    AC_CHECK_FILE([$GTEST_PATH/src/gtest-all.cc], [], [
       AC_MSG_ERROR([could not find gtest source at path $GTEST_PATH.])
     ])
   ],
@@ -60,7 +61,7 @@ AS_IF([test "x$with_gtest" == "xdownload"],
   [AC_MSG_ERROR([invalid value $with_gtest for with_gtest.])]
 )
 AS_IF([test "x$with_gtest" == "xyes"],
-  [GTEST_CFLAGS="-I`cd $GTEST_PATH/gtest/include; echo $PWD` -I`cd $GTEST_PATH/gtest/; echo $PWD`"]);
+  [GTEST_CFLAGS="-I$GTEST_PATH/include -I$GTEST_PATH"]);
 AM_CONDITIONAL(with_gtest, test "x$with_gtest" == "xyes")
 
 dnl ----- The TBB dependency
