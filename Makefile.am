@@ -82,7 +82,7 @@ mgb_SOURCES = src/cli/GBMain.cpp src/cli/CommonParams.hpp		\
   src/cli/MatrixAction.cpp src/cli/MatrixAction.hpp			\
   src/cli/SigGBAction.hpp src/cli/SigGBAction.cpp			\
   src/cli/HelpAction.hpp src/cli/HelpAction.cpp
-mgb_LDADD = $(top_builddir)/libmathicgb.a $(DEPS_LIBS)
+mgb_LDADD = $(top_builddir)/libmathicgb.a $(DEPS_LIBS) -lpthread
 
 # set up tests to run on "make check"
 if with_gtest
@@ -90,7 +90,10 @@ if with_gtest
 TESTS=unittest
 check_PROGRAMS=$(TESTS)
 
-unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.a $(DEPS_LIBS)
+# this prevents g++ 4.8.2 from crashing and churning through memory when compiling under Ubuntu 64 14.04.1
+src/test/MonoMonoid.o : CXXFLAGS += -O0
+
+unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.a $(DEPS_LIBS) -lpthread
 
 test_LIBS=
 unittest_SOURCES=src/test/Range.cpp src/test/gtestInclude.cpp			\
