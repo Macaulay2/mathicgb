@@ -174,9 +174,7 @@ AC_PROG_LN_S
 # Requires install-sh to be present as a fallback, even on systems where
 # the fallback is not used.
 AC_PROG_INSTALL
-
-# Set up LibTool
-LT_INIT
+AC_PROG_RANLIB
 
 dnl Set the version for the library -- this concerns compatibility of the
 dnl source and binary interface of the library and is not the same as the
@@ -185,8 +183,7 @@ AC_SUBST([MATHICGB_SO_VERSION], [0:0:0])
 
 dnl Set up AC_OUTPUT to create each file by copying an input file
 dnl while substituting the output variable values.
-AC_CONFIG_FILES([Makefile
-  build/autotools/mathicgb.pc:build/autotools/mathicgb.pc.in])
+AC_CONFIG_FILES([Makefile build/autotools/mathicgb.pc])
 
 dnl Macro that is required to be at the end of any Autoconf script.
 dnl Creates config.status and launches it.

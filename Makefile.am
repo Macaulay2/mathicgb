@@ -6,14 +6,11 @@ ACLOCAL_AMFLAGS = -I build/autotools/m4
 AM_CPPFLAGS = -I${top_srcdir}/ -I$(top_srcdir)/src/ $(DEPS_CFLAGS)
 
 # tell Libtool what the name of the library is.
-lib_LTLIBRARIES = libmathicgb.la
-
-# libraries that are needed by this library
-libmathicgb_la_LIBADD= $(DEPS_LIBS)
+lib_LIBRARIES = libmathicgb.a
 
 # the sources that are built to make libmathicgb. Listing the headers in
 # sources ensure that those files are included in distributions.
-libmathicgb_la_SOURCES = src/mathicgb/MonoArena.hpp						\
+libmathicgb_a_SOURCES = src/mathicgb/MonoArena.hpp						\
   src/mathicgb/Range.hpp src/mathicgb/ReducerPack.hpp					\
   src/mathicgb/ReducerPack.cpp src/mathicgb/ClassicGBAlg.cpp			\
   src/mathicgb/ClassicGBAlg.hpp src/mathicgb/MonoLookup.hpp				\
@@ -85,7 +82,7 @@ mgb_SOURCES = src/cli/GBMain.cpp src/cli/CommonParams.hpp		\
   src/cli/MatrixAction.cpp src/cli/MatrixAction.hpp			\
   src/cli/SigGBAction.hpp src/cli/SigGBAction.cpp			\
   src/cli/HelpAction.hpp src/cli/HelpAction.cpp
-mgb_LDADD = $(top_builddir)/libmathicgb.la $(DEPS_LIBS)
+mgb_LDADD = $(top_builddir)/libmathicgb.a $(DEPS_LIBS)
 
 # set up tests to run on "make check"
 if with_gtest
@@ -93,7 +90,7 @@ if with_gtest
 TESTS=unittest
 check_PROGRAMS=$(TESTS)
 
-unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.la
+unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.a $(DEPS_LIBS)
 
 test_LIBS=
 unittest_SOURCES=src/test/Range.cpp src/test/gtestInclude.cpp			\
