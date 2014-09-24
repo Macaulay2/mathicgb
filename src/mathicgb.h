@@ -14,7 +14,9 @@ extern "C" {
   // macro AC_CHECK_LIB. That macro can only check for libraries that contain
   // at least one C function.
   void libmathicgbIsPresent(void); // This function does nothing.
+  extern char MATHICGB_VERSION_STRING[];
 }
+#define MATHICGB_VERSION VERSION
 
 /// The classes and functions in this namespace make up the public interface
 /// of MathicGB. You should not have to update your code when upgrading to a
