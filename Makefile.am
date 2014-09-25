@@ -91,7 +91,7 @@ TESTS=unittest
 check_PROGRAMS=$(TESTS)
 
 # this prevents g++ 4.8.2 from crashing and churning through memory when compiling under Ubuntu 64 14.04.1
-src/test/MonoMonoid.o : CXXFLAGS += -O0
+src/test/MonoMonoid.o src/test/Range.o : CXXFLAGS += -O0
 
 unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.a $(DEPS_LIBS) -lpthread
 
