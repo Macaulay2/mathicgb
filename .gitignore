@@ -55,3 +55,8 @@ debnoass/
 pro/
 rel/
 relass/
+
+/test-suite.log
+/unittest
+/unittest.log
+/unittest.trs
