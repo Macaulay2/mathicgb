@@ -59,9 +59,9 @@ TEST(PrimeField, toElement) {
     toString(pf.toElement(std::numeric_limits<int>::min())));
 
   // Fewer number of bits (8)
-  ASSERT_EQ("127", toString(pf.toElement(std::numeric_limits<char>::max())));
+  ASSERT_EQ("127", toString(pf.toElement(std::numeric_limits<signed char>::max())));
   ASSERT_EQ("4294967163",
-    toString(pf.toElement(std::numeric_limits<char>::min())));
+    toString(pf.toElement(std::numeric_limits<signed char>::min())));
 
   ASSERT_EQ("255",
     toString(pf.toElement(std::numeric_limits<unsigned char>::max())));
