@@ -102,10 +102,10 @@ TEST(Scanner, readInteger) {
   ASSERT_EQ(0, in.readInteger<unsigned char>());
   ASSERT_EQ(0, in.readInteger<char>());
   ASSERT_EQ(1, in.readInteger<char>());
-  ASSERT_EQ(-1, in.readInteger<char>());
+  ASSERT_EQ(-1, in.readInteger<signed char>());
   ASSERT_EQ(127, in.readInteger<char>());
-  ASSERT_EQ(-128, in.readInteger<char>());
-  ASSERT_EQ(-128, in.readInteger<char>(true));
+  ASSERT_EQ(-128, in.readInteger<signed char>());
+  ASSERT_EQ(-128, in.readInteger<signed char>(true));
 }
 
 TEST(Scanner, WhiteAndLineCount) {
