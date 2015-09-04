@@ -6,11 +6,14 @@ ACLOCAL_AMFLAGS = -I build/autotools/m4
 AM_CPPFLAGS = -I${top_srcdir}/ -I$(top_srcdir)/src/ $(DEPS_CFLAGS)
 
 # tell Libtool what the name of the library is.
-lib_LIBRARIES = libmathicgb.a
+lib_LTLIBRARIES = libmathicgb.la
+
+# libraries that are needed by this library
+libmathicgb_la_LIBADD= $(DEPS_LIBS)
 
 # the sources that are built to make libmathicgb. Listing the headers in
 # sources ensure that those files are included in distributions.
-libmathicgb_a_SOURCES = src/mathicgb/MonoArena.hpp						\
+libmathicgb_la_SOURCES = src/mathicgb/MonoArena.hpp						\
   src/mathicgb/Range.hpp src/mathicgb/ReducerPack.hpp					\
   src/mathicgb/ReducerPack.cpp src/mathicgb/ClassicGBAlg.cpp			\
   src/mathicgb/ClassicGBAlg.hpp src/mathicgb/MonoLookup.hpp				\
@@ -82,7 +85,7 @@ mgb_SOURCES = src/cli/GBMain.cpp src/cli/CommonParams.hpp		\
   src/cli/MatrixAction.cpp src/cli/MatrixAction.hpp			\
   src/cli/SigGBAction.hpp src/cli/SigGBAction.cpp			\
   src/cli/HelpAction.hpp src/cli/HelpAction.cpp
-mgb_LDADD = $(top_builddir)/libmathicgb.a $(DEPS_LIBS) -lmathic -lmemtailor -lpthread
+mgb_LDADD = $(top_builddir)/libmathicgb.la $(DEPS_LIBS) -lmathic -lmemtailor -lpthread
 
 # set up tests to run on "make check"
 if with_gtest
@@ -93,7 +96,7 @@ check_PROGRAMS=$(TESTS)
 # this prevents g++ 4.8.2 from crashing and churning through memory when compiling under Ubuntu 64 14.04.1
 src/test/MonoMonoid.o src/test/Range.o : CXXFLAGS += -O0
 
-unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.a $(DEPS_LIBS) -lmathic -lmemtailor -lpthread
+unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.la $(DEPS_LIBS) -lmathic -lmemtailor -lpthread
 
 test_LIBS=
 unittest_SOURCES=src/test/Range.cpp src/test/gtestInclude.cpp			\
