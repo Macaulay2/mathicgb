@@ -74,6 +74,7 @@ pkgconfig_DATA = build/autotools/mathicgb.pc
 # that are necessary to build the project. EXTRA_DIST specifies files
 # to include beyond those used in the build process.
 EXTRA_DIST = autogen.sh
+dist_man_MANS = doc/mgb.1
 
 bin_PROGRAMS = mgb
 
