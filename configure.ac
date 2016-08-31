@@ -130,10 +130,11 @@ AS_IF([test "x$with_tbb" == "xyes"],
 )
 
 DEPS_CFLAGS="$MEMTAILOR_CFLAGS $MATHIC_CFLAGS $TBB_CFLAGS $GTEST_CFLAGS"
-DEPS_LIBS="$MEMTAILOR_LIBS $MATHIC_LIBS $TBB_LIBS $GTEST_LIBS $RT_LIBS"
+DEPS_LIBS="$MEMTAILOR_LIBS $MATHIC_LIBS $TBB_LIBS $RT_LIBS"
 
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
+AC_SUBST(GTEST_LIBS)
 
 # Enable optional maintainer mode (off by default)
 dnl AM_MAINTAINER_MODE turns off automatic reconstruction of the build
