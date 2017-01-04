@@ -140,11 +140,21 @@ TEST(Range, indexRange) {
   );
 }
 
-
 TEST(Range, oppositePairRange) {
-  std::string strs[] = {"hello", "world", "!"};
-  const auto r = zip(strs, intRange(10));
-  const auto opR = zip(intRange(3), strs);
+  /// MES: The following commented out code using arrays, and
+  /// iterators/ranges of them, fails to compile on clang, 1 Jan 2017
+  /// (clang version 3.8, and also on earlier versions of clang):
+  //  std::string strs[] = {"hello", "world", "!"};
+  //  const auto r = zip(strs, intRange(10));
+  //  const auto opR = zip(intRange(3), strs);
+  //  ASSERT_EQ(rangeToVector(r), rangeToVector(oppositePairRange(opR)));
+  //  ASSERT_EQ(
+  //    rangeToVector(opR),
+  //    rangeToVector(oppositePairRange(std::begin(r), std::end(r)))
+  //  );
+  const auto int3 = intRange(3,6);
+  const auto r = zip(int3, intRange(10));
+  const auto opR = zip(intRange(3), int3);
   ASSERT_EQ(rangeToVector(r), rangeToVector(oppositePairRange(opR)));
   ASSERT_EQ(
     rangeToVector(opR),
