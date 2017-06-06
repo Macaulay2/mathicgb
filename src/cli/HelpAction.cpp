@@ -78,7 +78,7 @@ void HelpAction::performAction() {
   std::cerr <<
     "\n none expands to nothing\n"
     "\n"
-    " all expands to all log names\n";
+    " all expands to all log names\n"
     "\n";
 }
 

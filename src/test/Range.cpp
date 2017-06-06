@@ -141,20 +141,23 @@ TEST(Range, indexRange) {
 }
 
 TEST(Range, oppositePairRange) {
-  /// MES: The following commented out code using arrays, and
+  /// MES: The following commented out code using arrays of strings, and
   /// iterators/ranges of them, fails to compile on clang, 1 Jan 2017
   /// (clang version 3.8, and also on earlier versions of clang):
-  //  std::string strs[] = {"hello", "world", "!"};
-  //  const auto r = zip(strs, intRange(10));
-  //  const auto opR = zip(intRange(3), strs);
-  //  ASSERT_EQ(rangeToVector(r), rangeToVector(oppositePairRange(opR)));
-  //  ASSERT_EQ(
-  //    rangeToVector(opR),
-  //    rangeToVector(oppositePairRange(std::begin(r), std::end(r)))
-  //  );
-  const auto int3 = intRange(3,6);
-  const auto r = zip(int3, intRange(10));
-  const auto opR = zip(intRange(3), int3);
+  // If one uses 
+  //  std::string elems[] {"hello", "world", "!"};
+  // instead of
+  int elems[] {1,13,17};
+  // this doesn't compile.  Why not??
+  const auto r = zip(elems, intRange(10));
+  const auto opR = zip(intRange(3), elems);
+  auto val1 = rangeToVector(r);
+  auto val2a = oppositePairRange(opR);
+  auto val3a = std::begin(val2a);
+  auto val3b = std::end(val2a);
+  auto val3 = rangeToVector(val3a,val3b);
+  auto val2 = rangeToVector(val2a);
+  ASSERT_EQ(val1, val2);
   ASSERT_EQ(rangeToVector(r), rangeToVector(oppositePairRange(opR)));
   ASSERT_EQ(
     rangeToVector(opR),

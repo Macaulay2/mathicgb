@@ -143,7 +143,7 @@ auto zip(
 ///
 /// The output will be "hello4 world2 ". If the ranges have different lengths
 /// then the length of the range will be the length of the first range. If the
-/// first range is shorter than the second one, this means you will likely
+/// first range is longer than the second one, this means you will likely
 /// run into undefined behavior. We can't even do an assert for that because
 /// it's perfectly reasonable to use giant implicitly represented ranges for
 /// the second parameter and if that's a forward iterator, doing std::distance

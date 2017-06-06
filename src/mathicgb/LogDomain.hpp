@@ -166,7 +166,8 @@ public:
 
   std::ostream& stream() {
     MATHICGB_ASSERT(false);
-    return *static_cast< std::ostream*>(0);
+    abort();
+    //return *static_cast< std::ostream*>(0);
   }
 
   typedef unsigned long long Counter;
