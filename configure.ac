@@ -13,6 +13,8 @@ AC_CONFIG_SRCDIR([src/mathicgb.h])
 # Check availability and location of dependencies
 # PKG_CHECK_MODULES([MEMTAILOR], [memtailor])
 # PKG_CHECK_MODULES([MATHIC], [mathic])
+MEMTAILOR_LIBS="-lmemtailor"
+MATHIC_LIBS="-lmathic"
 
 # Locate the C++ compiler.
 AC_PROG_CXX
