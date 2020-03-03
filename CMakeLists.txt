@@ -7,7 +7,13 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_compile_definitions(VERSION="1.0")
 
-find_package(tbb REQUIRED)
+#TODO: find_package(tbb REQUIRED)
+find_library(LIBTBB tbb)
+
+find_package(Threads 2.1 REQUIRED QUIET)
+find_package(PkgConfig REQUIRED QUIET)
+find_package(Memtailor REQUIRED memtailor)
+find_package(Mathic    REQUIRED mathic)
 
 add_library(mathicgb
   src/mathicgb/MonoArena.hpp
@@ -67,12 +73,24 @@ add_library(mathicgb
   src/mathicgb.cpp                    src/mathicgb.h
   )
 
-target_link_libraries(mathicgb memtailor mathic tbb)
+target_link_libraries(mathicgb ${MATHIC_LIBRARIES} ${MEMTAILOR_LIBRARIES} Threads::Threads ${LIBTBB})
 target_include_directories(mathicgb
   PUBLIC
     src
-    )
+    ${MATHIC_INCLUDE_DIR}
+    ${MEMTAILOR_INCLUDE_DIR}
+  )
 
+install(TARGETS mathicgb ARCHIVE DESTINATION lib)
+install(FILES src/mathicgb.h DESTINATION include)
+install(DIRECTORY src/mathicgb/
+  DESTINATION include/mathicgb
+  FILES_MATCHING PATTERN "*.h"
+#  PATTERN stdinc.h EXCLUDE
+  )
+
+option(enable_mgb "Build mgb" OFF)
+if(enable_mgb)
 add_executable(mgb
     src/cli/GBMain.cpp
     src/cli/CommonParams.hpp   src/cli/CommonParams.cpp
@@ -82,16 +100,8 @@ add_executable(mgb
     src/cli/SigGBAction.hpp    src/cli/SigGBAction.cpp
     src/cli/HelpAction.hpp     src/cli/HelpAction.cpp
     )
-
 target_link_libraries(mgb mathicgb)
-
-#install(TARGETS mathicgb ARCHIVE DESTINATION lib)
-#install(FILES src/mathicgb.h DESTINATION include)
-#install(DIRECTORY src/mathicgb/
-#  DESTINATION include/mathicgb
-#  FILES_MATCHING PATTERN "*.h"
-#  PATTERN stdinc.h EXCLUDE
-#  )
+endif()
 
 option(PACKAGE_TESTS "Build the tests" ON)
 if(PACKAGE_TESTS)
@@ -115,7 +125,6 @@ if(PACKAGE_TESTS)
     )
 
   target_link_libraries(mathicgb-gtests mathicgb)
-  endif()
 
 ################################
 # add gtest testing ############
@@ -144,4 +153,4 @@ target_include_directories(mathicgb-gtests
 add_test(NAME mathicgb-gtests
       COMMAND mathicgb-gtests
   )
-
+endif()
