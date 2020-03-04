@@ -7,8 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_compile_definitions(VERSION="1.0")
 
-#TODO: find_package(tbb REQUIRED)
-find_library(LIBTBB tbb)
+find_package(TBB REQUIRED)
 
 find_package(Threads 2.1 REQUIRED QUIET)
 find_package(PkgConfig REQUIRED QUIET)
@@ -73,7 +72,7 @@ add_library(mathicgb
   src/mathicgb.cpp                    src/mathicgb.h
   )
 
-target_link_libraries(mathicgb ${MATHIC_LIBRARIES} ${MEMTAILOR_LIBRARIES} Threads::Threads ${LIBTBB})
+target_link_libraries(mathicgb ${MATHIC_LIBRARIES} ${MEMTAILOR_LIBRARIES} Threads::Threads TBB)
 target_include_directories(mathicgb
   PUBLIC
     src
