@@ -1,20 +1,44 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(mathicgb VERSION 1.0 LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_compile_definitions(VERSION="1.0")
-
-find_package(TBB REQUIRED)
+project(mathicgb VERSION 1.0 LANGUAGES CXX)
 
 find_package(Threads 2.1 REQUIRED QUIET)
-find_package(PkgConfig REQUIRED QUIET)
-find_package(Memtailor REQUIRED memtailor)
-find_package(Mathic    REQUIRED mathic)
+find_package(Memtailor   REQUIRED)
+find_package(Mathic      REQUIRED)
+find_package(TBB         REQUIRED)
 
-add_library(mathicgb
+include(CheckIncludeFiles)
+check_include_files("stdlib.h;stdarg.h;string.h;float.h" STDC_HEADERS)
+check_include_files(sys/types.h	HAVE_SYS_TYPES_H)
+check_include_files(sys/stat.h	HAVE_SYS_STAT_H)
+check_include_files(stdlib.h	HAVE_STDLIB_H)
+check_include_files(string.h	HAVE_STRING_H)
+check_include_files(memory.h	HAVE_MEMORY_H)
+check_include_files(strings.h	HAVE_STRINGS_H)
+check_include_files(inttypes.h	HAVE_INTTYPES_H)
+check_include_files(stdint.h	HAVE_STDINT_H)
+check_include_files(unistd.h	HAVE_UNISTD_H)
+check_include_files(dlfcn.h	HAVE_DLFCN_H)
+
+add_compile_options(
+  -g -O2
+  -DHAVE_CXX11=1
+  -DPACKAGE_NAME="${PROJECT_NAME}"
+  -DPACKAGE_TARNAME="${PROJECT_NAME}"
+  -DPACKAGE_VERSION="${PROJECT_VERSION}"
+  -DPACKAGE_STRING="${PROJECT_NAME} ${PROJECT_VERSION}"
+  -DPACKAGE_BUGREPORT=""
+  -DPACKAGE_URL=""
+  -DPACKAGE="${PROJECT_NAME}"
+  -DVERSION="${PROJECT_VERSION}"
+  # TODO
+  -DLT_OBJDIR=".libs/"
+)
+
+add_library(mathicgb STATIC
   src/mathicgb/MonoArena.hpp
   src/mathicgb/Range.hpp
   src/mathicgb/mtbb.hpp
@@ -86,6 +110,9 @@ install(DIRECTORY src/mathicgb/
   DESTINATION include/mathicgb
   FILES_MATCHING PATTERN "*.h"
 #  PATTERN stdinc.h EXCLUDE
+  )
+install(FILES README.md gpl-2.0.txt gpl-3.0.txt
+  DESTINATION licenses/mathicgb
   )
 
 option(enable_mgb "Build mgb" OFF)
