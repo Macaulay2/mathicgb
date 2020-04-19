@@ -129,8 +129,8 @@ add_executable(mgb
 target_link_libraries(mgb mathicgb)
 endif()
 
-option(PACKAGE_TESTS "Build the tests" ON)
-if(PACKAGE_TESTS)
+option(BUILD_TESTING "Build the tests" ON)
+if(BUILD_TESTING)
   enable_testing()
   add_executable(mathicgb-gtests
     src/test/F4MatrixBuilder.cpp
@@ -150,33 +150,30 @@ if(PACKAGE_TESTS)
     src/test/testMain.cpp
     )
 
-  target_link_libraries(mathicgb-gtests mathicgb)
+  ################################
+  # add gtest testing ############
+  ################################
+  find_package(GTest)
+  include(GoogleTest)
+  gtest_discover_tests(mathicgb-gtests)
+  add_test(NAME mathicgb-gtests COMMAND mathicgb-gtests)
 
-################################
-# add gtest testing ############
-################################
+  if(FALSE AND GTEST_FOUND)
+    target_link_libraries(mathicgb-gtests mathicgb GTest::GTest GTest::Main)
+    target_include_directories(mathicgb-gtests PRIVATE ${GTEST_INCLUDE_DIR})
+  else()
+    include(FetchContent)
+    FetchContent_Declare(googletest
+      GIT_REPOSITORY https://github.com/google/googletest.git
+      GIT_TAG        release-1.10.0
+      )
+    FetchContent_MakeAvailable(googletest)
 
-include(FetchContent)
-
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        release-1.8.0
-)
-
-FetchContent_GetProperties(googletest)
-if(NOT googletest_POPULATED)
-  FetchContent_Populate(googletest)
-endif()
-
-target_include_directories(mathicgb-gtests
-  PRIVATE
-  ${googletest_SOURCE_DIR}/googletest/include
-  ${googletest_SOURCE_DIR}/googletest/src
-  ${googletest_SOURCE_DIR}/googletest
-  )
-
-add_test(NAME mathicgb-gtests
-      COMMAND mathicgb-gtests
-  )
+    target_link_libraries(mathicgb-gtests mathicgb gtest)
+    target_include_directories(mathicgb-gtests PRIVATE
+      ${googletest_SOURCE_DIR}/googletest/include
+      ${googletest_SOURCE_DIR}/googletest/src
+      ${googletest_SOURCE_DIR}/googletest
+      )
+  endif()
 endif()
