@@ -128,7 +128,7 @@ install(FILES README.md gpl-2.0.txt gpl-3.0.txt
 
 option(enable_mgb "Build mgb" OFF)
 if(enable_mgb)
-add_executable(mgb
+  add_executable(mgb
     src/cli/GBMain.cpp
     src/cli/CommonParams.hpp   src/cli/CommonParams.cpp
     src/cli/GBAction.hpp       src/cli/GBAction.cpp
@@ -137,7 +137,8 @@ add_executable(mgb
     src/cli/SigGBAction.hpp    src/cli/SigGBAction.cpp
     src/cli/HelpAction.hpp     src/cli/HelpAction.cpp
     )
-target_link_libraries(mgb mathicgb)
+  target_link_libraries(mgb mathicgb)
+  install(TARGETS mgb RUNTIME DESTINATION bin)
 endif()
 
 option(BUILD_TESTING "Build the tests" ON)
