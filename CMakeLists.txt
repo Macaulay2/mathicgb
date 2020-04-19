@@ -5,10 +5,17 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(mathicgb VERSION 1.0 LANGUAGES CXX)
 
+option(with_tbb "use TBB for multithreading" OFF)
+
 find_package(Threads 2.1 REQUIRED QUIET)
 find_package(Memtailor   REQUIRED)
 find_package(Mathic      REQUIRED)
-find_package(TBB         REQUIRED)
+if(with_tbb)
+  find_package(TBB       REQUIRED)
+else()
+  find_package(TBB)
+  set(with_tbb ${TBB_FOUND})
+endif()
 
 include(CheckIncludeFiles)
 check_include_files("stdlib.h;stdarg.h;string.h;float.h" STDC_HEADERS)
@@ -34,6 +41,7 @@ add_compile_options(
   -DPACKAGE_URL=""
   -DPACKAGE="${PROJECT_NAME}"
   -DVERSION="${PROJECT_VERSION}"
+  $<$<NOT:$<BOOL:${with_tbb}>>:-DMATHICGB_NO_TBB>
   # TODO
   -DLT_OBJDIR=".libs/"
 )
@@ -96,7 +104,10 @@ add_library(mathicgb STATIC
   src/mathicgb.cpp                    src/mathicgb.h
   )
 
-target_link_libraries(mathicgb ${MATHIC_LIBRARIES} ${MEMTAILOR_LIBRARIES} Threads::Threads TBB)
+target_link_libraries(mathicgb ${MATHIC_LIBRARIES} ${MEMTAILOR_LIBRARIES} Threads::Threads)
+if(with_tbb)
+  target_link_libraries(mathicgb ${TBB_LIBRARIES})
+endif()
 target_include_directories(mathicgb
   PUBLIC
     src
@@ -146,7 +157,6 @@ if(BUILD_TESTING)
     src/test/ideals.hpp src/test/ideals.cpp
     src/test/mathicgb.cpp
     src/test/poly-test.cpp
-    src/test/gtestInclude.cpp
     src/test/testMain.cpp
     )
 
@@ -158,7 +168,7 @@ if(BUILD_TESTING)
   gtest_discover_tests(mathicgb-gtests)
   add_test(NAME mathicgb-gtests COMMAND mathicgb-gtests)
 
-  if(FALSE AND GTEST_FOUND)
+  if(GTEST_FOUND)
     target_link_libraries(mathicgb-gtests mathicgb GTest::GTest GTest::Main)
     target_include_directories(mathicgb-gtests PRIVATE ${GTEST_INCLUDE_DIR})
   else()
