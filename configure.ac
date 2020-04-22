@@ -38,26 +38,27 @@ AC_ARG_WITH([gtest], AS_HELP_STRING(
 
 AC_MSG_CHECKING([for gtest])
 AS_IF([test "x$GTEST_PATH" == "x"], [GTEST_PATH="$srcdir/libs"])
-AS_IF([test "x$GTEST_VERSION" == "x"], [GTEST_VERSION="1.6.0"])
+AS_IF([test "x$GTEST_VERSION" == "x"], [GTEST_VERSION="1.10.0"])
 AS_IF([test "x$with_gtest" == "x"], [with_gtest="download"])
 
 AS_IF([test "x$with_gtest" == "xdownload"],
   [with_gtest="yes"; AS_IF([test -f "$GTEST_PATH/src/gtest-all.cc"], [], [
-    echo "downloading of gtest disabled" >&2; exit 1
+dnl    echo "downloading of gtest disabled" >&2; exit 1
     mkdir -p "$GTEST_PATH";
     (
       cd $GTEST_PATH;
-      rm -rf gtest-$GTEST_VERSION.zip
-      wget http://googletest.googlecode.com/files/gtest-$GTEST_VERSION.zip;
-      unzip gtest-$GTEST_VERSION.zip;
-      rm gtest-$GTEST_VERSION.zip
-      rm -rf gtest/
-      mv gtest-$GTEST_VERSION/ gtest/
+      rm -rf release-$GTEST_VERSION.zip
+      wget https://github.com/google/googletest/archive/release-$GTEST_VERSION.zip
+      unzip release-$GTEST_VERSION.zip;
+      rm release-$GTEST_VERSION.zip
+      mv googletest-release-$GTEST_VERSION/googletest/* .
+      rm -r googletest-release-$GTEST_VERSION
     );
     if test ! -e "$GTEST_PATH/src/gtest-all.cc"; then
       AC_MSG_WARN([Failed to download or extract gtest.]);
       with_gtest="no";
     else
+      AC_MSG_RESULT([Successfully downloaded and extracted gtest.]);
       with_gtest="yes";
     fi
   ])],
