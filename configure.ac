@@ -31,27 +31,51 @@ AC_ARG_WITH([gtest], AS_HELP_STRING(
       of the gtest documentation, gtest is compiled with the tests, so an
       installed gtest is not usable - you need the gtest source. GTEST_PATH
       indicates where to look for gtest and it is also where gtest
-      will be downloaded to if not found. The default path is srcdir/libs so
+      will be downloaded to if not found or if it is found but
+      the version is too small. The default path is srcdir/libs so
       that gtest needs to be at srcdir/libs/gtest/ where srcdir is the
-      base of the directory being configured from.]
-))
+      base of the directory being configured from.  Use
+      --with-gtest=download to force a download.]),
+      [],
+      [with_gtest=yes]
+)
 
 AC_MSG_CHECKING([for gtest])
 AS_IF([test "x$GTEST_PATH" == "x"], [GTEST_PATH="$srcdir/libs"])
 AS_IF([test "x$GTEST_VERSION" == "x"], [GTEST_VERSION="1.10.0"])
-AS_IF([test "x$with_gtest" == "x"], [with_gtest="download"])
+
+AS_IF([test "x$with_gtest" == "xyes"],
+  [AS_IF([test -f "$GTEST_PATH/src/gtest-all.cc"],
+    [AC_MSG_RESULT([yes])]
+    [AC_MSG_CHECKING([if gtest is version >= 1.10.0])
+     tmp_CPPFLAGS="$CPPFLAGS"
+     CPPFLAGS="$CPPFLAGS -I$GTEST_PATH/include -I$GTEST_PATH"
+     AC_COMPILE_IFELSE(
+       [AC_LANG_PROGRAM(
+         [[#include <gtest/gtest.h>]],
+         [[TYPED_TEST_SUITE(int, int);]])],
+       [AC_MSG_RESULT([yes])
+        with_gtest=yes],
+       [AC_MSG_RESULT([no])
+        AC_MSG_WARN([gtest version >= 1.10.0 is required; will download])
+        with_gtest=download])
+     CPPFLAGS="$tmp_CPPFLAGS"],
+    [AC_MSG_RESULT([no])]
+    [AC_MSG_WARN([$GTEST_PATH/src/gtest-all.cc not found, will download gtest])
+      with_gtest=download])])
 
 AS_IF([test "x$with_gtest" == "xdownload"],
-  [with_gtest="yes"; AS_IF([test -f "$GTEST_PATH/src/gtest-all.cc"], [], [
-dnl    echo "downloading of gtest disabled" >&2; exit 1
+  [ AC_MSG_RESULT([downloading])
     mkdir -p "$GTEST_PATH";
+    AS_IF([test -w $GTEST_PATH], [],
+      [AC_MSG_ERROR([you do not have permission to write to $GTEST_PATH for downloading gtest; try again with a different path])])
     (
       cd $GTEST_PATH;
       rm -rf release-$GTEST_VERSION.zip
       wget https://github.com/google/googletest/archive/release-$GTEST_VERSION.zip
-      unzip release-$GTEST_VERSION.zip;
+      unzip -q release-$GTEST_VERSION.zip;
       rm release-$GTEST_VERSION.zip
-      mv googletest-release-$GTEST_VERSION/googletest/* .
+      rsync -a googletest-release-$GTEST_VERSION/googletest/* .
       rm -r googletest-release-$GTEST_VERSION
     );
     if test ! -e "$GTEST_PATH/src/gtest-all.cc"; then
@@ -61,13 +85,11 @@ dnl    echo "downloading of gtest disabled" >&2; exit 1
       AC_MSG_RESULT([Successfully downloaded and extracted gtest.]);
       with_gtest="yes";
     fi
-  ])],
-  [test "x$with_gtest" == "xyes"], [
-    AS_IF([test -f "$GTEST_PATH/src/gtest-all.cc"], [], [
-      AC_MSG_ERROR([could not find gtest source at path $GTEST_PATH.])
-    ])
   ],
-  [test "x$with_gtest" == "xno"], [],
+  [test "x$with_gtest" == "xyes"], [],
+  [test "x$with_gtest" == "xno"],
+    [AC_MSG_RESULT([skipping])
+      AC_MSG_WARN([building without gtest; you will not be able to run the unit tests with make check.])],
   [AC_MSG_ERROR([invalid value $with_gtest for with_gtest.])]
 )
 AS_IF([test "x$with_gtest" == "xyes"],
