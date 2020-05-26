@@ -42,7 +42,7 @@ AS_IF([test "x$GTEST_VERSION" == "x"], [GTEST_VERSION="1.6.0"])
 AS_IF([test "x$with_gtest" == "x"], [with_gtest="download"])
 
 AS_IF([test "x$with_gtest" == "xdownload"],
-  [with_gtest="yes"; AC_CHECK_FILE([$GTEST_PATH/src/gtest-all.cc], [], [
+  [with_gtest="yes"; AS_IF([test -f "$GTEST_PATH/src/gtest-all.cc"], [], [
     echo "downloading of gtest disabled" >&2; exit 1
     mkdir -p "$GTEST_PATH";
     (
@@ -62,7 +62,7 @@ AS_IF([test "x$with_gtest" == "xdownload"],
     fi
   ])],
   [test "x$with_gtest" == "xyes"], [
-    AC_CHECK_FILE([$GTEST_PATH/src/gtest-all.cc], [], [
+    AS_IF([test -f "$GTEST_PATH/src/gtest-all.cc"], [], [
       AC_MSG_ERROR([could not find gtest source at path $GTEST_PATH.])
     ])
   ],
