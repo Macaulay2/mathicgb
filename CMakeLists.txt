@@ -1,15 +1,39 @@
 cmake_minimum_required(VERSION 3.12)
 
-project(mathicgb VERSION 1.0 LANGUAGES CXX)
-
 set(CMAKE_CXX_STANDARD 14)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-add_compile_definitions(VERSION="1.0")
+project(mathicgb VERSION 1.0 LANGUAGES CXX)
 
-find_package(tbb REQUIRED)
+option(enable_mgb "Build mgb" OFF)
+option(with_tbb "use TBB for multithreading" OFF)
 
-add_library(mathicgb
+set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
+
+find_package(Threads 2.1 REQUIRED QUIET)
+find_package(Memtailor   REQUIRED)
+find_package(Mathic      REQUIRED)
+if(with_tbb)
+  find_package(TBB       REQUIRED)
+elseif(with_tbb STREQUAL auto)
+  find_package(TBB)
+  set(with_tbb ${TBB_FOUND})
+endif()
+
+add_compile_options(
+  -DHAVE_CXX11=1
+  -DPACKAGE_NAME="${PROJECT_NAME}"
+  -DPACKAGE_TARNAME="${PROJECT_NAME}"
+  -DPACKAGE_VERSION="${PROJECT_VERSION}"
+  -DPACKAGE_STRING="${PROJECT_NAME} ${PROJECT_VERSION}"
+  -DPACKAGE_BUGREPORT=""
+  -DPACKAGE_URL=""
+  -DPACKAGE="${PROJECT_NAME}"
+  -DVERSION="${PROJECT_VERSION}"
+  $<$<NOT:$<BOOL:${with_tbb}>>:-DMATHICGB_NO_TBB>
+)
+
+add_library(mathicgb STATIC
   src/mathicgb/MonoArena.hpp
   src/mathicgb/Range.hpp
   src/mathicgb/mtbb.hpp
@@ -35,9 +59,9 @@ add_library(mathicgb
   src/mathicgb/SigPolyBasis.hpp       src/mathicgb/SigPolyBasis.cpp
   src/mathicgb/Basis.hpp              src/mathicgb/Basis.cpp
   src/mathicgb/ModuleMonoSet.hpp      src/mathicgb/ModuleMonoSet.cpp
-  src/mathicgb/PolyBasis.hpp          src/mathicgb/PolyBasis.cpp 
+  src/mathicgb/PolyBasis.hpp          src/mathicgb/PolyBasis.cpp
   src/mathicgb/PolyHashTable.hpp      src/mathicgb/PolyHashTable.cpp
-  src/mathicgb/PolyRing.hpp           src/mathicgb/PolyRing.cpp 
+  src/mathicgb/PolyRing.hpp           src/mathicgb/PolyRing.cpp
   src/mathicgb/Reducer.hpp            src/mathicgb/Reducer.cpp
   src/mathicgb/ReducerDedup.hpp       src/mathicgb/ReducerDedup.cpp
   src/mathicgb/ReducerHash.hpp        src/mathicgb/ReducerHash.cpp
@@ -49,7 +73,7 @@ add_library(mathicgb
   src/mathicgb/SPairs.hpp             src/mathicgb/SPairs.cpp
   src/mathicgb/SigSPairQueue.hpp      src/mathicgb/SigSPairQueue.cpp
   src/mathicgb/SparseMatrix.hpp       src/mathicgb/SparseMatrix.cpp
-  src/mathicgb/QuadMatrixBuilder.hpp  src/mathicgb/QuadMatrixBuilder.cpp 
+  src/mathicgb/QuadMatrixBuilder.hpp  src/mathicgb/QuadMatrixBuilder.cpp
   src/mathicgb/TypicalReducer.hpp     src/mathicgb/TypicalReducer.cpp
   src/mathicgb/F4Reducer.hpp          src/mathicgb/F4Reducer.cpp
   src/mathicgb/F4MatrixBuilder.hpp    src/mathicgb/F4MatrixBuilder.cpp
@@ -67,35 +91,47 @@ add_library(mathicgb
   src/mathicgb.cpp                    src/mathicgb.h
   )
 
-target_link_libraries(mathicgb memtailor mathic tbb)
+target_link_libraries(mathicgb
+  $<$<BOOL:${with_tbb}>:${TBB_LIBRARIES}>
+  ${MEMTAILOR_LIBRARIES}
+  ${MATHIC_LIBRARIES}
+  Threads::Threads
+  )
 target_include_directories(mathicgb
   PUBLIC
-    src
-    )
+    $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>
+    $<INSTALL_INTERFACE:include>
+    ${MEMTAILOR_INCLUDE_DIR}
+    ${MATHIC_INCLUDE_DIR}
+  )
+set_target_properties(mathicgb PROPERTIES PUBLIC_HEADER src/mathicgb.h)
 
-add_executable(mgb
+install(TARGETS mathicgb LIBRARY DESTINATION lib)
+install(DIRECTORY src/mathicgb
+  DESTINATION include
+  FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
+  )
+install(FILES doc/mgb.1 TYPE MAN)
+install(FILES README.md gpl-2.0.txt gpl-3.0.txt
+  DESTINATION licenses/mathicgb
+  )
+
+if(enable_mgb)
+  add_executable(mgb
     src/cli/GBMain.cpp
     src/cli/CommonParams.hpp   src/cli/CommonParams.cpp
     src/cli/GBAction.hpp       src/cli/GBAction.cpp
     src/cli/GBCommonParams.hpp src/cli/GBCommonParams.cpp
-    src/cli/MatrixAction.hpp   src/cli/MatrixAction.cpp 
+    src/cli/MatrixAction.hpp   src/cli/MatrixAction.cpp
     src/cli/SigGBAction.hpp    src/cli/SigGBAction.cpp
     src/cli/HelpAction.hpp     src/cli/HelpAction.cpp
     )
+  target_link_libraries(mgb mathicgb)
+  install(TARGETS mgb RUNTIME DESTINATION bin)
+endif()
 
-target_link_libraries(mgb mathicgb)
-
-#install(TARGETS mathicgb ARCHIVE DESTINATION lib)
-#install(FILES src/mathicgb.h DESTINATION include)
-#install(DIRECTORY src/mathicgb/
-#  DESTINATION include/mathicgb
-#  FILES_MATCHING PATTERN "*.h"
-#  PATTERN stdinc.h EXCLUDE
-#  )
-
-option(PACKAGE_TESTS "Build the tests" ON)
-if(PACKAGE_TESTS)
-  enable_testing()
+include(CTest)
+if(BUILD_TESTING)
   add_executable(mathicgb-gtests
     src/test/F4MatrixBuilder.cpp
     src/test/F4MatrixReducer.cpp
@@ -110,38 +146,38 @@ if(PACKAGE_TESTS)
     src/test/ideals.hpp src/test/ideals.cpp
     src/test/mathicgb.cpp
     src/test/poly-test.cpp
-    src/test/gtestInclude.cpp
     src/test/testMain.cpp
     )
 
-  target_link_libraries(mathicgb-gtests mathicgb)
+  ################################
+  # add gtest testing ############
+  ################################
+  find_package(GTest)
+  include(GoogleTest)
+  gtest_discover_tests(mathicgb-gtests)
+
+  # Check for recent version of GoogleTest
+  include(CheckFunctionExists)
+  set(CMAKE_REQUIRED_INCLUDES "${GTEST_INCLUDE_DIRS}")
+  check_function_exists(TYPED_TEST_SUITE GTEST_VERSION_OK)
+
+  if(GTEST_FOUND AND GTEST_VERSION_OK)
+    target_link_libraries(mathicgb-gtests mathicgb GTest::GTest GTest::Main)
+    target_include_directories(mathicgb-gtests PRIVATE ${GTEST_INCLUDE_DIR})
+  else()
+    include(FetchContent)
+    FetchContent_Declare(googletest
+      GIT_REPOSITORY https://github.com/google/googletest.git
+      GIT_TAG        release-1.10.0
+      )
+    set(BUILD_GMOCK OFF CACHE STRING "...")
+    FetchContent_MakeAvailable(googletest)
+
+    target_link_libraries(mathicgb-gtests mathicgb gtest)
+    target_include_directories(mathicgb-gtests PRIVATE
+      ${googletest_SOURCE_DIR}/googletest/include
+      ${googletest_SOURCE_DIR}/googletest/src
+      ${googletest_SOURCE_DIR}/googletest
+      )
   endif()
-
-################################
-# add gtest testing ############
-################################
-
-include(FetchContent)
-
-FetchContent_Declare(
-  googletest
-  GIT_REPOSITORY https://github.com/google/googletest.git
-  GIT_TAG        release-1.8.0
-)
-
-FetchContent_GetProperties(googletest)
-if(NOT googletest_POPULATED)
-  FetchContent_Populate(googletest)
 endif()
-
-target_include_directories(mathicgb-gtests
-  PRIVATE
-  ${googletest_SOURCE_DIR}/googletest/include
-  ${googletest_SOURCE_DIR}/googletest/src
-  ${googletest_SOURCE_DIR}/googletest
-  )
-
-add_test(NAME mathicgb-gtests
-      COMMAND mathicgb-gtests
-  )
-

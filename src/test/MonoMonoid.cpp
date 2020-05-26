@@ -28,7 +28,7 @@ typedef ::testing::Types<
 
 template <typename T>
 class Monoids : public ::testing::Test {};
-TYPED_TEST_CASE(Monoids, MonoidTypes);
+TYPED_TEST_SUITE(Monoids, MonoidTypes);
 
 // expect(i,j) encodes a matrix with interesting bit patterns that
 // are supposed to be likely to surface errors in how monomials are
