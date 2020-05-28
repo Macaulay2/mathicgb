@@ -20,6 +20,10 @@ elseif(with_tbb STREQUAL auto)
   set(with_tbb ${TBB_FOUND})
 endif()
 
+if(CMAKE_BUILD_TYPE STREQUAL Debug)
+  add_compile_options(-DMATHICGB_DEBUG -DMATHIC_DEBUG -DMEMT_DEBUG)
+endif()
+
 add_compile_options(
   -DHAVE_CXX11=1
   -DPACKAGE_NAME="${PROJECT_NAME}"
@@ -31,7 +35,7 @@ add_compile_options(
   -DPACKAGE="${PROJECT_NAME}"
   -DVERSION="${PROJECT_VERSION}"
   $<$<NOT:$<BOOL:${with_tbb}>>:-DMATHICGB_NO_TBB>
-)
+  )
 
 add_library(mathicgb STATIC
   src/mathicgb/MonoArena.hpp
