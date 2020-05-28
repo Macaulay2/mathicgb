@@ -240,7 +240,7 @@ bool SignatureGB::step() {
       }
     }
   }
-#ifdef DEBUG
+#ifdef MATHICGB_DEBUG
   for (auto it = mSpairTmp.begin(); it != mSpairTmp.end(); ++it) {
     auto a = GB->leadMono(it->first);
     auto b = GB->leadMono(it->second);
