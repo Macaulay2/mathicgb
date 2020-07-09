@@ -74,7 +74,7 @@ public:
   }
 
   virtual void pushPairs(size_t pairWith, IndexSigs& pairs) {
-#ifdef DEBUG
+#ifdef MATHICGB_DEBUG
     {
       auto tmp = monoid().alloc();
       for (size_t i = 0; i < pairs.size(); ++i) {

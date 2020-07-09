@@ -187,9 +187,9 @@ void SigSPairs::makePreSPairs(size_t newGen)
         MATHICGB_ASSERT(oldGen != highDivisorCmp); // otherwise ratios should be equal
         mKnownSyzygyTri.setBit(newGen, oldGen, true);
         ++mStats.highBaseDivisorHits;
-        // if DEBUG defined, get to the ASSERT below stating
+        // if MATHICGB_DEBUG defined, get to the ASSERT below stating
         // that this is really a syzygy
-#ifndef DEBUG
+#ifndef MATHICGB_DEBUG
         continue;
 #endif
     }
@@ -215,9 +215,9 @@ void SigSPairs::makePreSPairs(size_t newGen)
       ) {
         mKnownSyzygyTri.setBit(newGen, oldGen, true);
         ++mStats.lowBaseDivisorHits;
-        // if DEBUG defined, get to the ASSERT below stating
+        // if MATHICGB_DEBUG defined, get to the ASSERT below stating
         // that this really is a syzygy.
-#ifndef DEBUG
+#ifndef MATHICGB_DEBUG
         continue;
 #endif
       }
@@ -232,10 +232,10 @@ void SigSPairs::makePreSPairs(size_t newGen)
 
     if (Hsyz->member(pairSig)) {
       ++mStats.syzygyModuleHits;
-#ifdef DEBUG
+#ifdef MATHICGB_DEBUG
       // Check if actually already elim. by low/high base divisor.
-      // Only check in DEBUG mode as otherwise we would have taken an early
-      // exit before getting here.
+      // Only check in MATHICGB_DEBUG mode as otherwise we would have taken an
+      // early exit before getting here.
       if ((mUseBaseDivisors || mUseHighBaseDivisors) &&
         mKnownSyzygyTri.bit(newGen, oldGen))
         --mStats.syzygyModuleHits;
