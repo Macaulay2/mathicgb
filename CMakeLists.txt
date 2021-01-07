@@ -5,8 +5,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(mathicgb VERSION 1.0 LANGUAGES CXX)
 
-option(enable_mgb "Build mgb" OFF)
-option(with_tbb "use TBB for multithreading" OFF)
+option(enable_mgb "Build mgb" ON)
+option(with_tbb "use TBB for multithreading" auto)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
