@@ -105,6 +105,7 @@ target_include_directories(mathicgb
   PUBLIC
     $<BUILD_INTERFACE:${CMAKE_SOURCE_DIR}/src>
     $<INSTALL_INTERFACE:include>
+    $<$<BOOL:${with_tbb}>:${TBB_INCLUDE_DIRS}>
     ${MEMTAILOR_INCLUDE_DIR}
     ${MATHIC_INCLUDE_DIR}
   )
