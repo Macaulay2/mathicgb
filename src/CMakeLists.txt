@@ -78,7 +78,7 @@ target_include_directories(mathicgb PUBLIC
 
 include(CTest)
 if(BUILD_TESTING)
-  add_executable(mathicgb-gtests
+  add_executable(mathicgb-unit-tests
     test/F4MatrixBuilder.cpp
     test/F4MatrixReducer.cpp
     test/MathicIO.cpp
@@ -98,29 +98,24 @@ if(BUILD_TESTING)
   ################################
   # add gtest testing ############
   ################################
-  find_package(GTest)
+  if(NOT GTEST_FOUND)
+    find_package(GTest)
+  endif()
   include(GoogleTest)
-  gtest_discover_tests(mathicgb-gtests)
+  gtest_discover_tests(mathicgb-unit-tests TEST_PREFIX unit-tests:)
 
-  # Check for recent version of GoogleTest
-  include(CheckFunctionExists)
-  set(CMAKE_REQUIRED_INCLUDES "${GTEST_INCLUDE_DIRS}")
-  check_function_exists(TYPED_TEST_SUITE GTEST_VERSION_OK)
-
-  if(GTEST_FOUND AND GTEST_VERSION_OK)
-    target_link_libraries(mathicgb-gtests mathicgb GTest::GTest GTest::Main)
-    target_include_directories(mathicgb-gtests PRIVATE ${GTEST_INCLUDE_DIR})
+  if(GTEST_FOUND)
+    target_link_libraries(mathicgb-unit-tests mathicgb GTest::GTest GTest::Main)
   else()
     include(FetchContent)
     FetchContent_Declare(googletest
       GIT_REPOSITORY https://github.com/google/googletest.git
       GIT_TAG        release-1.11.0
       )
-    set(BUILD_GMOCK OFF CACHE STRING "...")
     FetchContent_MakeAvailable(googletest)
 
-    target_link_libraries(mathicgb-gtests mathicgb gtest)
-    target_include_directories(mathicgb-gtests PRIVATE
+    target_link_libraries(mathicgb-unit-tests mathicgb gtest)
+    target_include_directories(mathicgb-unit-tests PRIVATE
       ${googletest_SOURCE_DIR}/googletest/include
       ${googletest_SOURCE_DIR}/googletest/src
       ${googletest_SOURCE_DIR}/googletest
