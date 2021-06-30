@@ -38,7 +38,7 @@
 
 extern "C" {
   void libmathicgbIsPresent(void) {}
-  char MATHICGB_VERSION_STRING[] = MATHICGB_VERSION;
+  char MATHICGB_VERSION_STRING[] = "1.0";
 }
 
 MATHICGB_NAMESPACE_BEGIN

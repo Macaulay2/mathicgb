@@ -61,8 +61,6 @@ add_library(mathicgb STATIC
   mathicgb/stdinc.h
   )
 
-target_compile_definitions(mathicgb PRIVATE MATHICGB_VERSION="${MATHICGB_VERSION}")
-
 target_link_libraries(mathicgb
   $<$<BOOL:${with_tbb}>:${TBB_LIBRARIES}>
   memtailor mathic Threads::Threads
