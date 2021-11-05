@@ -97,7 +97,13 @@ private:
     const Poly* sPairPoly;
     ConstMonoPtr sPairMultiply;
   };
-  typedef mtbb::parallel_do_feeder<RowTask> TaskFeeder;
+
+#if 1  //TBB_MAJOR_VERSION >= 2021  
+  using TaskFeeder = mgb::mtbb::feeder<RowTask>;
+#else
+  using TaskFeeder = mgb::mtbb::parallel_do_feeder<RowTask>;
+#endif
+  // typedef mtbb::parallel_do_feeder<RowTask> TaskFeeder;
 
   /// Creates a column with monomial label x and schedules a new row to
   /// reduce that column if possible. Here x is monoA if monoB is

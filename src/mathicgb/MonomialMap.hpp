@@ -156,7 +156,8 @@ public:
   /// internal monomial that equals value.first.
   std::pair<std::pair<const mapped_type*, ConstMonoPtr>, bool>
   insert(const value_type& value) {
-    const mgb::mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
+    const std::lock_guard<std::mutex> lockGuard(mInsertionMutex);
+    //const mgb::mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
 
     // We can load mMap as std::memory_order_relaxed because we have already
     // synchronized with all other mutators by locking mInsertionMutex;
@@ -196,7 +197,9 @@ public:
   /// Return the number of entries. This method uses internal synchronization
   /// so do not call too much or you'll get degraded performance.
   size_t entryCount() const {
-    const mgb::mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
+    //const mgb::mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
+    const std::lock_guard<std::mutex> lockGuard(mInsertionMutex);
+
     // We can load with std::memory_order_relaxed because we are holding the
     // lock.
     auto& map = *mMap.load(std::memory_order_relaxed);

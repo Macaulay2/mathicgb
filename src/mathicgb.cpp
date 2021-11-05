@@ -928,9 +928,23 @@ namespace mgbi {
 
     // Tell tbb how many threads to use
     const auto maxThreadCount = int(conf.maxThreadCount());
+
+    // TODO comments using the newest TBB with task arenas.
+    // We can either:
+    //   set a global limit on the number of threads available to tbb
+    //   or
+    //   have an arena to specify a number of threads for a block of code.
+    // For now, we are doing the first choice.  Later, we should test using arena.
+    
+#if 1  // TBB_VERSION_MAJOR >= 2021
+    const auto tbbMaxThreadCount = maxThreadCount == 0 ?
+      mgb::mtbb::default_concurrency() : maxThreadCount;
+    mgb::mtbb::global_control global_limit(mgb::mtbb::global_control::max_allowed_parallelism, tbbMaxThreadCount);
+#else
     const auto tbbMaxThreadCount = maxThreadCount == 0 ?
       mgb::mtbb::task_scheduler_init::automatic : maxThreadCount;
     mgb::mtbb::task_scheduler_init scheduler(tbbMaxThreadCount);
+#endif    
 
     // Set up logging
     LogDomainSet::singleton().reset();

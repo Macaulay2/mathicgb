@@ -133,8 +133,13 @@ void F4MatrixBuilder::buildMatrixAndClear(QuadMatrix& matrix) {
     MonoRef tmp2;
   };
 
-  mgb::mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
+  mgb::mtbb::enumerable_thread_specific<ThreadData> threadData(
+     [&](){
+#if 1
+    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
+#else
     mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+#endif    
     ThreadData data = {
       QuadMatrixBuilder(
         ring(),
@@ -149,7 +154,11 @@ void F4MatrixBuilder::buildMatrixAndClear(QuadMatrix& matrix) {
     return data;
   });
 
-  mgb::mtbb::parallel_do(mTodo.begin(), mTodo.end(),
+#if 1
+    mgb::mtbb::parallel_for_each(mTodo.begin(), mTodo.end(),
+#else
+    mgb::mtbb::parallel_do(mTodo.begin(), mTodo.end(),
+#endif                           
     [&](const RowTask& task, TaskFeeder& feeder)
   {
     auto& data = threadData.local();
@@ -232,7 +241,11 @@ auto F4MatrixBuilder::createColumn(
   ConstMonoRef monoB,
   TaskFeeder& feeder
 ) -> std::pair<F4MatrixBuilder::LeftRightColIndex, ConstMonoRef> {
-  mgb::mtbb::mutex::scoped_lock lock(mCreateColumnLock);
+#if 1
+    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
+#else
+    mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+#endif    
   // see if the column exists now after we have synchronized
   {
     const auto found(ColReader(mMap).findProduct(monoA, monoB));

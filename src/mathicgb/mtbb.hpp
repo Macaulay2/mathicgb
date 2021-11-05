@@ -3,11 +3,18 @@
 #ifndef MATHICGB_M_TBB_GUARD
 #define MATHICGB_M_TBB_GUARD
 
-#ifndef MATHICGB_NO_TBB
-#define TBB_SUPPRESS_DEPRECATED_MESSAGES 1
-#include <tbb/tbb.h>
+//#ifndef MATHICGB_NO_TBB
 
-MATHICGB_NAMESPACE_BEGIN
+#define TBB_PRESENT
+#ifdef TBB_PRESENT
+#include <tbb/version.h>
+
+#define XSTR(x) STR(x)
+#define STR(x) #x
+
+//#define TBB_VERSION_MAJOR 2020
+#pragma message "TBB_VERSION_MAJOR = " XSTR(TBB_VERSION_MAJOR)
+
 
 /// A compatibility layer for tbb. If we are compiling with tbb present, then
 /// these classes will simply be the same classes as in tbb. However, if we
@@ -15,22 +22,88 @@ MATHICGB_NAMESPACE_BEGIN
 /// be trivial non-parallel implementations that allows MathicGB to work
 /// without tbb being present. TBB doesn't work on Cygwin, so that is at least
 /// one good reason to have this compatibility layer. This only works if all
-/// uses of tbb go through mtbb, so make sure to do that.
+/// uses of tbb go through m2tbb, so make sure to do that.
+
+
+
+#if 1   //TBB_VERSION_MAJOR >= 2021
+
+#include <tbb/enumerable_thread_specific.h>
+#include <tbb/concurrent_unordered_map.h>     
+#include <tbb/queuing_mutex.h>                // for queuing_mutex
+#include <tbb/null_mutex.h>                   // for null_mutex
+#include <tbb/parallel_for_each.h>                  // for parallel_do_feeder
+#include <tbb/tick_count.h>                   // for tick_count
+#include <tbb/parallel_sort.h>                // for parallel_sort
+#include <tbb/parallel_for.h>                 // for parallel_for
+#include <tbb/global_control.h>
+#include <tbb/info.h>  
+#include <mutex>
+
+MATHICGB_NAMESPACE_BEGIN
 
 namespace mtbb {
-  using ::tbb::task_scheduler_init;
-  using ::tbb::mutex;
-  using ::tbb::parallel_do_feeder;
+  //using task_scheduler_init        = ::tbb::task_scheduler_init;
+  using ::std::mutex;
+  using ::tbb::queuing_mutex;
+  using ::tbb::null_mutex;
+  using ::tbb::parallel_for_each;
+  using ::tbb::parallel_for;
+  using ::tbb::parallel_sort;
+  using ::tbb::blocked_range;
+  using ::tbb::tick_count;
+  using ::tbb::concurrent_unordered_map;
+  using ::tbb::feeder;
   using ::tbb::enumerable_thread_specific;
+  using ::tbb::info::default_concurrency;
+  using ::tbb::global_control;
+}
+
+// as new as 2021 section
+MATHICGB_NAMESPACE_END
+
+#else // tbb present, but 2020 or older
+
+// include those tbb files that we are using here.  Don't do a blanket tbb include.
+// TODO
+
+#include <tbb/enumerable_thread_specific.h>
+#include <tbb/concurrent_unordered_map.h>     
+#include <tbb/queuing_mutex.h>                // for queuing_mutex
+#include <tbb/null_mutex.h>                   // for null_mutex
+#include <tbb/parallel_do.h>                  // for parallel_do_feeder
+#include <tbb/tick_count.h>                   // for tick_count
+#include <tbb/parallel_sort.h>                // for parallel_sort
+#include <tbb/parallel_for.h>                 // for parallel_for
+#include <mutex>
+
+MATHICGB_NAMESPACE_BEGIN
+
+namespace mtbb {
+  //using task_scheduler_init        = ::tbb::task_scheduler_init;
+  using ::std::mutex;
+  using ::tbb::queuing_mutex;
+  using ::tbb::null_mutex;
   using ::tbb::parallel_do;
   using ::tbb::parallel_for;
   using ::tbb::parallel_sort;
   using ::tbb::blocked_range;
   using ::tbb::tick_count;
+  using ::tbb::concurrent_unordered_map;
+  using ::tbb::parallel_do_feeder;
+  using ::tbb::enumerable_thread_specific;
 }
 
+// #define parallel_do parallel_for_each
+// #define parallel_do_feeder feeder
+// parallel_do -> parallel_for_each
+// parallel_do_feeder -> feeder
 MATHICGB_NAMESPACE_END
-#else
+
+#endif // TBB_VERSION_MAJOR
+
+#else // TBB not present
+// below is an interface to serial versions of the above code.
 
 #include <functional>
 #include <vector>
@@ -40,7 +113,7 @@ MATHICGB_NAMESPACE_END
 
 MATHICGB_NAMESPACE_BEGIN
 
-namespace mtbb {
+namespace m2tbb {
   class task_scheduler_init {
   public:
     task_scheduler_init(int) {}
@@ -245,8 +318,8 @@ namespace mtbb {
   };
 }
 
-
 MATHICGB_NAMESPACE_END
+
 #endif
 
 #endif

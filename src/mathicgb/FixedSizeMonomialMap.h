@@ -191,7 +191,12 @@ public:
   /// p.first.second is a internal monomial that equals value.first.
   std::pair< std::pair<const mapped_type*, ConstMonoPtr>, bool>
   insert(const value_type& value) {
-    const mgb::mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
+#if 1    
+    const std::lock_guard<std::mutex> lockGuard(mInsertionMutex);
+#else    
+    mgb::mtbb::mutex::lock lockGuard(mInsertionMutex);
+#endif    
+    
     // find() loads buckets with memory_order_consume, so it may seem like
     // we need some extra synchronization to make sure that we have the
     // most up to date view of the bucket that value.first goes in -

@@ -239,7 +239,8 @@ namespace {
 
     std::vector<SparseMatrix::RowIndex> rowOrder(rowCount);
 
-    mgb::mtbb::mutex lock;
+    //    mgb::mtbb::mutex lock;
+    std::mutex lock;
     mgb::mtbb::parallel_for(mgb::mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount, 2),
       [&](const mgb::mtbb::blocked_range<SparseMatrix::RowIndex>& range)
     {
@@ -272,7 +273,8 @@ namespace {
             }
           }
         }
-        mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+        // mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+        const std::lock_guard<std::mutex> lockGuard(lock);
         for (size_t pivot = 0; pivot < pivotCount; ++pivot) {
 		  MATHICGB_ASSERT(denseRow[pivot] < std::numeric_limits<SparseMatrix::Scalar>::max());
           if (denseRow[pivot] != 0)
@@ -298,10 +300,13 @@ namespace {
       for (; it != end; ++it) {
         const auto begin = reduceByRight.rowBegin(it.index());
         const auto end = reduceByRight.rowEnd(it.index());
+
         denseRow.addRowMultiple(it.scalar(), begin, end);
       }
 
-      mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+      //mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+      const std::lock_guard<std::mutex> lockGuard(lock);
+
       bool zero = true;
 	  for (SparseMatrix::ColIndex col = 0; col < rightColCount; ++col) {
         const auto entry =
@@ -475,7 +480,9 @@ namespace {
           MATHICGB_ASSERT(col < colCount);
           bool isNewReducer = false;
           {
-            mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+            //mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+            const std::lock_guard<std::mutex> lockGuard(lock);
+
             if (!columnHasPivot[col]) {
               columnHasPivot[col] = true;
               isNewReducer = true;

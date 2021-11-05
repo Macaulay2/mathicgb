@@ -158,7 +158,11 @@ public:
 
     mgb::mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
       // We need to grab a lock since monoid isn't internally synchronized.
-      mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+#if 1
+    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
+#else
+    mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+#endif    
       ThreadData data = {
         *monoid().alloc().release(),
         *monoid().alloc().release()
@@ -167,7 +171,11 @@ public:
     });
 
     // Construct the matrix as pre-blocks
+#if 1
+    mgb::mtbb::parallel_for_each(tasks.begin(), tasks.end(),
+#else
     mgb::mtbb::parallel_do(tasks.begin(), tasks.end(),
+#endif                           
       [&](const RowTask& task, TaskFeeder& feeder)
     {
       auto& data = threadData.local();
@@ -287,7 +295,12 @@ public:
   typedef const Map::Reader ColReader;
   typedef std::vector<monomial> Monomials;
 
-  typedef mgb::mtbb::parallel_do_feeder<RowTask> TaskFeeder;
+#if 1  //TBB_MAJOR_VERSION >= 2021  
+  using TaskFeeder = mgb::mtbb::feeder<RowTask>;
+#else
+  using TaskFeeder = mgb::mtbb::parallel_do_feeder<RowTask>;
+#endif
+  //typedef mgb::mtbb::parallel_do_feeder<RowTask> TaskFeeder;
 
   /// Creates a column with monomial label monoA * monoB and schedules a new
   /// row to reduce that column if possible. If such a column already
@@ -306,7 +319,11 @@ public:
     ConstMonoRef monoB,
     TaskFeeder& feeder
   ) {
-    mgb::mtbb::mutex::scoped_lock lock(mCreateColumnLock);
+#if 1
+    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
+#else
+    mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+#endif    
     // see if the column exists now after we have synchronized
     {
       const auto found(ColReader(mMap).findProduct(monoA, monoB));
