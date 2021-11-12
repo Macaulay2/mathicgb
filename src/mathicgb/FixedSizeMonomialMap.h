@@ -191,11 +191,7 @@ public:
   /// p.first.second is a internal monomial that equals value.first.
   std::pair< std::pair<const mapped_type*, ConstMonoPtr>, bool>
   insert(const value_type& value) {
-#if 1    
     const std::lock_guard<std::mutex> lockGuard(mInsertionMutex);
-#else    
-    mgb::mtbb::mutex::lock lockGuard(mInsertionMutex);
-#endif    
     
     // find() loads buckets with memory_order_consume, so it may seem like
     // we need some extra synchronization to make sure that we have the
@@ -326,7 +322,7 @@ private:
   std::unique_ptr<Atomic<Node*>[]> const mBuckets;
   const PolyRing& mRing;
   memt::BufferPool mNodeAlloc; // nodes are allocated from here.
-  mgb::mtbb::mutex mInsertionMutex;
+  std::mutex mInsertionMutex;
 
 public:
   class const_iterator {

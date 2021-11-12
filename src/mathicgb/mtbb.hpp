@@ -22,12 +22,12 @@
 /// be trivial non-parallel implementations that allows MathicGB to work
 /// without tbb being present. TBB doesn't work on Cygwin, so that is at least
 /// one good reason to have this compatibility layer. This only works if all
-/// uses of tbb go through m2tbb, so make sure to do that.
+/// uses of tbb go through mtbb, so make sure to do that.
 
 
 
-#if 1   //TBB_VERSION_MAJOR >= 2021
-
+#if TBB_VERSION_MAJOR>=2021
+#pragma message "in tbb 2021 code"
 #include <tbb/enumerable_thread_specific.h>
 #include <tbb/concurrent_unordered_map.h>     
 #include <tbb/queuing_mutex.h>                // for queuing_mutex
@@ -40,14 +40,14 @@
 #include <tbb/info.h>  
 #include <mutex>
 
-MATHICGB_NAMESPACE_BEGIN
+//MATHICGB_NAMESPACE_BEGIN
 
 namespace mtbb {
   //using task_scheduler_init        = ::tbb::task_scheduler_init;
-  using ::std::mutex;
+  //  using ::std::mutex;
   using ::tbb::queuing_mutex;
   using ::tbb::null_mutex;
-  using ::tbb::parallel_for_each;
+  //  using ::tbb::parallel_for_each;
   using ::tbb::parallel_for;
   using ::tbb::parallel_sort;
   using ::tbb::blocked_range;
@@ -55,14 +55,31 @@ namespace mtbb {
   using ::tbb::concurrent_unordered_map;
   using ::tbb::feeder;
   using ::tbb::enumerable_thread_specific;
-  using ::tbb::info::default_concurrency;
+  //  using ::tbb::info::default_concurrency;
   using ::tbb::global_control;
+
+  template<typename T1, typename T2, typename T3>
+  void parallel_for_each(T1&& a, T2&& b, T3&& c)
+  {
+    tbb::parallel_for_each(a,b,c);
+  }
+
+  class task_scheduler_init {
+  public:
+    task_scheduler_init(int nthreads) {
+      const auto tbbMaxThreadCount = nthreads == 0 ?
+        tbb::info::default_concurrency() : nthreads;
+      tbb::global_control global_limit(tbb::global_control::max_allowed_parallelism,
+                                       tbbMaxThreadCount);
+    }
+  };
 }
 
 // as new as 2021 section
-MATHICGB_NAMESPACE_END
+//MATHICGB_NAMESPACE_END
 
 #else // tbb present, but 2020 or older
+#pragma message "in tbb 2020 code"
 
 // include those tbb files that we are using here.  Don't do a blanket tbb include.
 // TODO
@@ -77,7 +94,7 @@ MATHICGB_NAMESPACE_END
 #include <tbb/parallel_for.h>                 // for parallel_for
 #include <mutex>
 
-MATHICGB_NAMESPACE_BEGIN
+//MATHICGB_NAMESPACE_BEGIN
 
 namespace mtbb {
   //using task_scheduler_init        = ::tbb::task_scheduler_init;
@@ -98,11 +115,13 @@ namespace mtbb {
 // #define parallel_do_feeder feeder
 // parallel_do -> parallel_for_each
 // parallel_do_feeder -> feeder
-MATHICGB_NAMESPACE_END
+//MATHICGB_NAMESPACE_END
 
 #endif // TBB_VERSION_MAJOR
 
 #else // TBB not present
+#pragma message "in no tbb case"
+
 // below is an interface to serial versions of the above code.
 
 #include <functional>
@@ -111,15 +130,16 @@ MATHICGB_NAMESPACE_END
 #include <algorithm>
 #include <chrono>
 
-MATHICGB_NAMESPACE_BEGIN
+//MATHICGB_NAMESPACE_BEGIN
 
-namespace m2tbb {
+namespace mtbb {
   class task_scheduler_init {
   public:
     task_scheduler_init(int) {}
     static const int automatic = 1;
   };
 
+#if 0  
   class mutex {
   public:
     mutex(): mLocked(false) {}
@@ -176,7 +196,8 @@ namespace m2tbb {
   private:
     bool mLocked;
   };
-
+#endif
+  
   template<class T>
   class enumerable_thread_specific {
   public:
@@ -318,7 +339,7 @@ namespace m2tbb {
   };
 }
 
-MATHICGB_NAMESPACE_END
+//MATHICGB_NAMESPACE_END
 
 #endif
 

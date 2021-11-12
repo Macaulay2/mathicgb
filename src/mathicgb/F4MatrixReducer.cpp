@@ -231,7 +231,7 @@ namespace {
 
     SparseMatrix reduced(qm.topRight.memoryQuantum());
 
-    mgb::mtbb::enumerable_thread_specific<DenseRow> denseRowPerThread([&](){
+    mtbb::enumerable_thread_specific<DenseRow> denseRowPerThread([&](){
       return DenseRow();
     }); 
 
@@ -239,10 +239,10 @@ namespace {
 
     std::vector<SparseMatrix::RowIndex> rowOrder(rowCount);
 
-    //    mgb::mtbb::mutex lock;
+    //    mtbb::mutex lock;
     std::mutex lock;
-    mgb::mtbb::parallel_for(mgb::mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount, 2),
-      [&](const mgb::mtbb::blocked_range<SparseMatrix::RowIndex>& range)
+    mtbb::parallel_for(mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount, 2),
+      [&](const mtbb::blocked_range<SparseMatrix::RowIndex>& range)
     {
       auto& denseRow = denseRowPerThread.local();
       for (auto it = range.begin(); it != range.end(); ++it) {
@@ -273,7 +273,7 @@ namespace {
             }
           }
         }
-        // mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+        // mtbb::mutex::scoped_lock lockGuard(lock);
         const std::lock_guard<std::mutex> lockGuard(lock);
         for (size_t pivot = 0; pivot < pivotCount; ++pivot) {
 		  MATHICGB_ASSERT(denseRow[pivot] < std::numeric_limits<SparseMatrix::Scalar>::max());
@@ -285,8 +285,8 @@ namespace {
       }
     });
 
-    mgb::mtbb::parallel_for(mgb::mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
-      [&](const mgb::mtbb::blocked_range<SparseMatrix::RowIndex>& range)
+    mtbb::parallel_for(mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
+      [&](const mtbb::blocked_range<SparseMatrix::RowIndex>& range)
       {for (auto iter = range.begin(); iter != range.end(); ++iter)
     {
       const auto i = iter;
@@ -304,7 +304,7 @@ namespace {
         denseRow.addRowMultiple(it.scalar(), begin, end);
       }
 
-      //mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+      //mtbb::mutex::scoped_lock lockGuard(lock);
       const std::lock_guard<std::mutex> lockGuard(lock);
 
       bool zero = true;
@@ -409,8 +409,8 @@ namespace {
 
     // convert to dense representation 
     std::vector<DenseRow> dense(rowCount);
-    mgb::mtbb::parallel_for(mgb::mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
-      [&](const mgb::mtbb::blocked_range<SparseMatrix::RowIndex>& range)
+    mtbb::parallel_for(mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
+      [&](const mtbb::blocked_range<SparseMatrix::RowIndex>& range)
       {for (auto it = range.begin(); it != range.end(); ++it)
     {
       const auto row = it;
@@ -443,9 +443,9 @@ namespace {
       size_t const reducerCount = reduced.rowCount();
 
       //std::cout << "reducing " << reduced.rowCount() << " out of " << toReduce.rowCount() << std::endl;
-      mgb::mtbb::mutex lock;
-      mgb::mtbb::parallel_for(mgb::mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
-        [&](const mgb::mtbb::blocked_range<SparseMatrix::RowIndex>& range)
+      std::mutex lock;
+      mtbb::parallel_for(mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
+        [&](const mtbb::blocked_range<SparseMatrix::RowIndex>& range)
         {for (auto it = range.begin(); it != range.end(); ++it)
       {
         const auto row = it;
@@ -480,7 +480,7 @@ namespace {
           MATHICGB_ASSERT(col < colCount);
           bool isNewReducer = false;
           {
-            //mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+            //mtbb::mutex::scoped_lock lockGuard(lock);
             const std::lock_guard<std::mutex> lockGuard(lock);
 
             if (!columnHasPivot[col]) {
@@ -512,8 +512,8 @@ namespace {
       nextReducers.clear();
     }
 
-    mgb::mtbb::parallel_for(mgb::mtbb::blocked_range<size_t>(0, rowCount),
-      [&](const mgb::mtbb::blocked_range<size_t>& range)
+    mtbb::parallel_for(mtbb::blocked_range<size_t>(0, rowCount),
+      [&](const mtbb::blocked_range<size_t>& range)
       {for (auto it = range.begin(); it != range.end(); ++it)
     {
       const size_t row = it;

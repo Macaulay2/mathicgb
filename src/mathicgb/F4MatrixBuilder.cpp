@@ -133,12 +133,12 @@ void F4MatrixBuilder::buildMatrixAndClear(QuadMatrix& matrix) {
     MonoRef tmp2;
   };
 
-  mgb::mtbb::enumerable_thread_specific<ThreadData> threadData(
+  mtbb::enumerable_thread_specific<ThreadData> threadData(
      [&](){
 #if 1
     const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
 #else
-    mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+    mtbb::mutex::scoped_lock guard(mCreateColumnLock);
 #endif    
     ThreadData data = {
       QuadMatrixBuilder(
@@ -155,9 +155,9 @@ void F4MatrixBuilder::buildMatrixAndClear(QuadMatrix& matrix) {
   });
 
 #if 1
-    mgb::mtbb::parallel_for_each(mTodo.begin(), mTodo.end(),
+    mtbb::parallel_for_each(mTodo.begin(), mTodo.end(),
 #else
-    mgb::mtbb::parallel_do(mTodo.begin(), mTodo.end(),
+    mtbb::parallel_do(mTodo.begin(), mTodo.end(),
 #endif                           
     [&](const RowTask& task, TaskFeeder& feeder)
   {
@@ -244,7 +244,7 @@ auto F4MatrixBuilder::createColumn(
 #if 1
     const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
 #else
-    mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+    mtbb::mutex::scoped_lock guard(mCreateColumnLock);
 #endif    
   // see if the column exists now after we have synchronized
   {

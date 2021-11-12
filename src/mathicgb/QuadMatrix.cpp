@@ -319,7 +319,7 @@ void QuadMatrix::sortColumnsLeftRightParallel() {
   std::vector<ColIndex> leftPermutation;
   std::vector<ColIndex> rightPermutation;
   
-  mgb::mtbb::parallel_for(0, 2, 1, [&](int i) {
+  mtbb::parallel_for(0, 2, 1, [&](int i) {
     if (i == 0)
       leftPermutation =
         sortColumnMonomialsAndMakePermutation(leftColumnMonomials, monoid());
@@ -328,7 +328,7 @@ void QuadMatrix::sortColumnsLeftRightParallel() {
         sortColumnMonomialsAndMakePermutation(rightColumnMonomials, monoid());
   });
 
-  mgb::mtbb::parallel_for(0, 4, 1, [&](int i) {
+  mtbb::parallel_for(0, 4, 1, [&](int i) {
     if (i == 0)
       topRight.applyColumnMap(rightPermutation);
     else if (i == 1)

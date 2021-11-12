@@ -81,7 +81,7 @@ public:
       else
         return monoid().lessThan(*a.desiredLead, *b.desiredLead);
     };
-    mgb::mtbb::parallel_sort(tasks.begin(), tasks.end(), cmp);
+    mtbb::parallel_sort(tasks.begin(), tasks.end(), cmp);
 
     const auto taskCount = tasks.size();
     for (size_t i = 0; i < taskCount;) {
@@ -156,12 +156,12 @@ public:
       F4ProtoMatrix block;
     };
 
-    mgb::mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
+    mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
       // We need to grab a lock since monoid isn't internally synchronized.
 #if 1
     const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
 #else
-    mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+    mtbb::mutex::scoped_lock guard(mCreateColumnLock);
 #endif    
       ThreadData data = {
         *monoid().alloc().release(),
@@ -172,9 +172,9 @@ public:
 
     // Construct the matrix as pre-blocks
 #if 1
-    mgb::mtbb::parallel_for_each(tasks.begin(), tasks.end(),
+    mtbb::parallel_for_each(tasks.begin(), tasks.end(),
 #else
-    mgb::mtbb::parallel_do(tasks.begin(), tasks.end(),
+    mtbb::parallel_do(tasks.begin(), tasks.end(),
 #endif                           
       [&](const RowTask& task, TaskFeeder& feeder)
     {
@@ -239,7 +239,7 @@ public:
     const auto cmp = [&](const IndexMono& a, const IndexMono b) {
       return monoid().lessThan(*b.second, *a.second);
     };
-    mgb::mtbb::parallel_sort(columns.begin(), columns.end(), cmp);
+    mtbb::parallel_sort(columns.begin(), columns.end(), cmp);
 
     const auto colEnd = columns.end();
     for (auto it = columns.begin(); it != colEnd; ++it) {
@@ -296,11 +296,11 @@ public:
   typedef std::vector<monomial> Monomials;
 
 #if 1  //TBB_MAJOR_VERSION >= 2021  
-  using TaskFeeder = mgb::mtbb::feeder<RowTask>;
+  using TaskFeeder = mtbb::feeder<RowTask>;
 #else
-  using TaskFeeder = mgb::mtbb::parallel_do_feeder<RowTask>;
+  using TaskFeeder = mtbb::parallel_do_feeder<RowTask>;
 #endif
-  //typedef mgb::mtbb::parallel_do_feeder<RowTask> TaskFeeder;
+  //typedef mtbb::parallel_do_feeder<RowTask> TaskFeeder;
 
   /// Creates a column with monomial label monoA * monoB and schedules a new
   /// row to reduce that column if possible. If such a column already
@@ -322,7 +322,7 @@ public:
 #if 1
     const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
 #else
-    mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+    mtbb::mutex::scoped_lock guard(mCreateColumnLock);
 #endif    
     // see if the column exists now after we have synchronized
     {
@@ -541,7 +541,7 @@ public:
   const size_t mMemoryQuantum;
 
   /// If you want to modify the columns, you need to grab this lock first.
-  mgb::mtbb::mutex mCreateColumnLock;
+  std::mutex mCreateColumnLock;
 
   /// A monomial for temporary scratch calculations. Protected by
   /// mCreateColumnLock.

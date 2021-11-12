@@ -99,9 +99,9 @@ private:
   };
 
 #if 1  //TBB_MAJOR_VERSION >= 2021  
-  using TaskFeeder = mgb::mtbb::feeder<RowTask>;
+  using TaskFeeder = mtbb::feeder<RowTask>;
 #else
-  using TaskFeeder = mgb::mtbb::parallel_do_feeder<RowTask>;
+  using TaskFeeder = mtbb::parallel_do_feeder<RowTask>;
 #endif
   // typedef mtbb::parallel_do_feeder<RowTask> TaskFeeder;
 
@@ -162,7 +162,7 @@ private:
     TaskFeeder& feeder
   );
 
-  mgb::mtbb::mutex mCreateColumnLock;
+  std::mutex mCreateColumnLock;
   ColIndex mLeftColCount;
   ColIndex mRightColCount;
   Mono mTmp;

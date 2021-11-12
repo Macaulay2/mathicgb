@@ -935,7 +935,9 @@ namespace mgbi {
     //   or
     //   have an arena to specify a number of threads for a block of code.
     // For now, we are doing the first choice.  Later, we should test using arena.
-    
+
+    mtbb::task_scheduler_init scheduler(maxThreadCount);
+#if 0    
 #if 1  // TBB_VERSION_MAJOR >= 2021
     const auto tbbMaxThreadCount = maxThreadCount == 0 ?
       mgb::mtbb::default_concurrency() : maxThreadCount;
@@ -945,7 +947,8 @@ namespace mgbi {
       mgb::mtbb::task_scheduler_init::automatic : maxThreadCount;
     mgb::mtbb::task_scheduler_init scheduler(tbbMaxThreadCount);
 #endif    
-
+#endif
+    
     // Set up logging
     LogDomainSet::singleton().reset();
     LogDomainSet::singleton().performLogCommands(conf.logging());
