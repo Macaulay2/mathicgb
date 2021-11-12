@@ -3,16 +3,18 @@
 #ifndef MATHICGB_M_TBB_GUARD
 #define MATHICGB_M_TBB_GUARD
 
-//#ifndef MATHICGB_NO_TBB
+//#define MTBB_VERSION 2021
+//#define MTBB_VERSION 0 // mean not present
+#define MTBB_VERSION 2020
 
-#define TBB_PRESENT
-#ifdef TBB_PRESENT
-#include <tbb/version.h>
+#if MTBB_VERSION>=2021
+#include <tbb/version.h> // only works for tbb2021
+#elif MTBB_VERSION>0
+#include <tbb/tbb_stddef.h> // only works for tbb2020 and older, we think
+#endif
 
 #define XSTR(x) STR(x)
 #define STR(x) #x
-
-//#define TBB_VERSION_MAJOR 2020
 #pragma message "TBB_VERSION_MAJOR = " XSTR(TBB_VERSION_MAJOR)
 
 
@@ -24,9 +26,7 @@
 /// one good reason to have this compatibility layer. This only works if all
 /// uses of tbb go through mtbb, so make sure to do that.
 
-
-
-#if TBB_VERSION_MAJOR>=2021
+#if MTBB_VERSION>=2021
 #pragma message "in tbb 2021 code"
 #include <tbb/enumerable_thread_specific.h>
 #include <tbb/concurrent_unordered_map.h>     
@@ -39,8 +39,6 @@
 #include <tbb/global_control.h>
 #include <tbb/info.h>  
 #include <mutex>
-
-//MATHICGB_NAMESPACE_BEGIN
 
 namespace mtbb {
   //using task_scheduler_init        = ::tbb::task_scheduler_init;
@@ -75,15 +73,13 @@ namespace mtbb {
   };
 }
 
-// as new as 2021 section
-//MATHICGB_NAMESPACE_END
-
-#else // tbb present, but 2020 or older
+#elif MTBB_VERSION>0 // tbb present, but 2020 or older
 #pragma message "in tbb 2020 code"
 
 // include those tbb files that we are using here.  Don't do a blanket tbb include.
 // TODO
 
+#include <tbb/task_scheduler_init.h>
 #include <tbb/enumerable_thread_specific.h>
 #include <tbb/concurrent_unordered_map.h>     
 #include <tbb/queuing_mutex.h>                // for queuing_mutex
@@ -94,14 +90,12 @@ namespace mtbb {
 #include <tbb/parallel_for.h>                 // for parallel_for
 #include <mutex>
 
-//MATHICGB_NAMESPACE_BEGIN
-
 namespace mtbb {
   //using task_scheduler_init        = ::tbb::task_scheduler_init;
   using ::std::mutex;
   using ::tbb::queuing_mutex;
   using ::tbb::null_mutex;
-  using ::tbb::parallel_do;
+  //  using ::tbb::parallel_do;
   using ::tbb::parallel_for;
   using ::tbb::parallel_sort;
   using ::tbb::blocked_range;
@@ -109,15 +103,32 @@ namespace mtbb {
   using ::tbb::concurrent_unordered_map;
   using ::tbb::parallel_do_feeder;
   using ::tbb::enumerable_thread_specific;
+
+  // template<class T>
+  // using feeder<T> = ::tbb::parallel_do_feeder<T>;
+
+  class task_scheduler_init {
+  public:
+    task_scheduler_init(int nthreads) {
+      const auto tbbMaxThreadCount = nthreads == 0 ?
+        ::tbb::task_scheduler_init::automatic : nthreads;
+      ::tbb::task_scheduler_init scheduler(tbbMaxThreadCount);
+
+    }
+  };
+
+  template<typename T1, typename T2, typename T3>
+  void parallel_for_each(T1&& a, T2&& b, T3&& c)
+  {
+    ::tbb::parallel_do(a,b,c);
+  }
+
 }
 
 // #define parallel_do parallel_for_each
 // #define parallel_do_feeder feeder
 // parallel_do -> parallel_for_each
 // parallel_do_feeder -> feeder
-//MATHICGB_NAMESPACE_END
-
-#endif // TBB_VERSION_MAJOR
 
 #else // TBB not present
 #pragma message "in no tbb case"
@@ -129,8 +140,6 @@ namespace mtbb {
 #include <ctime>
 #include <algorithm>
 #include <chrono>
-
-//MATHICGB_NAMESPACE_BEGIN
 
 namespace mtbb {
   class task_scheduler_init {
@@ -339,8 +348,5 @@ namespace mtbb {
   };
 }
 
-//MATHICGB_NAMESPACE_END
-
 #endif
-
 #endif

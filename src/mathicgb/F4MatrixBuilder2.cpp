@@ -158,7 +158,7 @@ public:
 
     mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
       // We need to grab a lock since monoid isn't internally synchronized.
-#if 1
+#if MTBB_VERSION>0
     const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
 #else
     mtbb::mutex::scoped_lock guard(mCreateColumnLock);
@@ -171,11 +171,7 @@ public:
     });
 
     // Construct the matrix as pre-blocks
-#if 1
     mtbb::parallel_for_each(tasks.begin(), tasks.end(),
-#else
-    mtbb::parallel_do(tasks.begin(), tasks.end(),
-#endif                           
       [&](const RowTask& task, TaskFeeder& feeder)
     {
       auto& data = threadData.local();
@@ -295,7 +291,7 @@ public:
   typedef const Map::Reader ColReader;
   typedef std::vector<monomial> Monomials;
 
-#if 1  //TBB_MAJOR_VERSION >= 2021  
+#if MTBB_VERSION>=2021  //TBB_MAJOR_VERSION >= 2021  
   using TaskFeeder = mtbb::feeder<RowTask>;
 #else
   using TaskFeeder = mtbb::parallel_do_feeder<RowTask>;

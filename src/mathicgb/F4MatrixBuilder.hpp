@@ -98,7 +98,7 @@ private:
     ConstMonoPtr sPairMultiply;
   };
 
-#if 1  //TBB_MAJOR_VERSION >= 2021  
+#if 0  //TBB_MAJOR_VERSION >= 2021  
   using TaskFeeder = mtbb::feeder<RowTask>;
 #else
   using TaskFeeder = mtbb::parallel_do_feeder<RowTask>;
