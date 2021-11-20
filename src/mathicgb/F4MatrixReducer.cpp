@@ -15,6 +15,7 @@
 #include <string>
 #include <cstdio>
 #include <iostream>
+#include <mutex>
 
 MATHICGB_DEFINE_LOG_DOMAIN(
   F4MatrixReduce,
@@ -239,7 +240,7 @@ namespace {
 
     std::vector<SparseMatrix::RowIndex> rowOrder(rowCount);
 
-    mgb::mtbb::mutex lock;
+    std::mutex lock;
     mgb::mtbb::parallel_for(mgb::mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount, 2),
       [&](const mgb::mtbb::blocked_range<SparseMatrix::RowIndex>& range)
     {
@@ -272,7 +273,7 @@ namespace {
             }
           }
         }
-        mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+        std::lock_guard lockGuard(lock);
         for (size_t pivot = 0; pivot < pivotCount; ++pivot) {
 		  MATHICGB_ASSERT(denseRow[pivot] < std::numeric_limits<SparseMatrix::Scalar>::max());
           if (denseRow[pivot] != 0)
@@ -301,7 +302,7 @@ namespace {
         denseRow.addRowMultiple(it.scalar(), begin, end);
       }
 
-      mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+      std::lock_guard lockGuard(lock);
       bool zero = true;
 	  for (SparseMatrix::ColIndex col = 0; col < rightColCount; ++col) {
         const auto entry =
@@ -438,7 +439,7 @@ namespace {
       size_t const reducerCount = reduced.rowCount();
 
       //std::cout << "reducing " << reduced.rowCount() << " out of " << toReduce.rowCount() << std::endl;
-      mgb::mtbb::mutex lock;
+      std::mutex lock;
       mgb::mtbb::parallel_for(mgb::mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
         [&](const mgb::mtbb::blocked_range<SparseMatrix::RowIndex>& range)
         {for (auto it = range.begin(); it != range.end(); ++it)
@@ -475,7 +476,7 @@ namespace {
           MATHICGB_ASSERT(col < colCount);
           bool isNewReducer = false;
           {
-            mgb::mtbb::mutex::scoped_lock lockGuard(lock);
+            std::lock_guard lockGuard(lock);
             if (!columnHasPivot[col]) {
               columnHasPivot[col] = true;
               isNewReducer = true;

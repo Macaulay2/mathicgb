@@ -21,12 +21,6 @@ MATHICGB_NAMESPACE_BEGIN
 namespace mtbb {
   using ::tbb::task_arena;
 #if TBB_VERSION_MAJOR >= 2021
-  class mutex : public ::std::mutex {
-      //what tbb used to call scoped_lock is lock_guard in c++11
-      //TODO move away from tbb::mutex entirely, and just use the c++11 mutex
-  public:
-      using scoped_lock = ::std::lock_guard<mutex>;
-  };
   template<typename I>
   using parallel_do_feeder = ::tbb::feeder<I>;
   template<typename I, typename B>
@@ -34,7 +28,6 @@ namespace mtbb {
     ::tbb::parallel_for_each(i1,i2,body);
   }
 #else
-  using ::tbb::mutex;
   using ::tbb::parallel_do_feeder;
   using ::tbb::parallel_do;
 #endif
@@ -65,63 +58,6 @@ namespace mtbb {
     auto execute(const F& f) -> decltype(f()) {
         return f();
     }
-  };
-
-  class mutex {
-  public:
-    mutex(): mLocked(false) {}
-
-    class scoped_lock {
-    public:
-      scoped_lock(): mMutex(0) {}
-      scoped_lock(mutex& m): mMutex(&m) {mMutex->lock();}
-      ~scoped_lock() {
-        if (mMutex != 0)
-          release();
-      }
-
-      void acquire(mutex& m) {
-        MATHICGB_ASSERT(mMutex == 0);
-        mMutex = &m;
-      }
-
-      bool try_acquire(mutex& m) {
-        MATHICGB_ASSERT(mMutex == 0);
-        if (!m.try_lock())
-          return false;
-        mMutex = &m;
-        return true;
-      }
-
-      void release() {
-        MATHICGB_ASSERT(mMutex != 0);
-        mMutex->unlock();
-        mMutex = 0;
-      }
-
-    private:
-      mutex* mMutex;
-    };
-
-    void lock() {
-      MATHICGB_ASSERT(!mLocked); // deadlock
-      mLocked = true;
-    }
-
-    bool try_lock() {
-      if (mLocked)
-        return false;
-      lock();
-      return true;
-    }
-
-    void unlock() {
-      MATHICGB_ASSERT(mLocked);
-      mLocked = false;
-    }
-
-  private:
-    bool mLocked;
   };
 
   template<class T>

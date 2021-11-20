@@ -10,6 +10,7 @@
 #include "QuadMatrix.hpp"
 #include "mtbb.hpp"
 #include <vector>
+#include <mutex>
 
 MATHICGB_NAMESPACE_BEGIN
 
@@ -156,7 +157,7 @@ private:
     TaskFeeder& feeder
   );
 
-  mgb::mtbb::mutex mCreateColumnLock;
+  std::mutex mCreateColumnLock;
   ColIndex mLeftColCount;
   ColIndex mRightColCount;
   Mono mTmp;

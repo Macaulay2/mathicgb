@@ -158,7 +158,7 @@ public:
 
     mgb::mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
       // We need to grab a lock since monoid isn't internally synchronized.
-      mgb::mtbb::mutex::scoped_lock guard(mCreateColumnLock);
+      std::lock_guard guard(mCreateColumnLock);
       ThreadData data = {
         *monoid().alloc().release(),
         *monoid().alloc().release()
@@ -306,7 +306,7 @@ public:
     ConstMonoRef monoB,
     TaskFeeder& feeder
   ) {
-    mgb::mtbb::mutex::scoped_lock lock(mCreateColumnLock);
+    std::lock_guard lock(mCreateColumnLock);
     // see if the column exists now after we have synchronized
     {
       const auto found(ColReader(mMap).findProduct(monoA, monoB));
@@ -524,7 +524,7 @@ public:
   const size_t mMemoryQuantum;
 
   /// If you want to modify the columns, you need to grab this lock first.
-  mgb::mtbb::mutex mCreateColumnLock;
+  std::mutex mCreateColumnLock;
 
   /// A monomial for temporary scratch calculations. Protected by
   /// mCreateColumnLock.

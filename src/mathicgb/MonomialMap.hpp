@@ -11,6 +11,7 @@
 #include <limits>
 #include <vector>
 #include <algorithm>
+#include <mutex>
 
 MATHICGB_NAMESPACE_BEGIN
 
@@ -156,7 +157,7 @@ public:
   /// internal monomial that equals value.first.
   std::pair<std::pair<const mapped_type*, ConstMonoPtr>, bool>
   insert(const value_type& value) {
-    const mgb::mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
+    const std::lock_guard lockGuard(mInsertionMutex);
 
     // We can load mMap as std::memory_order_relaxed because we have already
     // synchronized with all other mutators by locking mInsertionMutex;
@@ -196,7 +197,7 @@ public:
   /// Return the number of entries. This method uses internal synchronization
   /// so do not call too much or you'll get degraded performance.
   size_t entryCount() const {
-    const mgb::mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
+    const std::lock_guard lockGuard(mInsertionMutex);
     // We can load with std::memory_order_relaxed because we are holding the
     // lock.
     auto& map = *mMap.load(std::memory_order_relaxed);
@@ -214,7 +215,7 @@ private:
 
   Atomic<FixedSizeMap*> mMap;
   const PolyRing& mRing;
-  mutable mgb::mtbb::mutex mInsertionMutex;
+  mutable std::mutex mInsertionMutex;
 
   /// Only access this field while holding the mInsertionMutex lock.
   size_t mCapacityUntilGrowth;
