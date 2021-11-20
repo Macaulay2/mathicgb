@@ -6,6 +6,7 @@
 #ifndef MATHICGB_NO_TBB
 #define TBB_SUPPRESS_DEPRECATED_MESSAGES 1
 #include <tbb/tbb.h>
+#include <mutex>
 
 MATHICGB_NAMESPACE_BEGIN
 
@@ -18,11 +19,26 @@ MATHICGB_NAMESPACE_BEGIN
 /// uses of tbb go through mtbb, so make sure to do that.
 
 namespace mtbb {
-  using ::tbb::task_scheduler_init;
+  using ::tbb::task_arena;
+#if TBB_VERSION_MAJOR >= 2021
+  class mutex : public ::std::mutex {
+      //what tbb used to call scoped_lock is lock_guard in c++11
+      //TODO move away from tbb::mutex entirely, and just use the c++11 mutex
+  public:
+      using scoped_lock = ::std::lock_guard<mutex>;
+  };
+  template<typename I>
+  using parallel_do_feeder = ::tbb::feeder<I>;
+  template<typename I, typename B>
+  static inline void parallel_do(I i1, I i2,B body){
+    ::tbb::parallel_for_each(i1,i2,body);
+  }
+#else
   using ::tbb::mutex;
   using ::tbb::parallel_do_feeder;
-  using ::tbb::enumerable_thread_specific;
   using ::tbb::parallel_do;
+#endif
+  using ::tbb::enumerable_thread_specific;
   using ::tbb::parallel_for;
   using ::tbb::parallel_sort;
   using ::tbb::blocked_range;
@@ -41,10 +57,14 @@ MATHICGB_NAMESPACE_END
 MATHICGB_NAMESPACE_BEGIN
 
 namespace mtbb {
-  class task_scheduler_init {
+  class task_arena {
   public:
-    task_scheduler_init(int) {}
+    task_arena(int) {}
     static const int automatic = 1;
+    template<typename F>
+    auto execute(const F& f) -> decltype(f()) {
+        return f();
+    }
   };
 
   class mutex {

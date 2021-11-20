@@ -929,8 +929,8 @@ namespace mgbi {
     // Tell tbb how many threads to use
     const auto maxThreadCount = int(conf.maxThreadCount());
     const auto tbbMaxThreadCount = maxThreadCount == 0 ?
-      mgb::mtbb::task_scheduler_init::automatic : maxThreadCount;
-    mgb::mtbb::task_scheduler_init scheduler(tbbMaxThreadCount);
+      mgb::mtbb::task_arena::automatic : maxThreadCount;
+    mgb::mtbb::task_arena scheduler(tbbMaxThreadCount);
 
     // Set up logging
     LogDomainSet::singleton().reset();
@@ -971,10 +971,11 @@ namespace mgbi {
     if (!callback.isNull())
       params.callback = [&callback](){return callback();};
 
-    auto gb = conf.comCount() == 1 ?
-      computeGBClassicAlg(std::move(basis), params) :
-      computeModuleGBClassicAlg(std::move(basis), params);
-
+    auto gb = scheduler.execute([&basis,&conf,&params]{
+        return conf.comCount() == 1 ?
+            computeGBClassicAlg(std::move(basis), params) :
+            computeModuleGBClassicAlg(std::move(basis), params);
+    });
     typedef mgb::GroebnerConfiguration::Callback::Action Action;
     if (callback.lastAction() != Action::StopWithNoOutputAction) {
       PimplOf()(output).basis = make_unique<Basis>(std::move(gb));
