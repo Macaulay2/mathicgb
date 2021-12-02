@@ -291,10 +291,10 @@ public:
   typedef const Map::Reader ColReader;
   typedef std::vector<monomial> Monomials;
 
-#if MTBB_VERSION>=2021  //TBB_MAJOR_VERSION >= 2021  
+#if 1 // MTBB_VERSION>=2021  //TBB_MAJOR_VERSION >= 2021  
   using TaskFeeder = mtbb::feeder<RowTask>;
-#else
-  using TaskFeeder = mtbb::parallel_do_feeder<RowTask>;
+// #else
+//   using TaskFeeder = mtbb::parallel_do_feeder<RowTask>;
 #endif
   //typedef mtbb::parallel_do_feeder<RowTask> TaskFeeder;
 

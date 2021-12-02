@@ -8,14 +8,21 @@
 #define MTBB_VERSION 2020
 
 #if MTBB_VERSION>=2021
-#include <tbb/version.h> // only works for tbb2021
+  #include <tbb/version.h> // only works for tbb2021
 #elif MTBB_VERSION>0
-#include <tbb/tbb_stddef.h> // only works for tbb2020 and older, we think
+   #define mtbbstringize0(a) #a
+   #define mtbbstringize(a) mtbbstringize0(a)
+
+  #include <tbb/tbb_stddef.h> // only works for tbb2020 and older, we think
+  #define TBB_VERSION_STRING "2020.3" //  todo! get the next line to work!
+//    (mtbbstringize(TBB_VERSION_MAJOR) "." mtbbstringize(TBB_VERSION_MINOR))
+#else
+  #define TBB_VERSION_STRING "tbb not present"
 #endif
 
-#define XSTR(x) STR(x)
 #define STR(x) #x
-#pragma message "TBB_VERSION_MAJOR = " XSTR(TBB_VERSION_MAJOR)
+#define XSTR(x) STR(x)
+#pragma message "TBB_VERSION_MAJOR = " XSTR(TBB_VERSION_STRING)
 
 
 /// A compatibility layer for tbb. If we are compiling with tbb present, then
@@ -56,6 +63,9 @@ namespace mtbb {
   //  using ::tbb::info::default_concurrency;
   using ::tbb::global_control;
 
+  template<typename T>
+  class mtbbFeeder : public ::tbb::feeder<T> {};
+  
   template<typename T1, typename T2, typename T3>
   void parallel_for_each(T1&& a, T2&& b, T3&& c)
   {
@@ -104,8 +114,13 @@ namespace mtbb {
   using ::tbb::parallel_do_feeder;
   using ::tbb::enumerable_thread_specific;
 
-  // template<class T>
-  // using feeder<T> = ::tbb::parallel_do_feeder<T>;
+  // template<typename T>
+  // class mtbbFeeder : public ::tbb::parallel_do_feeder<T> {
+  //   virtual ~mtbbFeeder() {}
+  // };
+  
+  template<typename T>
+  using feeder = ::tbb::parallel_do_feeder<T>;
 
   class task_scheduler_init {
   public:
@@ -117,8 +132,8 @@ namespace mtbb {
     }
   };
 
-  template<typename T1, typename T2, typename T3>
-  void parallel_for_each(T1&& a, T2&& b, T3&& c)
+  template<typename T1, typename T2>
+  static inline void parallel_for_each(T1 a, T1 b, T2 c)
   {
     ::tbb::parallel_do(a,b,c);
   }
