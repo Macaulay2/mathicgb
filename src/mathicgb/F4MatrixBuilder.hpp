@@ -162,7 +162,7 @@ private:
     TaskFeeder& feeder
   );
 
-  std::mutex mCreateColumnLock;
+  mtbb::mutex mCreateColumnLock;
   ColIndex mLeftColCount;
   ColIndex mRightColCount;
   Mono mTmp;

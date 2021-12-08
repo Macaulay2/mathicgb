@@ -239,8 +239,7 @@ namespace {
 
     std::vector<SparseMatrix::RowIndex> rowOrder(rowCount);
 
-    //    mtbb::mutex lock;
-    std::mutex lock;
+    mtbb::mutex lock;
     mtbb::parallel_for(mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount, 2),
       [&](const mtbb::blocked_range<SparseMatrix::RowIndex>& range)
     {
@@ -273,8 +272,8 @@ namespace {
             }
           }
         }
-        // mtbb::mutex::scoped_lock lockGuard(lock);
-        const std::lock_guard<std::mutex> lockGuard(lock);
+        mtbb::lock_guard lockGuard(lock);
+        //        const std::lock_guard<std::mutex> lockGuard(lock);
         for (size_t pivot = 0; pivot < pivotCount; ++pivot) {
 		  MATHICGB_ASSERT(denseRow[pivot] < std::numeric_limits<SparseMatrix::Scalar>::max());
           if (denseRow[pivot] != 0)
@@ -304,8 +303,8 @@ namespace {
         denseRow.addRowMultiple(it.scalar(), begin, end);
       }
 
-      //mtbb::mutex::scoped_lock lockGuard(lock);
-      const std::lock_guard<std::mutex> lockGuard(lock);
+      mtbb::lock_guard lockGuard(lock);
+      //      const std::lock_guard<std::mutex> lockGuard(lock);
 
       bool zero = true;
 	  for (SparseMatrix::ColIndex col = 0; col < rightColCount; ++col) {
@@ -443,7 +442,7 @@ namespace {
       size_t const reducerCount = reduced.rowCount();
 
       //std::cout << "reducing " << reduced.rowCount() << " out of " << toReduce.rowCount() << std::endl;
-      std::mutex lock;
+      mtbb::mutex lock;
       mtbb::parallel_for(mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
         [&](const mtbb::blocked_range<SparseMatrix::RowIndex>& range)
         {for (auto it = range.begin(); it != range.end(); ++it)
@@ -480,8 +479,8 @@ namespace {
           MATHICGB_ASSERT(col < colCount);
           bool isNewReducer = false;
           {
-            //mtbb::mutex::scoped_lock lockGuard(lock);
-            const std::lock_guard<std::mutex> lockGuard(lock);
+            mtbb::lock_guard lockGuard(lock);
+            //            const std::lock_guard<std::mutex> lockGuard(lock);
 
             if (!columnHasPivot[col]) {
               columnHasPivot[col] = true;

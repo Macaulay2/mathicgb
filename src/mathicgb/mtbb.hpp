@@ -49,7 +49,7 @@
 
 namespace mtbb {
   //using task_scheduler_init        = ::tbb::task_scheduler_init;
-  //  using ::std::mutex;
+  using ::std::mutex;
   using ::tbb::queuing_mutex;
   using ::tbb::null_mutex;
   //  using ::tbb::parallel_for_each;
@@ -64,6 +64,8 @@ namespace mtbb {
 
   template<typename T>
   using feeder = ::tbb::feeder<T>;
+
+  using lock_guard = ::std::lock_guard<std::mutex>;
   
   template<typename T1, typename T2>
   static inline void parallel_for_each(T1 a, T1 b, T2 c)
@@ -121,6 +123,8 @@ namespace mtbb {
   template<typename T>
   using feeder = ::tbb::parallel_do_feeder<T>;
 
+  using lock_guard = ::std::lock_guard<std::mutex>;
+  
   class task_scheduler_init {
   public:
     task_scheduler_init(int nthreads) {
@@ -162,45 +166,13 @@ namespace mtbb {
     static const int automatic = 1;
   };
 
-#if 0  
+  
   class mutex {
   public:
     mutex(): mLocked(false) {}
 
-    class scoped_lock {
-    public:
-      scoped_lock(): mMutex(0) {}
-      scoped_lock(mutex& m): mMutex(&m) {mMutex->lock();}
-      ~scoped_lock() {
-        if (mMutex != 0)
-          release();
-      }
-
-      void acquire(mutex& m) {
-        MATHICGB_ASSERT(mMutex == 0);
-        mMutex = &m;
-      }
-
-      bool try_acquire(mutex& m) {
-        MATHICGB_ASSERT(mMutex == 0);
-        if (!m.try_lock())
-          return false;
-        mMutex = &m;
-        return true;
-      }
-
-      void release() {
-        MATHICGB_ASSERT(mMutex != 0);
-        mMutex->unlock();
-        mMutex = 0;
-      }
-
-    private:
-      mutex* mMutex;
-    };
-
     void lock() {
-      MATHICGB_ASSERT(!mLocked); // deadlock
+      assert(!mLocked); // deadlock
       mLocked = true;
     }
 
@@ -212,14 +184,47 @@ namespace mtbb {
     }
 
     void unlock() {
-      MATHICGB_ASSERT(mLocked);
+      assert(mLocked);
       mLocked = false;
     }
 
   private:
     bool mLocked;
   };
-#endif
+
+  using null_mutex = mutex;
+  
+  class lock_guard {
+  public:
+    lock_guard(): mMutex(0) {}
+    lock_guard(mutex& m): mMutex(&m) {mMutex->lock();}
+    ~lock_guard() {
+      if (mMutex != 0)
+        release();
+    }
+    
+    void acquire(mutex& m) {
+      assert(mMutex == 0);
+      mMutex = &m;
+    }
+    
+    bool try_acquire(mutex& m) {
+      assert(mMutex == 0);
+      if (!m.try_lock())
+        return false;
+      mMutex = &m;
+      return true;
+    }
+    
+    void release() {
+      assert(mMutex != 0);
+      mMutex->unlock();
+      mMutex = 0;
+    }
+    
+  private:
+    mutex* mMutex;
+  };
   
   template<class T>
   class enumerable_thread_specific {
@@ -231,8 +236,8 @@ namespace mtbb {
 
     T& local() {
       if (empty())
-        mObj = make_unique<T>(mCreater());
-      MATHICGB_ASSERT(!empty());
+        mObj = std::make_unique<T>(mCreater());
+      assert(!empty());
       return *mObj;
     }
 
@@ -259,6 +264,8 @@ namespace mtbb {
     std::unique_ptr<T> mObj;
   };
 
+
+  
   template<class Value>
   class blocked_range {
   public:
@@ -294,9 +301,9 @@ namespace mtbb {
   }
 
   template<class T>
-  class parallel_do_feeder {
+  class feeder {
   public:
-    parallel_do_feeder(std::vector<T>& tasks): mTasks(tasks) {}
+    feeder(std::vector<T>& tasks): mTasks(tasks) {}
 
     template<class TT>
     void add(TT&& t) {mTasks.push_back(std::forward<TT>(t));}
@@ -306,10 +313,10 @@ namespace mtbb {
   };
 
   template<class InputIterator, class Body>
-  void parallel_do(InputIterator begin, InputIterator end, Body body) {
+  void parallel_for_each(InputIterator begin, InputIterator end, Body body) {
     typedef typename std::remove_reference<decltype(*begin)>::type Task;
     std::vector<Task> tasks;
-    parallel_do_feeder<Task> feeder(tasks);
+    feeder<Task> feeder(tasks);
     for (; begin != end; ++begin) {
       tasks.push_back(*begin);
       while (!tasks.empty()) {

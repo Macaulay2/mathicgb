@@ -158,11 +158,8 @@ public:
 
     mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
       // We need to grab a lock since monoid isn't internally synchronized.
-#if MTBB_VERSION>0
-    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
-#else
-    mtbb::mutex::scoped_lock guard(mCreateColumnLock);
-#endif    
+   //    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
+      mtbb::lock_guard guard(mCreateColumnLock);
       ThreadData data = {
         *monoid().alloc().release(),
         *monoid().alloc().release()
@@ -291,12 +288,7 @@ public:
   typedef const Map::Reader ColReader;
   typedef std::vector<monomial> Monomials;
 
-#if 1 // MTBB_VERSION>=2021  //TBB_MAJOR_VERSION >= 2021  
   using TaskFeeder = mtbb::feeder<RowTask>;
-// #else
-//   using TaskFeeder = mtbb::parallel_do_feeder<RowTask>;
-#endif
-  //typedef mtbb::parallel_do_feeder<RowTask> TaskFeeder;
 
   /// Creates a column with monomial label monoA * monoB and schedules a new
   /// row to reduce that column if possible. If such a column already
@@ -315,11 +307,8 @@ public:
     ConstMonoRef monoB,
     TaskFeeder& feeder
   ) {
-#if 1
-    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
-#else
-    mtbb::mutex::scoped_lock guard(mCreateColumnLock);
-#endif    
+    //    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
+    mtbb::lock_guard guard(mCreateColumnLock);
     // see if the column exists now after we have synchronized
     {
       const auto found(ColReader(mMap).findProduct(monoA, monoB));
@@ -537,7 +526,7 @@ public:
   const size_t mMemoryQuantum;
 
   /// If you want to modify the columns, you need to grab this lock first.
-  std::mutex mCreateColumnLock;
+  mtbb::mutex mCreateColumnLock;
 
   /// A monomial for temporary scratch calculations. Protected by
   /// mCreateColumnLock.

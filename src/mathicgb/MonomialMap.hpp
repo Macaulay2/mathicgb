@@ -156,7 +156,8 @@ public:
   /// internal monomial that equals value.first.
   std::pair<std::pair<const mapped_type*, ConstMonoPtr>, bool>
   insert(const value_type& value) {
-    const std::lock_guard<std::mutex> lockGuard(mInsertionMutex);
+    const mtbb::lock_guard lockGuard(mInsertionMutex);
+    //    const std::lock_guard<std::mutex> lockGuard(mInsertionMutex);
     //const mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
 
     // We can load mMap as std::memory_order_relaxed because we have already
@@ -197,8 +198,8 @@ public:
   /// Return the number of entries. This method uses internal synchronization
   /// so do not call too much or you'll get degraded performance.
   size_t entryCount() const {
-    //const mtbb::mutex::scoped_lock lockGuard(mInsertionMutex);
-    const std::lock_guard<std::mutex> lockGuard(mInsertionMutex);
+    const mtbb::lock_guard lockGuard(mInsertionMutex);
+    //    const std::lock_guard<std::mutex> lockGuard(mInsertionMutex);
 
     // We can load with std::memory_order_relaxed because we are holding the
     // lock.
@@ -217,7 +218,7 @@ private:
 
   Atomic<FixedSizeMap*> mMap;
   const PolyRing& mRing;
-  mutable std::mutex mInsertionMutex;
+  mutable mtbb::mutex mInsertionMutex;
 
   /// Only access this field while holding the mInsertionMutex lock.
   size_t mCapacityUntilGrowth;
