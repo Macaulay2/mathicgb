@@ -3,9 +3,9 @@
 #ifndef MATHICGB_M_TBB_GUARD
 #define MATHICGB_M_TBB_GUARD
 
-//#define MTBB_VERSION 2021
+#define MTBB_VERSION 2021
 //#define MTBB_VERSION 0 // mean not present
-#define MTBB_VERSION 2020
+//#define MTBB_VERSION 2020
 
 #if MTBB_VERSION>=2021
   #include <tbb/version.h> // only works for tbb2021
@@ -58,16 +58,15 @@ namespace mtbb {
   using ::tbb::blocked_range;
   using ::tbb::tick_count;
   using ::tbb::concurrent_unordered_map;
-  using ::tbb::feeder;
   using ::tbb::enumerable_thread_specific;
   //  using ::tbb::info::default_concurrency;
   using ::tbb::global_control;
 
   template<typename T>
-  class mtbbFeeder : public ::tbb::feeder<T> {};
+  using feeder = ::tbb::feeder<T>;
   
-  template<typename T1, typename T2, typename T3>
-  void parallel_for_each(T1&& a, T2&& b, T3&& c)
+  template<typename T1, typename T2>
+  static inline void parallel_for_each(T1 a, T1 b, T2 c)
   {
     tbb::parallel_for_each(a,b,c);
   }
