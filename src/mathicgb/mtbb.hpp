@@ -3,8 +3,8 @@
 #ifndef MATHICGB_M_TBB_GUARD
 #define MATHICGB_M_TBB_GUARD
 
-#define MTBB_VERSION 2021
-//#define MTBB_VERSION 0 // mean not present
+//#define MTBB_VERSION 2021
+#define MTBB_VERSION 0 // mean not present
 //#define MTBB_VERSION 2020
 
 #if MTBB_VERSION>=2021
@@ -62,6 +62,9 @@ namespace mtbb {
   //  using ::tbb::info::default_concurrency;
   using ::tbb::global_control;
 
+  template<class Key, class T, class Hash, class KeyEqual>
+  using unordered_map = ::tbb::concurrent_unordered_map<Key, T, Hash, KeyEqual>;
+  
   template<typename T>
   using feeder = ::tbb::feeder<T>;
 
@@ -119,6 +122,9 @@ namespace mtbb {
   // class mtbbFeeder : public ::tbb::parallel_do_feeder<T> {
   //   virtual ~mtbbFeeder() {}
   // };
+
+  template<class Key, class T, class Hash, class KeyEqual>
+  using unordered_map = ::tbb::concurrent_unordered_map<Key, T, Hash, KeyEqual>;
   
   template<typename T>
   using feeder = ::tbb::parallel_do_feeder<T>;
@@ -153,6 +159,7 @@ namespace mtbb {
 
 // below is an interface to serial versions of the above code.
 
+#include <unordered_map>
 #include <functional>
 #include <vector>
 #include <ctime>
@@ -192,8 +199,6 @@ namespace mtbb {
     bool mLocked;
   };
 
-  using null_mutex = mutex;
-  
   class lock_guard {
   public:
     lock_guard(): mMutex(0) {}
@@ -225,6 +230,69 @@ namespace mtbb {
   private:
     mutex* mMutex;
   };
+
+  class tbb_mutex {
+  public:
+    tbb_mutex(): mLocked(false) {}
+
+    void lock() {
+      assert(!mLocked); // deadlock
+      mLocked = true;
+    }
+
+    bool try_lock() {
+      if (mLocked)
+        return false;
+      lock();
+      return true;
+    }
+
+    void unlock() {
+      assert(mLocked);
+      mLocked = false;
+    }
+
+    class scoped_lock {
+    public:
+      scoped_lock(): mMutex(0) {}
+      scoped_lock(tbb_mutex& m): mMutex(&m) {mMutex->lock();}
+      ~scoped_lock() {
+        if (mMutex != 0)
+          release();
+      }
+      
+      void acquire(tbb_mutex& m) {
+        assert(mMutex == 0);
+        mMutex = &m;
+      }
+      
+      bool try_acquire(tbb_mutex& m) {
+        assert(mMutex == 0);
+        if (!m.try_lock())
+          return false;
+        mMutex = &m;
+        return true;
+      }
+      
+      void release() {
+        assert(mMutex != 0);
+        mMutex->unlock();
+        mMutex = 0;
+      }
+      
+    private:
+      tbb_mutex* mMutex;
+    };
+    
+  private:
+    bool mLocked;
+  };
+
+  using null_mutex = tbb_mutex;
+  using queuing_mutex = tbb_mutex;
+
+  template<class Key, class T, class Hash, class KeyEqual>
+  using unordered_map = ::std::unordered_map<Key, T, Hash, KeyEqual>;
   
   template<class T>
   class enumerable_thread_specific {
@@ -234,6 +302,8 @@ namespace mtbb {
 
     bool empty() const {return mObj.get() == 0;}
 
+    using reference = T&;
+      
     T& local() {
       if (empty())
         mObj = std::make_unique<T>(mCreater());
