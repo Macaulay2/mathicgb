@@ -158,8 +158,7 @@ public:
 
     mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
       // We need to grab a lock since monoid isn't internally synchronized.
-   //    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
-      mtbb::lock_guard guard(mCreateColumnLock);
+      const mtbb::lock_guard guard(mCreateColumnLock);
       ThreadData data = {
         *monoid().alloc().release(),
         *monoid().alloc().release()
@@ -307,8 +306,7 @@ public:
     ConstMonoRef monoB,
     TaskFeeder& feeder
   ) {
-    //    const std::lock_guard<std::mutex> lockGuard(mCreateColumnLock);
-    mtbb::lock_guard guard(mCreateColumnLock);
+    const mtbb::lock_guard guard(mCreateColumnLock);
     // see if the column exists now after we have synchronized
     {
       const auto found(ColReader(mMap).findProduct(monoA, monoB));

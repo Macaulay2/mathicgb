@@ -3,27 +3,23 @@
 #ifndef MATHICGB_M_TBB_GUARD
 #define MATHICGB_M_TBB_GUARD
 
+// TODO: Have cmake and autotools set this variable, as well as TBB_VERSION_STRING
+
 //#define MTBB_VERSION 2021
-#define MTBB_VERSION 0 // mean not present
+#define MTBB_VERSION 0 // TBB not present
 //#define MTBB_VERSION 2020
 
 #if MTBB_VERSION>=2021
   #include <tbb/version.h> // only works for tbb2021
 #elif MTBB_VERSION>0
-   #define mtbbstringize0(a) #a
-   #define mtbbstringize(a) mtbbstringize0(a)
-
+  #define mtbbstringize0(a) #a
+  #define mtbbstringize(a) mtbbstringize0(a)
   #include <tbb/tbb_stddef.h> // only works for tbb2020 and older, we think
   #define TBB_VERSION_STRING "2020.3" //  todo! get the next line to work!
 //    (mtbbstringize(TBB_VERSION_MAJOR) "." mtbbstringize(TBB_VERSION_MINOR))
 #else
-  #define TBB_VERSION_STRING "tbb not present"
+  #define TBB_VERSION_STRING "TBB not present"
 #endif
-
-#define STR(x) #x
-#define XSTR(x) STR(x)
-#pragma message "TBB_VERSION_MAJOR = " XSTR(TBB_VERSION_STRING)
-
 
 /// A compatibility layer for tbb. If we are compiling with tbb present, then
 /// these classes will simply be the same classes as in tbb. However, if we
@@ -33,132 +29,75 @@
 /// one good reason to have this compatibility layer. This only works if all
 /// uses of tbb go through mtbb, so make sure to do that.
 
+#if MTBB_VERSION>0 // TBB present
+ 
 #if MTBB_VERSION>=2021
-#pragma message "in tbb 2021 code"
+  #include <tbb/global_control.h>
+  #include <tbb/info.h>  
+  #include <tbb/parallel_for_each.h>
+#else
+  #include <tbb/task_scheduler_init.h>
+  #include <tbb/parallel_do.h>
+#endif
 #include <tbb/enumerable_thread_specific.h>
 #include <tbb/concurrent_unordered_map.h>     
 #include <tbb/queuing_mutex.h>                // for queuing_mutex
 #include <tbb/null_mutex.h>                   // for null_mutex
-#include <tbb/parallel_for_each.h>                  // for parallel_do_feeder
 #include <tbb/tick_count.h>                   // for tick_count
 #include <tbb/parallel_sort.h>                // for parallel_sort
 #include <tbb/parallel_for.h>                 // for parallel_for
-#include <tbb/global_control.h>
-#include <tbb/info.h>  
 #include <mutex>
 
 namespace mtbb {
-  //using task_scheduler_init        = ::tbb::task_scheduler_init;
-  using ::std::mutex;
+  using ::tbb::enumerable_thread_specific;
   using ::tbb::queuing_mutex;
   using ::tbb::null_mutex;
-  //  using ::tbb::parallel_for_each;
-  using ::tbb::parallel_for;
   using ::tbb::parallel_sort;
+  using ::tbb::parallel_for;
   using ::tbb::blocked_range;
   using ::tbb::tick_count;
-  using ::tbb::concurrent_unordered_map;
-  using ::tbb::enumerable_thread_specific;
-  //  using ::tbb::info::default_concurrency;
-  using ::tbb::global_control;
+  using ::std::mutex;
+  using lock_guard = ::std::lock_guard<std::mutex>;
 
   template<class Key, class T, class Hash, class KeyEqual>
   using unordered_map = ::tbb::concurrent_unordered_map<Key, T, Hash, KeyEqual>;
   
   template<typename T>
+#if MTBB_VERSION >= 2021
   using feeder = ::tbb::feeder<T>;
-
-  using lock_guard = ::std::lock_guard<std::mutex>;
-  
+#else
+  using feeder = ::tbb::parallel_do_feeder<T>;
+#endif
+    
   template<typename T1, typename T2>
   static inline void parallel_for_each(T1 a, T1 b, T2 c)
   {
+#if MTBB_VERSION >= 2021
     tbb::parallel_for_each(a,b,c);
+#else
+    tbb::parallel_do(a,b,c);
+#endif
   }
 
   class task_scheduler_init {
   public:
     task_scheduler_init(int nthreads) {
       const auto tbbMaxThreadCount = nthreads == 0 ?
+#if MTBB_VERSION >= 2021
         tbb::info::default_concurrency() : nthreads;
       tbb::global_control global_limit(tbb::global_control::max_allowed_parallelism,
                                        tbbMaxThreadCount);
-    }
-  };
-}
-
-#elif MTBB_VERSION>0 // tbb present, but 2020 or older
-#pragma message "in tbb 2020 code"
-
-// include those tbb files that we are using here.  Don't do a blanket tbb include.
-// TODO
-
-#include <tbb/task_scheduler_init.h>
-#include <tbb/enumerable_thread_specific.h>
-#include <tbb/concurrent_unordered_map.h>     
-#include <tbb/queuing_mutex.h>                // for queuing_mutex
-#include <tbb/null_mutex.h>                   // for null_mutex
-#include <tbb/parallel_do.h>                  // for parallel_do_feeder
-#include <tbb/tick_count.h>                   // for tick_count
-#include <tbb/parallel_sort.h>                // for parallel_sort
-#include <tbb/parallel_for.h>                 // for parallel_for
-#include <mutex>
-
-namespace mtbb {
-  //using task_scheduler_init        = ::tbb::task_scheduler_init;
-  using ::std::mutex;
-  using ::tbb::queuing_mutex;
-  using ::tbb::null_mutex;
-  //  using ::tbb::parallel_do;
-  using ::tbb::parallel_for;
-  using ::tbb::parallel_sort;
-  using ::tbb::blocked_range;
-  using ::tbb::tick_count;
-  using ::tbb::concurrent_unordered_map;
-  using ::tbb::parallel_do_feeder;
-  using ::tbb::enumerable_thread_specific;
-
-  // template<typename T>
-  // class mtbbFeeder : public ::tbb::parallel_do_feeder<T> {
-  //   virtual ~mtbbFeeder() {}
-  // };
-
-  template<class Key, class T, class Hash, class KeyEqual>
-  using unordered_map = ::tbb::concurrent_unordered_map<Key, T, Hash, KeyEqual>;
-  
-  template<typename T>
-  using feeder = ::tbb::parallel_do_feeder<T>;
-
-  using lock_guard = ::std::lock_guard<std::mutex>;
-  
-  class task_scheduler_init {
-  public:
-    task_scheduler_init(int nthreads) {
-      const auto tbbMaxThreadCount = nthreads == 0 ?
+#else
         ::tbb::task_scheduler_init::automatic : nthreads;
       ::tbb::task_scheduler_init scheduler(tbbMaxThreadCount);
-
+#endif
     }
   };
-
-  template<typename T1, typename T2>
-  static inline void parallel_for_each(T1 a, T1 b, T2 c)
-  {
-    ::tbb::parallel_do(a,b,c);
-  }
-
 }
 
-// #define parallel_do parallel_for_each
-// #define parallel_do_feeder feeder
-// parallel_do -> parallel_for_each
-// parallel_do_feeder -> feeder
-
 #else // TBB not present
-#pragma message "in no tbb case"
 
 // below is an interface to serial versions of the above code.
-
 #include <unordered_map>
 #include <functional>
 #include <vector>
@@ -167,13 +106,13 @@ namespace mtbb {
 #include <chrono>
 
 namespace mtbb {
+
   class task_scheduler_init {
   public:
     task_scheduler_init(int) {}
     static const int automatic = 1;
   };
 
-  
   class mutex {
   public:
     mutex(): mLocked(false) {}
@@ -195,78 +134,21 @@ namespace mtbb {
       mLocked = false;
     }
 
-  private:
-    bool mLocked;
-  };
-
-  class lock_guard {
-  public:
-    lock_guard(): mMutex(0) {}
-    lock_guard(mutex& m): mMutex(&m) {mMutex->lock();}
-    ~lock_guard() {
-      if (mMutex != 0)
-        release();
-    }
-    
-    void acquire(mutex& m) {
-      assert(mMutex == 0);
-      mMutex = &m;
-    }
-    
-    bool try_acquire(mutex& m) {
-      assert(mMutex == 0);
-      if (!m.try_lock())
-        return false;
-      mMutex = &m;
-      return true;
-    }
-    
-    void release() {
-      assert(mMutex != 0);
-      mMutex->unlock();
-      mMutex = 0;
-    }
-    
-  private:
-    mutex* mMutex;
-  };
-
-  class tbb_mutex {
-  public:
-    tbb_mutex(): mLocked(false) {}
-
-    void lock() {
-      assert(!mLocked); // deadlock
-      mLocked = true;
-    }
-
-    bool try_lock() {
-      if (mLocked)
-        return false;
-      lock();
-      return true;
-    }
-
-    void unlock() {
-      assert(mLocked);
-      mLocked = false;
-    }
-
     class scoped_lock {
     public:
       scoped_lock(): mMutex(0) {}
-      scoped_lock(tbb_mutex& m): mMutex(&m) {mMutex->lock();}
+      scoped_lock(mutex& m): mMutex(&m) {mMutex->lock();}
       ~scoped_lock() {
         if (mMutex != 0)
           release();
       }
       
-      void acquire(tbb_mutex& m) {
+      void acquire(mutex& m) {
         assert(mMutex == 0);
         mMutex = &m;
       }
       
-      bool try_acquire(tbb_mutex& m) {
+      bool try_acquire(mutex& m) {
         assert(mMutex == 0);
         if (!m.try_lock())
           return false;
@@ -281,15 +163,17 @@ namespace mtbb {
       }
       
     private:
-      tbb_mutex* mMutex;
+      mutex* mMutex;
     };
     
   private:
     bool mLocked;
   };
 
-  using null_mutex = tbb_mutex;
-  using queuing_mutex = tbb_mutex;
+  using lock_guard = mutex::scoped_lock;
+
+  using null_mutex = mutex;
+  using queuing_mutex = mutex;
 
   template<class Key, class T, class Hash, class KeyEqual>
   using unordered_map = ::std::unordered_map<Key, T, Hash, KeyEqual>;
@@ -297,6 +181,7 @@ namespace mtbb {
   template<class T>
   class enumerable_thread_specific {
   public:
+
     template<class Op>
     enumerable_thread_specific(Op&& creater): mCreater(creater) {}
 
@@ -333,8 +218,6 @@ namespace mtbb {
     std::function<T()> mCreater;
     std::unique_ptr<T> mObj;
   };
-
-
   
   template<class Value>
   class blocked_range {
