@@ -5,8 +5,8 @@
 
 // TODO: Have cmake and autotools set this variable, as well as TBB_VERSION_STRING
 
-//#define MTBB_VERSION 2021
-#define MTBB_VERSION 0 // TBB not present
+#define MTBB_VERSION 2021
+//#define MTBB_VERSION 0 // TBB not present
 //#define MTBB_VERSION 2020
 
 #if MTBB_VERSION>=2021
