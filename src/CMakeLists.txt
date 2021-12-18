@@ -62,12 +62,9 @@ add_library(mathicgb STATIC
   )
 
 target_link_libraries(mathicgb
-  $<$<BOOL:${with_tbb}>:${TBB_LIBRARIES}>
   memtailor mathic Threads::Threads
+  $<$<BOOL:${with_tbb}>:TBB::tbb>
   )
-
-target_include_directories(mathicgb PUBLIC
-  $<$<BOOL:${with_tbb}>:${TBB_INCLUDE_DIRS}>)
 
 target_include_directories(mathicgb PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
