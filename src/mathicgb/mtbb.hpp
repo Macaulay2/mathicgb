@@ -3,24 +3,14 @@
 #ifndef MATHICGB_M_TBB_GUARD
 #define MATHICGB_M_TBB_GUARD
 
-// TODO: Have cmake and autotools set this variable, as well as TBB_VERSION_STRING
-
 #ifdef WITH_TBB
 #define MTBB_VERSION 2021
 #else
 #define MTBB_VERSION 0 // TBB not present
 #endif
 
-//#define MTBB_VERSION 2020
-
 #if MTBB_VERSION>=2021
   #include <tbb/version.h> // only works for tbb2021
-#elif MTBB_VERSION>0
-  #define mtbbstringize0(a) #a
-  #define mtbbstringize(a) mtbbstringize0(a)
-  #include <tbb/tbb_stddef.h> // only works for tbb2020 and older, we think
-  #define TBB_VERSION_STRING "2020.3" //  todo! get the next line to work!
-//    (mtbbstringize(TBB_VERSION_MAJOR) "." mtbbstringize(TBB_VERSION_MINOR))
 #else
   #define TBB_VERSION_STRING "TBB not present"
 #endif
@@ -35,14 +25,9 @@
 
 #if MTBB_VERSION>0 // TBB present
  
-#if MTBB_VERSION>=2021
-  #include <tbb/global_control.h>
-  #include <tbb/info.h>  
-  #include <tbb/parallel_for_each.h>
-#else
-  #include <tbb/task_scheduler_init.h>
-  #include <tbb/parallel_do.h>
-#endif
+#include <tbb/global_control.h>
+#include <tbb/info.h>  
+#include <tbb/parallel_for_each.h>
 #include <tbb/enumerable_thread_specific.h>
 #include <tbb/concurrent_unordered_map.h>     
 #include <tbb/queuing_mutex.h>                // for queuing_mutex
@@ -67,34 +52,21 @@ namespace mtbb {
   using unordered_map = ::tbb::concurrent_unordered_map<Key, T, Hash, KeyEqual>;
   
   template<typename T>
-#if MTBB_VERSION >= 2021
   using feeder = ::tbb::feeder<T>;
-#else
-  using feeder = ::tbb::parallel_do_feeder<T>;
-#endif
     
   template<typename T1, typename T2>
   static inline void parallel_for_each(T1 a, T1 b, T2 c)
   {
-#if MTBB_VERSION >= 2021
     tbb::parallel_for_each(a,b,c);
-#else
-    tbb::parallel_do(a,b,c);
-#endif
   }
 
   class task_scheduler_init {
   public:
     task_scheduler_init(int nthreads) {
       const auto tbbMaxThreadCount = nthreads == 0 ?
-#if MTBB_VERSION >= 2021
         tbb::info::default_concurrency() : nthreads;
       tbb::global_control global_limit(tbb::global_control::max_allowed_parallelism,
                                        tbbMaxThreadCount);
-#else
-        ::tbb::task_scheduler_init::automatic : nthreads;
-      ::tbb::task_scheduler_init scheduler(tbbMaxThreadCount);
-#endif
     }
   };
 }
@@ -140,20 +112,20 @@ namespace mtbb {
 
     class scoped_lock {
     public:
-      scoped_lock(): mMutex(0) {}
+      scoped_lock(): mMutex(nullptr) {}
       scoped_lock(mutex& m): mMutex(&m) {mMutex->lock();}
       ~scoped_lock() {
-        if (mMutex != 0)
+        if (mMutex != nullptr)
           release();
       }
       
       void acquire(mutex& m) {
-        assert(mMutex == 0);
+        assert(mMutex == nullptr);
         mMutex = &m;
       }
       
       bool try_acquire(mutex& m) {
-        assert(mMutex == 0);
+        assert(mMutex == nullptr);
         if (!m.try_lock())
           return false;
         mMutex = &m;
@@ -161,9 +133,9 @@ namespace mtbb {
       }
       
       void release() {
-        assert(mMutex != 0);
+        assert(mMutex != nullptr);
         mMutex->unlock();
-        mMutex = 0;
+        mMutex = nullptr;
       }
       
     private:
@@ -189,7 +161,7 @@ namespace mtbb {
     template<class Op>
     enumerable_thread_specific(Op&& creater): mCreater(creater) {}
 
-    bool empty() const {return mObj.get() == 0;}
+    bool empty() const {return mObj.get() == nullptr;}
 
     using reference = T&;
       
@@ -202,20 +174,20 @@ namespace mtbb {
 
     T* begin() {
       if (empty())
-        return 0;
+        return nullptr;
       else
         return mObj.get();
     }
 
     T* end() {
       if (empty())
-        return  0;
+        return nullptr;
       else
         return begin() + 1;
     }
 
     void clear() {
-      mObj.reset(0);
+      mObj.reset(nullptr);
     }
 
   private:
