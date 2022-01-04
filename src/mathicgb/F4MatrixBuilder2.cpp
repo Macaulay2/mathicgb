@@ -118,7 +118,7 @@ public:
 
       tasks.push_back(newTask);
       for (++i; i < taskCount; ++i) {
-        auto& task = tasks[i];
+        //        auto& task = tasks[i];
         if (tasks[i].sPairPoly == 0)
           continue;
         MATHICGB_ASSERT(tasks[i].desiredLead != nullptr);
@@ -211,7 +211,6 @@ public:
     // Move the proto-matrices across all threads into the projection.
     F4MatrixProjection projection
       (ring(), static_cast<ColIndex>(mMap.entryCount()));
-    const auto end = threadData.end();
     for (auto& data : threadData) {
       monoid().freeRaw(data.tmp1);
       monoid().freeRaw(data.tmp2);
@@ -371,14 +370,14 @@ public:
     while (it != end) {
 	  MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
       MATHICGB_ASSERT(!field().isZero(it.coef()));
-      const auto scalar1 = static_cast<Scalar>(it.coef());
+      // Unused.  Remove.      const auto scalar1 = static_cast<Scalar>(it.coef());
       const auto mono1 = it.mono();
 
       auto it2 = it;
       ++it2;
 	  MATHICGB_ASSERT(it2.coef() < std::numeric_limits<Scalar>::max());
       MATHICGB_ASSERT(!field().isZero(it2.coef()));
-      const auto scalar2 = static_cast<Scalar>(it2.coef());
+      // Unused.  Remove.  const auto scalar2 = static_cast<Scalar>(it2.coef());
       const auto mono2 = it2.mono();
 
       const auto colPair = colMap.findTwoProducts(mono1, mono2, multiple);

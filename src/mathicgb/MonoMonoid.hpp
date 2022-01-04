@@ -1492,9 +1492,12 @@ public:
       typedef ConstMonoRef reference;
     
       const_iterator(): mIt(), mEntriesPerMono(0) {}
-      const_iterator(const const_iterator& it):
-        mIt(it.mIt), mEntriesPerMono(it.mEntriesPerMono) {}
-    
+      // The following is replaced by the default copy constructor.  Remove these 3 lines of comments once it is known to be working.
+      //const_iterator(const const_iterator& it):
+      //  mIt(it.mIt), mEntriesPerMono(it.mEntriesPerMono) {}
+      const_iterator(const const_iterator& it) = default;
+
+      
       bool operator==(const const_iterator& it) const {return mIt == it.mIt;}
       bool operator!=(const const_iterator& it) const {return mIt != it.mIt;}
 

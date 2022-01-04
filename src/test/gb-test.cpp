@@ -247,8 +247,10 @@ spairQueue	reducerType	divLookup	monTable	buchberger	postponeKoszul	useBaseDivis
     MATHICGB_ASSERT(!buchberger || !useSingularCriterionEarly);
 
     // check that we have a valid reducer type
+#ifdef MATHICGB_DEBUG    
     Reducer::ReducerType red = Reducer::ReducerType(reducerType);
     MATHICGB_ASSERT(static_cast<int>(red) == reducerType);
+#endif    
 
     std::istringstream inStream(idealStr);
 

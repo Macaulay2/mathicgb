@@ -16,6 +16,8 @@
 MATHICGB_NAMESPACE_BEGIN
 
 GBAction::GBAction():
+  mParams(1, 1),
+
   mAutoTailReduce(
     "autoTailReduce",
     "Reduce the non-leading terms of all polynomials whenever an element "
@@ -49,9 +51,8 @@ GBAction::GBAction():
     "The input is a basis of a submodule over the polynomial ring instead of "
     "an ideal in the polynomial ring. This option is experimental.",
     false
-  ),
+  )
 
-   mParams(1, 1)
 {}
 
 void GBAction::directOptions(

@@ -14,7 +14,7 @@
 using namespace mgb;
 
 namespace {
-  std::string monToStr(const PolyRing& ring, ConstMonomial a) {
+  [[maybe_unused]] std::string monToStr(const PolyRing& ring, ConstMonomial a) {
     std::ostringstream out;
     ring.monomialDisplay(out, a, false, true);
     return out.str();

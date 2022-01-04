@@ -37,7 +37,6 @@ bool QuadMatrix::debugAssertValid() const {
 void QuadMatrix::print(std::ostream& out) const {
   MATHICGB_ASSERT(debugAssertValid());
 
-  typedef SparseMatrix::ColIndex ColIndex;
   mathic::ColumnPrinter printer;
   printer.addColumn(true, "", "");
   printer.addColumn(true, " | ", "");
@@ -206,9 +205,6 @@ QuadMatrix QuadMatrix::toCanonical() const {
     const SparseMatrix& mMatrix;
   };
 
-  const auto leftColCount = leftColumnMonomials.size();
-  const auto rightColCount = rightColumnMonomials.size();
-
   // todo: eliminate left/right code duplication here
   QuadMatrix matrix(ring());
   { // left side
@@ -360,10 +356,11 @@ SparseMatrix::Scalar QuadMatrix::read(FILE* file) {
   rightColumnMonomials.clear();
 
   const auto topLeftModulus = topLeft.read(file);
+#ifdef MATHICGB_DEBUG  
   const auto topRightModulus = topRight.read(file);
   const auto bottomLeftModulus = bottomLeft.read(file);
   const auto bottomRightModulus = bottomRight.read(file);
-
+#endif
   // todo: this should throw some kind of invalid format exception instead of
   // these asserts.
   MATHICGB_ASSERT(topLeftModulus == topRightModulus);

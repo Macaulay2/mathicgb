@@ -40,7 +40,7 @@ add_compile_options(
   -DPACKAGE_URL=""
   -DPACKAGE="${PROJECT_NAME}"
   $<$<NOT:$<BOOL:${with_tbb}>>:-DMATHICGB_NO_TBB>
-  -Wall
+  -Wall -Wextra -Wno-unused-parameter
   )
 
 add_subdirectory(src)

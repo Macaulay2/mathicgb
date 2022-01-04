@@ -47,9 +47,9 @@ void PolyBasis::insert(std::unique_ptr<Poly> poly) {
   MATHICGB_ASSERT(!poly->isZero());
   poly->makeMonic();
   const size_t index = size();
-  EntryIter const stop = mEntries.end();
   const auto lead = poly->leadMono();
 #ifdef MATHICGB_DEBUG
+  EntryIter const stop = mEntries.end();
   // lead monomials must be unique among basis elements
   for (EntryIter it = mEntries.begin(); it != stop; ++it) {
     if (it->retired)

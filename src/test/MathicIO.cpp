@@ -26,7 +26,7 @@ TEST(MathicIO, Combined) {
 TEST(MathicIO, ReadWriteRing) {
   typedef PolyRing::Monoid Monoid;
   typedef Monoid::VarIndex VarIndex;
-  typedef Monoid::Exponent Exponent;
+  //  typedef Monoid::Exponent Exponent;
   typedef PolyRing::Field BaseField;
   typedef BaseField::RawElement RawElement;
 
@@ -198,12 +198,12 @@ TEST(MathicIO, ReadWritePoly) {
 
 TEST(MathicIO, ReadWriteTerm) {
   typedef PolyRing::Monoid Monoid;
-  typedef Monoid::VarIndex VarIndex;
-  typedef Monoid::Exponent Exponent;
+  //  typedef Monoid::VarIndex VarIndex;
+  //  typedef Monoid::Exponent Exponent;
   typedef PolyRing::Field Field;
   typedef Field::Element Coefficient;
   typedef Field::RawElement RawCoefficient;
-  static const auto NoComponent = static_cast<Exponent>(-1);
+  //static const auto NoComponent = static_cast<Exponent>(-1);
 
   PolyRing ring(Field(101), Monoid(28));
   auto&& m = ring.monoid();

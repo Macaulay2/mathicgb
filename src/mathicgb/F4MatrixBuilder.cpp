@@ -181,7 +181,6 @@ void F4MatrixBuilder::buildMatrixAndClear(QuadMatrix& matrix) {
   });
   MATHICGB_ASSERT(!threadData.empty()); // as mTodo empty causes early return
   // Free the monomials from all the tasks
-  const auto todoEnd = mTodo.end();
   for (auto& mono : mTodo)
     if (!mono.desiredLead.isNull())
       monoid().freeRaw(*mono.desiredLead.castAwayConst());

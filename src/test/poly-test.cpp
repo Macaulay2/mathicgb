@@ -207,7 +207,7 @@ void testMonomialOps(const PolyRing* R, std::string s1, std::string s2)
 {
   Monomial m1 = stringToMonomial(R, s1);
   Monomial m2 = stringToMonomial(R, s2);
-  Monomial m3 = stringToMonomial(R, "abcdef<0>");
+  //  Monomial m3 = stringToMonomial(R, "abcdef<0>");
 
  
   Monomial m4 = R->allocMonomial();

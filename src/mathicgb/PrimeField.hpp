@@ -98,9 +98,9 @@ public:
     static_assert(std::numeric_limits<NoRefInteger>::is_integer, "");
 
     MATHICGB_ASSERT(0 <= i);
-    typedef typename std::make_unsigned<NoRefInteger>::type Unsigned;
-    //replace the below assert with this uncommented one once we get rid
+    //replace the below assert with these 2 commented lines once we get rid
     //of signed element types.
+    //typedef typename std::make_unsigned<NoRefInteger>::type Unsigned;
     //MATHICGB_ASSERT(static_cast<Unsigned>(i) < charac());
     MATHICGB_ASSERT(i < charac());
     return Element(i);

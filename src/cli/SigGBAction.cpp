@@ -14,6 +14,8 @@
 MATHICGB_NAMESPACE_BEGIN
 
 SigGBAction::SigGBAction():
+  mParams(1, 1),
+
   mUseSingularCriterionEarly(
     "earlySingularCriterion",
     "Apply the singular S-pair elimination criterion before queueing "
@@ -30,9 +32,8 @@ SigGBAction::SigGBAction():
     "useBaseDivisors",
     "Use high ratio and low ratio base divisors to eliminate "
     "S-spairs quickly based on signature.",
-    true),
+    true)
 
-  mParams(1, 1)
 {}
 
 void SigGBAction::directOptions(

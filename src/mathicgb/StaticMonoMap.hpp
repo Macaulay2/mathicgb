@@ -292,7 +292,6 @@ public:
             // ensures deterministic behavior.
             const auto minSig = basis.signature(minLeadGen);
             const auto genSig = basis.signature(entry.data());
-            const auto sigCmp = basis.monoid().compare(minSig, genSig);
             if (basis.monoid().lessThan(genSig, minSig))
               return true;
           }

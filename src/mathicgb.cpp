@@ -23,7 +23,7 @@
   do { \
     const bool value = (X); \
     if (!value) { \
-      const bool ignoreMe = false; \
+      [[maybe_unused]] const bool ignoreMe = false; \
       MATHICGB_ASSERT(( \
         "MathicGB stream protocol error: "#MSG \
         "\nAssert expression: "#X"\n", \
@@ -923,7 +923,7 @@ namespace mgbi {
     auto&& basis = PimplOf()(inputWhichWillBeCleared).basis;
     auto&& conf = inputWhichWillBeCleared.configuration();
     auto&& ring = basis.ring();
-    const auto varCount = ring.getNumVars();
+    // This is not used:    const auto varCount = ring.getNumVars();
     MATHICGB_ASSERT(PimplOf()(conf).debugAssertValid());
 
     // Tell tbb how many threads to use

@@ -216,7 +216,6 @@ bool SparseMatrix::operator==(const SparseMatrix& matrix) const {
     if (entryCountInRow(row) != matrix.entryCountInRow(row))
       return false;
     const auto end = rowEnd(row);
-    auto it = rowBegin(row);
     auto matrixIt = matrix.rowBegin(row);
     for (auto it = rowBegin(row); it != end; ++it, ++matrixIt)
       if (*it != *matrixIt)
@@ -497,7 +496,7 @@ SparseMatrix::Scalar SparseMatrix::read(FILE* file) {
   MATHICGB_ASSERT(file != 0);
 
   const auto rowCount = readOne<uint32>(file);
-  const auto colCount = readOne<uint32>(file);
+  [[maybe_unused]] const auto colCount = readOne<uint32>(file);
   const auto modulus = readOne<uint32>(file);
   const auto entryCount64 = readOne<uint64>(file);
   if (entryCount64 > std::numeric_limits<size_t>::max())

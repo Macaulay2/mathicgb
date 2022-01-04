@@ -82,7 +82,7 @@ TEST(F4MatrixBuilder, SPair) {
     const Poly& p1 = maker.addBasisElement("a4c2-d");
     const Poly& p2 = maker.addBasisElement("a4b+d");
     // S-pair of p1 and p2 is -c2d-bd
-    const Poly& p3 = maker.addBasisElement("c2d+3");
+    maker.addBasisElement("c2d+3");
     F4MatrixBuilder& builder = maker.create();
     builder.addSPolynomialToMatrix(p1, p2);
     QuadMatrix qm(builder.ring());
