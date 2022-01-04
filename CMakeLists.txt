@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12)
 
-set(CMAKE_CXX_STANDARD 14)
+set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 project(mathicgb VERSION 1.0 LANGUAGES CXX)
@@ -40,6 +40,7 @@ add_compile_options(
   -DPACKAGE_URL=""
   -DPACKAGE="${PROJECT_NAME}"
   $<$<NOT:$<BOOL:${with_tbb}>>:-DMATHICGB_NO_TBB>
+  -Wall
   )
 
 add_subdirectory(src)

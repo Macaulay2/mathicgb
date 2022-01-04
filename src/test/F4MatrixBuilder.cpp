@@ -58,71 +58,71 @@ namespace {
 
 // TODO: fix the setting of number of threads.
 
-// TEST(F4MatrixBuilder, Empty) {
-//   for (int threadCount = 1; threadCount < 4; ++threadCount) {
-//     mgb::mtbb::task_scheduler_init scheduler(threadCount);
-//     BuilderMaker maker;
-//     F4MatrixBuilder& builder = maker.create();
+TEST(F4MatrixBuilder, Empty) {
+  for (int threadCount = 1; threadCount < 4; ++threadCount) {
+    mtbb::task_scheduler_init scheduler(threadCount);
+    BuilderMaker maker;
+    F4MatrixBuilder& builder = maker.create();
 
-//     QuadMatrix matrix(maker.ring());
-//     builder.buildMatrixAndClear(matrix);
-//     ASSERT_EQ(0, matrix.topLeft.rowCount());
-//     ASSERT_EQ(0, matrix.bottomLeft.rowCount());
-//     ASSERT_EQ(0, matrix.topLeft.computeColCount());
-//     ASSERT_EQ(0, matrix.topRight.computeColCount());
-//     ASSERT_EQ(0, matrix.leftColumnMonomials.size());
-//     ASSERT_EQ(0, matrix.rightColumnMonomials.size());
-//   }
-// }
+    QuadMatrix matrix(maker.ring());
+    builder.buildMatrixAndClear(matrix);
+    ASSERT_EQ(0, matrix.topLeft.rowCount());
+    ASSERT_EQ(0, matrix.bottomLeft.rowCount());
+    ASSERT_EQ(0, matrix.topLeft.computeColCount());
+    ASSERT_EQ(0, matrix.topRight.computeColCount());
+    ASSERT_EQ(0, matrix.leftColumnMonomials.size());
+    ASSERT_EQ(0, matrix.rightColumnMonomials.size());
+  }
+}
 
-// TEST(F4MatrixBuilder, SPair) {
-//   for (int threadCount = 1; threadCount < 4; ++threadCount) {
-//     mgb::mtbb::task_scheduler_init scheduler(threadCount);
-//     BuilderMaker maker;
-//     const Poly& p1 = maker.addBasisElement("a4c2-d");
-//     const Poly& p2 = maker.addBasisElement("a4b+d");
-//     // S-pair of p1 and p2 is -c2d-bd
-//     const Poly& p3 = maker.addBasisElement("c2d+3");
-//     F4MatrixBuilder& builder = maker.create();
-//     builder.addSPolynomialToMatrix(p1, p2);
-//     QuadMatrix qm(builder.ring());
-//     builder.buildMatrixAndClear(qm);
-//     const char* const str1 = 
-//       "Left columns: c2d\n"
-//       "Right columns: bd 1\n"
-//       "0: 0#1   | 0: 1#3  \n"
-//       "         |         \n"
-//       "0: 0#100 | 0: 0#100\n";
-//     const char* const str2 = 
-//       "Left columns: c2d\n"
-//       "Right columns: bd 1\n"
-//       "0: 0#1 | 0: 0#1\n"
-//       "       |       \n"
-//       "0: 0#1 | 0: 1#3\n";
-//     std::string qmStr = qm.toString();
-//     ASSERT_TRUE(str1 == qmStr || str2 == qmStr) <<
-//       "\n** str1: " << str1 << "\n** qm: " << qmStr;
-//   }
-// }
+TEST(F4MatrixBuilder, SPair) {
+  for (int threadCount = 1; threadCount < 4; ++threadCount) {
+    mtbb::task_scheduler_init scheduler(threadCount);
+    BuilderMaker maker;
+    const Poly& p1 = maker.addBasisElement("a4c2-d");
+    const Poly& p2 = maker.addBasisElement("a4b+d");
+    // S-pair of p1 and p2 is -c2d-bd
+    const Poly& p3 = maker.addBasisElement("c2d+3");
+    F4MatrixBuilder& builder = maker.create();
+    builder.addSPolynomialToMatrix(p1, p2);
+    QuadMatrix qm(builder.ring());
+    builder.buildMatrixAndClear(qm);
+    const char* const str1 = 
+      "Left columns: c2d\n"
+      "Right columns: bd 1\n"
+      "0: 0#1   | 0: 1#3  \n"
+      "         |         \n"
+      "0: 0#100 | 0: 0#100\n";
+    const char* const str2 = 
+      "Left columns: c2d\n"
+      "Right columns: bd 1\n"
+      "0: 0#1 | 0: 0#1\n"
+      "       |       \n"
+      "0: 0#1 | 0: 1#3\n";
+    std::string qmStr = qm.toString();
+    ASSERT_TRUE(str1 == qmStr || str2 == qmStr) <<
+      "\n** str1: " << str1 << "\n** qm: " << qmStr;
+  }
+}
 
-// TEST(F4MatrixBuilder, OneByOne) {
-//   for (int threadCount = 1; threadCount < 4; ++threadCount) {
-//     mgb::mtbb::task_scheduler_init scheduler(threadCount);
-//     BuilderMaker maker;
-//     const Poly& p = maker.addBasisElement("a");
-//     F4MatrixBuilder& builder = maker.create();
-//     builder.addPolynomialToMatrix(p.leadMono(), p);
-//     QuadMatrix qm(builder.ring());
-//     builder.buildMatrixAndClear(qm);
-//     const char* str = 
-//       "Left columns: a2\n"
-//       "Right columns:\n"
-//       "0: 0#1 | 0:\n"
-//       "       |   \n"
-//       "0: 0#1 | 0:\n";
-//     ASSERT_EQ(str, qm.toString()) << "** qm:\n" << qm;
-//   }
-// }
+TEST(F4MatrixBuilder, OneByOne) {
+  for (int threadCount = 1; threadCount < 4; ++threadCount) {
+    mtbb::task_scheduler_init scheduler(threadCount);
+    BuilderMaker maker;
+    const Poly& p = maker.addBasisElement("a");
+    F4MatrixBuilder& builder = maker.create();
+    builder.addPolynomialToMatrix(p.leadMono(), p);
+    QuadMatrix qm(builder.ring());
+    builder.buildMatrixAndClear(qm);
+    const char* str = 
+      "Left columns: a2\n"
+      "Right columns:\n"
+      "0: 0#1 | 0:\n"
+      "       |   \n"
+      "0: 0#1 | 0:\n";
+    ASSERT_EQ(str, qm.toString()) << "** qm:\n" << qm;
+  }
+}
 
 TEST(F4MatrixBuilder, DirectReducers) {
   for (int threadCount = 1; threadCount < 4; ++threadCount) {

@@ -36,7 +36,6 @@ TEST(IO, ideal) {
   EXPECT_EQ("  -bc+ad\n  -b2+af\n  -bc2+a2e\n", toString(I.get()));
 }
 
-#if 0
 void testGB(
   std::string idealStr,
   std::string sigBasisStr,
@@ -263,7 +262,7 @@ spairQueue	reducerType	divLookup	monTable	buchberger	postponeKoszul	useBaseDivis
 
     MATHICGB_ASSERT(Reducer::makeReducerNullOnUnknown(red, ring).get() != 0);
 
-    mgb::mtbb::task_scheduler_init scheduler(threadCount);
+    mtbb::task_scheduler_init scheduler(threadCount);
     if (buchberger) {
       const auto reducer = Reducer::makeReducer
         (Reducer::reducerType(reducerType), ring);
@@ -381,4 +380,4 @@ TEST(GB, gerdt93_0_7) {
   testGB(gerdt93IdealComponentFirst(false), gerdt93_gb_strat0_free7,
          gerdt93_syzygies_strat0_free7, gerdt93_initial_strat0_free7, 9);
 }
-#endif
+
