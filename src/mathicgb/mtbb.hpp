@@ -24,7 +24,8 @@
 /// uses of tbb go through mtbb, so make sure to do that.
 
 #if MTBB_VERSION>0 // TBB present
- 
+
+#include <tbb/task_arena.h>
 #include <tbb/global_control.h>
 #include <tbb/info.h>  
 #include <tbb/parallel_for_each.h>
@@ -38,6 +39,7 @@
 #include <mutex>
 
 namespace mtbb {
+  using ::tbb::task_arena;
   using ::tbb::enumerable_thread_specific;
   using ::tbb::queuing_mutex;
   using ::tbb::null_mutex;
@@ -60,6 +62,12 @@ namespace mtbb {
     tbb::parallel_for_each(a,b,c);
   }
 
+  inline int numThreads(int nthreads)
+  {
+    return (nthreads == 0 ?
+            tbb::info::default_concurrency() : nthreads);
+  }
+  
   class task_scheduler_init {
   public:
     task_scheduler_init(int nthreads) {
@@ -83,6 +91,21 @@ namespace mtbb {
 
 namespace mtbb {
 
+  class task_arena {
+  public:
+    task_arena(int) {}
+    static const int automatic = 1;
+    template<typename F>
+    auto execute(const F& f) -> decltype(f()) {
+        return f();
+    }
+  };
+
+  inline int numThreads(int nthreads)
+  {
+    return 1;
+  }
+  
   class task_scheduler_init {
   public:
     task_scheduler_init(int) {}

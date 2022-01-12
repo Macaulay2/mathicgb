@@ -928,15 +928,9 @@ namespace mgbi {
 
     // Tell tbb how many threads to use
     const auto maxThreadCount = int(conf.maxThreadCount());
-
-    // TODO comments using the newest TBB with task arenas.
-    // We can either:
-    //   set a global limit on the number of threads available to tbb
-    //   or
-    //   have an arena to specify a number of threads for a block of code.
-    // For now, we are doing the first choice.  Later, we should test using arena.
-
-    mtbb::task_scheduler_init scheduler(maxThreadCount);
+    const auto tbbMaxThreadCount = maxThreadCount == 0 ?
+      mtbb::task_arena::automatic : maxThreadCount;
+    mtbb::task_arena scheduler(tbbMaxThreadCount);
     
     // Set up logging
     LogDomainSet::singleton().reset();
@@ -977,10 +971,12 @@ namespace mgbi {
     if (!callback.isNull())
       params.callback = [&callback](){return callback();};
 
-    auto gb = conf.comCount() == 1 ?
-      computeGBClassicAlg(std::move(basis), params) :
-      computeModuleGBClassicAlg(std::move(basis), params);
-
+    auto gb = scheduler.execute([&basis,&conf,&params]{
+        return conf.comCount() == 1 ?
+            computeGBClassicAlg(std::move(basis), params) :
+            computeModuleGBClassicAlg(std::move(basis), params);
+    });
+    
     typedef mgb::GroebnerConfiguration::Callback::Action Action;
     if (callback.lastAction() != Action::StopWithNoOutputAction) {
       PimplOf()(output).basis = make_unique<Basis>(std::move(gb));
