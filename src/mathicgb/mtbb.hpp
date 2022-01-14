@@ -11,6 +11,9 @@
 
 #if MTBB_VERSION>=2021
   #include <tbb/version.h> // only works for tbb2021
+#elif MTBB_VERSION>0
+  #include <tbb/tbb_stddef.h> // only works for tbb2020 and older, we think
+  #define TBB_VERSION_STRING "2020.3" //  todo! get the next line to work!
 #else
   #define TBB_VERSION_STRING "TBB not present"
 #endif
@@ -25,10 +28,17 @@
 
 #if MTBB_VERSION>0 // TBB present
 
+#if MTBB_VERSION>=2021
+#include <tbb/parallel_for_each.h>
+#else
+#include <tbb/parallel_do.h>
+#include <tbb/task_scheduler_init.h>
+#endif
+
 #include <tbb/task_arena.h>
 #include <tbb/global_control.h>
 #include <tbb/info.h>  
-#include <tbb/parallel_for_each.h>
+
 #include <tbb/enumerable_thread_specific.h>
 #include <tbb/concurrent_unordered_map.h>     
 #include <tbb/queuing_mutex.h>                // for queuing_mutex
@@ -36,6 +46,7 @@
 #include <tbb/tick_count.h>                   // for tick_count
 #include <tbb/parallel_sort.h>                // for parallel_sort
 #include <tbb/parallel_for.h>                 // for parallel_for
+#include <thread>
 #include <mutex>
 
 namespace mtbb {
@@ -52,31 +63,44 @@ namespace mtbb {
 
   template<class Key, class T, class Hash, class KeyEqual>
   using unordered_map = ::tbb::concurrent_unordered_map<Key, T, Hash, KeyEqual>;
-  
-  template<typename T>
+
+  template<typename T>  
+#if MTBB_VERSION >= 2021
   using feeder = ::tbb::feeder<T>;
-    
+#else
+  using feeder = ::tbb::parallel_do_feeder<T>;
+#endif
+  
   template<typename T1, typename T2>
   static inline void parallel_for_each(T1 a, T1 b, T2 c)
   {
+#if MTBB_VERSION>=2021    
     tbb::parallel_for_each(a,b,c);
+#else
+    tbb::parallel_do(a,b,c);
+#endif    
   }
 
   inline int numThreads(int nthreads)
   {
-    return (nthreads == 0 ?
-            tbb::info::default_concurrency() : nthreads);
+    return (nthreads != 0 ? nthreads :
+#if MTBB_VERSION>=2021    
+            tbb::info::default_concurrency() 
+#else
+            tbb::task_scheduler_init::default_num_threads()
+#endif
+    );
   }
   
-  class task_scheduler_init {
-  public:
-    task_scheduler_init(int nthreads) {
-      const auto tbbMaxThreadCount = nthreads == 0 ?
-        tbb::info::default_concurrency() : nthreads;
-      tbb::global_control global_limit(tbb::global_control::max_allowed_parallelism,
-                                       tbbMaxThreadCount);
-    }
-  };
+  // class task_scheduler_init {
+  // public:
+  //   task_scheduler_init(int nthreads) {
+  //     const auto tbbMaxThreadCount = nthreads == 0 ?
+  //       tbb::info::default_concurrency() : nthreads;
+  //     tbb::global_control global_limit(tbb::global_control::max_allowed_parallelism,
+  //                                      tbbMaxThreadCount);
+  //   }
+  // };
 }
 
 #else // TBB not present
