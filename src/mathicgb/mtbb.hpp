@@ -3,21 +3,6 @@
 #ifndef MATHICGB_M_TBB_GUARD
 #define MATHICGB_M_TBB_GUARD
 
-#ifdef WITH_TBB
-#define MTBB_VERSION 2021
-#else
-#define MTBB_VERSION 0 // TBB not present
-#endif
-
-#if MTBB_VERSION>=2021
-  #include <tbb/version.h> // only works for tbb2021
-#elif MTBB_VERSION>0
-  #include <tbb/tbb_stddef.h> // only works for tbb2020 and older, we think
-  #define TBB_VERSION_STRING "2020.3" //  todo! get the next line to work!
-#else
-  #define TBB_VERSION_STRING "TBB not present"
-#endif
-
 /// A compatibility layer for tbb. If we are compiling with tbb present, then
 /// these classes will simply be the same classes as in tbb. However, if we
 /// are compiling without tbb (so without parallelism), then these classes will
@@ -26,26 +11,18 @@
 /// one good reason to have this compatibility layer. This only works if all
 /// uses of tbb go through mtbb, so make sure to do that.
 
-#if MTBB_VERSION>0 // TBB present
+#define mtbbstringize0(a) #a
+#define mtbbstringize(a) mtbbstringize0(a)
 
-#if MTBB_VERSION>=2021
-#include <tbb/parallel_for_each.h>
-#else
-#include <tbb/parallel_do.h>
-#include <tbb/task_scheduler_init.h>
+#ifdef WITH_TBB
+#include <tbb/tbb.h>
+
+// TBB_VERSION_STRING is defined in tbb2021, but not earlier
+// This string is not used in mathicgb, it is here for convenience (e.g. it is used in Macaulay2)
+#ifndef TBB_VERSION_STRING
+   #define TBB_VERSION_STRING (mtbbstringize(TBB_VERSION_MAJOR) "." mtbbstringize(TBB_VERSION_MINOR))
 #endif
 
-#include <tbb/task_arena.h>
-#include <tbb/global_control.h>
-#include <tbb/info.h>  
-
-#include <tbb/enumerable_thread_specific.h>
-#include <tbb/concurrent_unordered_map.h>     
-#include <tbb/queuing_mutex.h>                // for queuing_mutex
-#include <tbb/null_mutex.h>                   // for null_mutex
-#include <tbb/tick_count.h>                   // for tick_count
-#include <tbb/parallel_sort.h>                // for parallel_sort
-#include <tbb/parallel_for.h>                 // for parallel_for
 #include <thread>
 #include <mutex>
 
@@ -65,7 +42,7 @@ namespace mtbb {
   using unordered_map = ::tbb::concurrent_unordered_map<Key, T, Hash, KeyEqual>;
 
   template<typename T>  
-#if MTBB_VERSION >= 2021
+#if TBB_VERSION_MAJOR >= 2021
   using feeder = ::tbb::feeder<T>;
 #else
   using feeder = ::tbb::parallel_do_feeder<T>;
@@ -74,7 +51,7 @@ namespace mtbb {
   template<typename T1, typename T2>
   static inline void parallel_for_each(T1 a, T1 b, T2 c)
   {
-#if MTBB_VERSION>=2021    
+#if TBB_VERSION_MAJOR >= 2021    
     tbb::parallel_for_each(a,b,c);
 #else
     tbb::parallel_do(a,b,c);
@@ -84,27 +61,18 @@ namespace mtbb {
   inline int numThreads(int nthreads)
   {
     return (nthreads != 0 ? nthreads :
-#if MTBB_VERSION>=2021    
+#if TBB_VERSION_MAJOR >= 2021    
             tbb::info::default_concurrency() 
 #else
             tbb::task_scheduler_init::default_num_threads()
 #endif
     );
   }
-  
-  // class task_scheduler_init {
-  // public:
-  //   task_scheduler_init(int nthreads) {
-  //     const auto tbbMaxThreadCount = nthreads == 0 ?
-  //       tbb::info::default_concurrency() : nthreads;
-  //     tbb::global_control global_limit(tbb::global_control::max_allowed_parallelism,
-  //                                      tbbMaxThreadCount);
-  //   }
-  // };
 }
 
 #else // TBB not present
 
+#define TBB_VERSION_STRING "TBB not present"
 // below is an interface to serial versions of the above code.
 #include <unordered_map>
 #include <functional>
