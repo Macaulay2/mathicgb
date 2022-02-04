@@ -11,18 +11,8 @@
 /// one good reason to have this compatibility layer. This only works if all
 /// uses of tbb go through mtbb, so make sure to do that.
 
-#define mtbbstringize0(a) #a
-#define mtbbstringize(a) mtbbstringize0(a)
-
 #ifdef WITH_TBB
 #include <tbb/tbb.h>
-
-// TBB_VERSION_STRING is defined in tbb2021, but not earlier
-// This string is not used in mathicgb, it is here for convenience (e.g. it is used in Macaulay2)
-#ifndef TBB_VERSION_STRING
-   #define TBB_VERSION_STRING (mtbbstringize(TBB_VERSION_MAJOR) "." mtbbstringize(TBB_VERSION_MINOR))
-#endif
-
 #include <thread>
 #include <mutex>
 
@@ -72,7 +62,6 @@ namespace mtbb {
 
 #else // TBB not present
 
-#define TBB_VERSION_STRING "TBB not present"
 // below is an interface to serial versions of the above code.
 #include <unordered_map>
 #include <functional>
