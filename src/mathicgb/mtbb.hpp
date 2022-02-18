@@ -11,8 +11,10 @@
 /// one good reason to have this compatibility layer. This only works if all
 /// uses of tbb go through mtbb, so make sure to do that.
 
+#ifndef WITH_TBB
 #ifndef MATHICGB_NO_TBB
-#define WITH_TBB
+#define WITH_TBB 1
+#endif
 #endif
 
 #ifdef WITH_TBB
