@@ -161,7 +161,8 @@ public:
       const mtbb::lock_guard guard(mCreateColumnLock);
       ThreadData data = {
         *monoid().alloc().release(),
-        *monoid().alloc().release()
+        *monoid().alloc().release(),
+        F4ProtoMatrix()
       };
       return data;
     });

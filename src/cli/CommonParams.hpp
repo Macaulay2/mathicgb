@@ -11,6 +11,7 @@ MATHICGB_NAMESPACE_BEGIN
 
 class CommonParams {
 public:
+  friend class GBAction;
   CommonParams(size_t minDirectParams, size_t maxDirectParams);
 
   void directOptions
@@ -48,7 +49,7 @@ private:
   std::vector<std::string> mExtensions; /// to recognize file type
 
   /// to set thread count
-  std::unique_ptr<mtbb::task_scheduler_init> mTbbInit;
+  std::unique_ptr<mtbb::task_arena> mTaskArena;
   std::size_t mMinDirectParams;
   std::size_t mMaxDirectParams;
   std::vector<std::string> mDirectParameters;

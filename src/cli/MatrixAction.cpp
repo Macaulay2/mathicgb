@@ -60,7 +60,7 @@ void MatrixAction::performAction() {
     std::string inputFileName;
 
     SparseMatrix lowerRightMatrix;
-    SparseMatrix::Scalar modulus;
+    SparseMatrix::Scalar modulus = 0; // will be changed below to a (hopefully) prime number
     if (
       extension == QuadMatrixExtension ||
       extension == "." ||

@@ -119,7 +119,6 @@ namespace mgbi {
 
   bool StreamStateChecker::Pimpl::debugAssertValid() const {
 #ifdef MATHICGB_DEBUG
-    MATHICGB_ASSERT(this != 0);
     switch (state) {
     case Initial:
     case MakingIdeal:
@@ -392,7 +391,6 @@ struct GroebnerConfiguration::Pimpl {
 
   bool debugAssertValid() const {
 #ifdef MATHICGB_DEBUG
-    MATHICGB_ASSERT(this != 0);
     MATHICGB_ASSERT(baseOrderValid(mBaseOrder));
     MATHICGB_ASSERT(reducerValid(mReducer));
     MATHICGB_ASSERT(mModulus != 0);
@@ -775,7 +773,6 @@ void GroebnerInputIdealStream::idealDone() {
 }
 
 bool GroebnerInputIdealStream::debugAssertValid() const {
-  MATHICGB_ASSERT(this != 0);
   MATHICGB_ASSERT(mExponents != 0);
   MATHICGB_ASSERT(mPimpl != 0);
   MATHICGB_ASSERT_NO_ASSUME(!mPimpl->hasBeenDestroyed);

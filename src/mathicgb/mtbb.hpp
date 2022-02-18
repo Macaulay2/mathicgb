@@ -11,6 +11,10 @@
 /// one good reason to have this compatibility layer. This only works if all
 /// uses of tbb go through mtbb, so make sure to do that.
 
+#ifndef MATHICGB_NO_TBB
+#define WITH_TBB
+#endif
+
 #ifdef WITH_TBB
 #include <tbb/tbb.h>
 #include <thread>
@@ -87,12 +91,6 @@ namespace mtbb {
     return 1;
   }
   
-  class task_scheduler_init {
-  public:
-    task_scheduler_init(int) {}
-    static const int automatic = 1;
-  };
-
   class mutex {
   public:
     mutex(): mLocked(false) {}

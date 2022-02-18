@@ -59,12 +59,8 @@ void CommonParams::perform() {
   tracingLevel = mTracingLevel.value();
 
   // delete the old init object first to make the new one take control.
-  mTbbInit.reset();
-  mTbbInit = make_unique<mtbb::task_scheduler_init>(
-    mThreadCount.value() == 0 ?
-      mtbb::task_scheduler_init::automatic :
-      mThreadCount.value()
-  );
+  mTaskArena.reset();
+  mTaskArena = make_unique<mtbb::task_arena>(mtbb::numThreads(mThreadCount.value()));
 }
 
 void CommonParams::registerFileNameExtension(std::string extension) {

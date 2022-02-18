@@ -264,7 +264,7 @@ spairQueue	reducerType	divLookup	monTable	buchberger	postponeKoszul	useBaseDivis
 
     MATHICGB_ASSERT(Reducer::makeReducerNullOnUnknown(red, ring).get() != 0);
 
-    mtbb::task_scheduler_init scheduler(threadCount);
+    mtbb::task_arena scheduler(threadCount);
     if (buchberger) {
       const auto reducer = Reducer::makeReducer
         (Reducer::reducerType(reducerType), ring);
@@ -282,7 +282,7 @@ spairQueue	reducerType	divLookup	monTable	buchberger	postponeKoszul	useBaseDivis
       params.useAutoTailReduction = autoTailReduce;
       params.callback = nullptr;
 
-      auto gb = computeGBClassicAlg(std::move(basis), params);
+      auto gb = scheduler.execute([&]{return computeGBClassicAlg(std::move(basis), params);});
 
       Basis initialIdeal(gb.ring());
       for (size_t i = 0; i < gb.size(); ++i) {

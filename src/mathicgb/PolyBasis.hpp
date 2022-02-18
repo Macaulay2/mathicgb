@@ -132,7 +132,6 @@ public:
   /// Returns true if the lead monomial of poly is not divisible by the
   /// lead monomial of any basis element. Equality counts as divisibility.
   bool leadMinimal(const Poly& poly) const {
-    MATHICGB_ASSERT(&poly != 0);
     return mMonoLookup->divisor(poly.leadMono()) !=
       static_cast<size_t>(-1);
   }

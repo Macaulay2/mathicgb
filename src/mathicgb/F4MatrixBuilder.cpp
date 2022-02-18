@@ -280,7 +280,6 @@ void F4MatrixBuilder::appendRowBottom(
   TaskFeeder& feeder
 ) {
   // todo: eliminate the code-duplication between here and appendRowTop.
-  MATHICGB_ASSERT(&builder != 0);
 
   auto it = begin;
 updateReader:
@@ -311,9 +310,6 @@ void F4MatrixBuilder::appendRowTop(
   QuadMatrixBuilder& builder,
   TaskFeeder& feeder
 ) {
-  MATHICGB_ASSERT(&poly != 0);
-  MATHICGB_ASSERT(&builder != 0);
-
   auto it = poly.begin();
   const auto end = poly.end();
   if ((poly.termCount() % 2) == 1) {

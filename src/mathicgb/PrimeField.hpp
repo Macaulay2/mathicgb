@@ -237,9 +237,6 @@ auto PrimeField<T>::inverse(const Element elementA) const -> Element {
   auto a = elementA.value();
   MATHICGB_ASSERT(0 < a);
   MATHICGB_ASSERT(a < charac());
-#ifdef MATHICGB_DEBUG
-  const auto origA = a;
-#endif
   auto b = charac();
   auto minusLastX = static_cast<T>(0);
   auto x = static_cast<T>(1);

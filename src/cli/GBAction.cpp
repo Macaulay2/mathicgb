@@ -109,9 +109,11 @@ void GBAction::performAction() {
   params.useAutoTailReduction = mAutoTailReduce.value();
   params.callback = nullptr;
 
-  const auto gb = mModule.value() ?
-    computeModuleGBClassicAlg(std::move(basis), params) :
-    computeGBClassicAlg(std::move(basis), params);
+  const auto gb = mParams.mTaskArena->execute([&basis,this,&params]{
+    return (mModule.value() ?
+            computeModuleGBClassicAlg(std::move(basis), params) :
+            computeGBClassicAlg(std::move(basis), params));
+  });
 
   if (mGBParams.mOutputResult.value()) {
     std::ofstream out(projectName + ".gb");

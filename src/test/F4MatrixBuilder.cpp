@@ -60,12 +60,14 @@ namespace {
 
 TEST(F4MatrixBuilder, Empty) {
   for (int threadCount = 1; threadCount < 4; ++threadCount) {
-    mtbb::task_scheduler_init scheduler(threadCount);
+    mtbb::task_arena scheduler(threadCount);
     BuilderMaker maker;
     F4MatrixBuilder& builder = maker.create();
 
     QuadMatrix matrix(maker.ring());
-    builder.buildMatrixAndClear(matrix);
+    scheduler.execute([&builder,&matrix]{
+      builder.buildMatrixAndClear(matrix);
+    });
     ASSERT_EQ(0, matrix.topLeft.rowCount());
     ASSERT_EQ(0, matrix.bottomLeft.rowCount());
     ASSERT_EQ(0, matrix.topLeft.computeColCount());
@@ -77,7 +79,7 @@ TEST(F4MatrixBuilder, Empty) {
 
 TEST(F4MatrixBuilder, SPair) {
   for (int threadCount = 1; threadCount < 4; ++threadCount) {
-    mtbb::task_scheduler_init scheduler(threadCount);
+    mtbb::task_arena scheduler(threadCount);
     BuilderMaker maker;
     const Poly& p1 = maker.addBasisElement("a4c2-d");
     const Poly& p2 = maker.addBasisElement("a4b+d");
@@ -86,7 +88,9 @@ TEST(F4MatrixBuilder, SPair) {
     F4MatrixBuilder& builder = maker.create();
     builder.addSPolynomialToMatrix(p1, p2);
     QuadMatrix qm(builder.ring());
-    builder.buildMatrixAndClear(qm);
+    scheduler.execute([&builder,&qm]{
+      builder.buildMatrixAndClear(qm);
+    });
     const char* const str1 = 
       "Left columns: c2d\n"
       "Right columns: bd 1\n"
@@ -107,13 +111,15 @@ TEST(F4MatrixBuilder, SPair) {
 
 TEST(F4MatrixBuilder, OneByOne) {
   for (int threadCount = 1; threadCount < 4; ++threadCount) {
-    mtbb::task_scheduler_init scheduler(threadCount);
+    mtbb::task_arena scheduler(threadCount);
     BuilderMaker maker;
     const Poly& p = maker.addBasisElement("a");
     F4MatrixBuilder& builder = maker.create();
     builder.addPolynomialToMatrix(p.leadMono(), p);
     QuadMatrix qm(builder.ring());
-    builder.buildMatrixAndClear(qm);
+    scheduler.execute([&builder, &qm]{
+      builder.buildMatrixAndClear(qm);
+    });
     const char* str = 
       "Left columns: a2\n"
       "Right columns:\n"
