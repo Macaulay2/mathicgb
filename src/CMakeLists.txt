@@ -1,6 +1,3 @@
-add_compile_options(
-  -Wall -Wextra -Wno-unused-parameter -Wno-unused-value -Wno-unused-variable -Wno-sign-compare
-  )
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
   add_compile_options(-DMATHICGB_DEBUG -DMATHIC_DEBUG -DMEMT_DEBUG)
 endif()
