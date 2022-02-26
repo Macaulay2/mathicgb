@@ -76,6 +76,8 @@ pkgconfig_DATA = build/autotools/mathicgb.pc
 # that are necessary to build the project. EXTRA_DIST specifies files
 # to include beyond those used in the build process.
 EXTRA_DIST = autogen.sh
+
+if CLI
 dist_man_MANS = doc/mgb.1
 
 bin_PROGRAMS = mgb
@@ -89,6 +91,7 @@ mgb_SOURCES = src/cli/GBMain.cpp src/cli/CommonParams.hpp		\
   src/cli/SigGBAction.hpp src/cli/SigGBAction.cpp			\
   src/cli/HelpAction.hpp src/cli/HelpAction.cpp
 mgb_LDADD = $(top_builddir)/libmathicgb.la $(DEPS_LIBS) -lpthread
+endif
 
 # set up tests to run on "make check"
 if with_gtest
