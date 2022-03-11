@@ -161,6 +161,17 @@ DEPS_LIBS="$MEMTAILOR_LIBS $MATHIC_LIBS $TBB_LIBS $RT_LIBS"
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 
+AC_ARG_ENABLE([cli],
+    AS_HELP_STRING([--disable-cli],
+	[disable building the command line interface]),
+    [case "${enableval}" in
+	yes) cli=true ;;
+	no)  cli=false ;;
+	*) AC_MSG_ERROR([bad value "${enableval}" for --enable-cli]) ;;
+     esac],
+    [cli=true])
+AM_CONDITIONAL([CLI], [test x$cli = xtrue])
+
 # Enable optional maintainer mode (off by default)
 dnl AM_MAINTAINER_MODE turns off automatic reconstruction of the build
 dnl files if the source build files have changed. A developer will want
