@@ -64,7 +64,8 @@ libmathicgb_la_SOURCES = src/mathicgb/MonoArena.hpp						\
 # The headers that libmathicgb installs.
 mathicgbA_include_HEADERS = src/mathicgb.h
 mathicgbA_includedir = $(includedir)
-mathicgbB_include_HEADERS = $(wildcard src/mathicgb/*.h src/mathicgb/*.hpp)
+mathicgbB_include_HEADERS = $(wildcard \
+	$(top_srcdir)/src/mathicgb/*.h $(top_srcdir)/src/mathicgb/*.hpp)
 mathicgbB_includedir = $(includedir)/mathicgb
 
 pkgconfigdir = $(libdir)/pkgconfig
