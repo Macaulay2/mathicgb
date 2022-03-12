@@ -46,12 +46,12 @@ libmathicgb_la_SOURCES = src/mathicgb/MonoArena.hpp						\
   src/mathicgb/QuadMatrix.cpp src/mathicgb/F4MatrixReducer.cpp			\
   src/mathicgb/F4MatrixReducer.hpp src/mathicgb/MonomialMap.hpp			\
   src/mathicgb/RawVector.hpp src/mathicgb/Atomic.hpp					\
-  src/mathicgb/FixedSizeMonomialMap.hpp src/mathicgb/CFile.hpp			\
+  src/mathicgb/FixedSizeMonomialMap.h src/mathicgb/CFile.hpp			\
   src/mathicgb/CFile.cpp src/mathicgb/LogDomain.hpp						\
   src/mathicgb/LogDomain.cpp src/mathicgb/LogDomainSet.hpp				\
   src/mathicgb/F4MatrixBuilder2.hpp src/mathicgb/F4MatrixBuilder2.cpp	\
   src/mathicgb/LogDomainSet.cpp src/mathicgb/F4ProtoMatrix.hpp			\
-  src/mathicgb/F4ProtoMatrix.cpp src/mathicgb/F4MatrixProject.hpp		\
+  src/mathicgb/F4ProtoMatrix.cpp src/mathicgb/F4MatrixProjection.hpp		\
   src/mathicgb/F4MatrixProjection.cpp src/mathicgb/ScopeExit.hpp		\
   src/mathicgb.cpp src/mathicgb.h src/mathicgb/mtbb.hpp					\
   src/mathicgb/PrimeField.hpp src/mathicgb/MonoMonoid.hpp				\
