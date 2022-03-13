@@ -75,6 +75,7 @@ namespace mtbb {
 #include <ctime>
 #include <algorithm>
 #include <chrono>
+#include <cassert>
 
 namespace mtbb {
 
