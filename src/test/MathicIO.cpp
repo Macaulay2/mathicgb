@@ -94,10 +94,8 @@ TEST(MathicIO, ReadWriteMonomial) {
 
     // directly make monomial
     auto monoSet = m.alloc();
-    if (var1 != -1)
-      m.setExponent(var1, exp1, *monoSet);
-    if (var2 != -1)
-      m.setExponent(var2, exp2, *monoSet);
+    m.setExponent(var1, exp1, *monoSet);
+    m.setExponent(var2, exp2, *monoSet);
     if (doComponent)
       m.setComponent(component, *monoSet);
     ASSERT_TRUE(m.equal(*monoRead, *monoSet)) << "Str: " << str;

@@ -79,7 +79,7 @@
 
 #define MATHICGB_NO_INLINE __attribute__((noinline))
 #define MATHICGB_INLINE __attribute__((always_inline)) inline
-#define MATHICGB_ASSUME(X)
+#define MATHICGB_ASSUME(X) ((void)0)
 #define MATHICGB_ASSUME_AND_MAY_EVALUATE(X) do {if(!(X)){MATHICGB_UNREACHABLE;}while(0)}
 #define MATHICGB_RETURN_NO_ALIAS __attribute__(malloc)
 #define MATHICGB_NOTHROW __attribute__(nothrow)
@@ -103,8 +103,8 @@
 
 #define MATHICGB_NO_INLINE
 #define MATHICGB_INLINE inline
-#define MATHICGB_ASSUME(X)
-#define MATHICGB_ASSUME_AND_MAY_EVALUATE(X)
+#define MATHICGB_ASSUME(X) ((void)0)
+#define MATHICGB_ASSUME_AND_MAY_EVALUATE(X) ((void)0)
 #define MATHICGB_RETURN_NO_ALIAS
 #define MATHICGB_NOTHROW
 #define MATHICGB_PURE
@@ -137,7 +137,7 @@
 #define MATHICGB_IF_DEBUG(X) X
 #else
 #define MATHICGB_ASSERT(X) MATHICGB_ASSUME(X)
-#define MATHICGB_ASSERT_NO_ASSUME(X)
+#define MATHICGB_ASSERT_NO_ASSUME(X) ((void)0)
 #define MATHICGB_IF_DEBUG(X)
 #endif
 
@@ -145,7 +145,7 @@
 // for asserts that take a long time.
 #define MATHICGB_SLOW_ASSERT(X) MATHICGB_ASSERT(X)
 #else
-#define MATHICGB_SLOW_ASSERT(X)
+#define MATHICGB_SLOW_ASSERT(X) ((void)0)
 #endif
 
 /// Concatenates A to B without expanding A and B. This is achieved since

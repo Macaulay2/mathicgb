@@ -300,7 +300,7 @@ auto MathicIO<M, BF>::readOrder(
     componentsAscendingDesired,
     schreyering
   );
-  return std::move(order);
+  return order;
 }
 
 template<class M, class BF>
