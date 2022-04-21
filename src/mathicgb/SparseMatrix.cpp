@@ -566,26 +566,14 @@ void SparseMatrix::writePBM(FILE* file) {
     const auto end = rowEnd(row);
     auto it = rowBegin(row);
 
-    unsigned char byte = 0;
-    unsigned int bit = (1 << 8);
     for (ColIndex col = 0; col < colCount; ++col) {
       if (it != end && col == it.index()) {
         fputc('1', file);
-        byte |= bit;
         ++it;
       } else
         fputc('0', file);
-
-      bit >>= 1;
-      if (bit == 0) {
-//        fputc(byte, file);
-        byte = 0;
-        bit = (1 << 8);
-      }
     }
     fputc('\n', file);
-   // if (bit != (1 << 8))
-     // fputc(byte, file);
   }
 }
 

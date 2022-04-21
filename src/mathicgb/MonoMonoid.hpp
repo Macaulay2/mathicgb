@@ -1496,6 +1496,7 @@ public:
       //const_iterator(const const_iterator& it):
       //  mIt(it.mIt), mEntriesPerMono(it.mEntriesPerMono) {}
       const_iterator(const const_iterator& it) = default;
+      const_iterator& operator=(const const_iterator& it) = default;
 
       
       bool operator==(const const_iterator& it) const {return mIt == it.mIt;}
