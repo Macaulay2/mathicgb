@@ -71,6 +71,8 @@ TEST(MathicIO, ReadWriteMonomial) {
   typedef Monoid::VarIndex VarIndex;
   typedef Monoid::Exponent Exponent;
   static const auto NoComponent = static_cast<Exponent>(-1);
+  static const auto NoExponent = NoComponent;
+  static const auto NoVar = static_cast<VarIndex>(-1);
 
   Monoid m(28);
 
@@ -94,10 +96,10 @@ TEST(MathicIO, ReadWriteMonomial) {
 
     // directly make monomial
     auto monoSet = m.alloc();
-    if (var1 != -1)
-      m.setExponent(var1, exp1, *monoSet);
-    if (var2 != -1)
-      m.setExponent(var2, exp2, *monoSet);
+    if(var1!=NoVar)
+        m.setExponent(var1, exp1, *monoSet);
+    if(var2!=NoVar)
+        m.setExponent(var2, exp2, *monoSet);
     if (doComponent)
       m.setComponent(component, *monoSet);
     ASSERT_TRUE(m.equal(*monoRead, *monoSet)) << "Str: " << str;
@@ -109,15 +111,15 @@ TEST(MathicIO, ReadWriteMonomial) {
     ASSERT_EQ(correctStr, out.str());
   };
 
-  check("1", NoComponent,  -1,-1,  -1,-1,  0);
-  check("1<0>", 0,  -1,-1,  -1,-1,  0);
-  check("1<1>", 1,  -1,-1,  -1,-1,  0);
-  check("1<999>", 999,  -1,-1,  -1,-1,  0);
+  check("1", NoComponent,  NoVar,NoExponent,  NoVar,NoExponent,  0);
+  check("1<0>", 0,  NoVar,NoExponent,  NoVar,NoExponent,  0);
+  check("1<1>", 1,  NoVar,NoExponent,  NoVar,NoExponent,  0);
+  check("1<999>", 999,  NoVar,NoExponent,  NoVar,NoExponent,  0);
 
-  check("a1", NoComponent,  0,1,  -1,-1,  "a");
-  check("b10<0>", 0,  1,10,  -1,-1,  0);
-  check("A11", NoComponent,  26,11, -1,-1,  0);
-  check("B99<1>", 1,   27,99,  -1,-1,  0);
+  check("a1", NoComponent,  0,1,  NoVar,NoExponent,  "a");
+  check("b10<0>", 0,  1,10,  NoVar,NoExponent,  0);
+  check("A11", NoComponent,  26,11, NoVar,NoExponent,  0);
+  check("B99<1>", 1,   27,99,  NoVar,NoExponent,  0);
 
   check("ab", NoComponent,  0,1,  1,1,  0);
   check("ba", NoComponent,  0,1,  1,1,  "ab");

@@ -339,7 +339,7 @@ std::unique_ptr<Reducer> makeF4Reducer(
     make_unique<F4Reducer>(ring, F4Reducer::OldType) :
     make_unique<F4Reducer>(ring, F4Reducer::NewType);
   reducer->writeMatricesTo(file, minEntries);
-  return std::move(reducer);
+  return reducer;
 }
 
 MATHICGB_REGISTER_REDUCER(

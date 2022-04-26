@@ -356,7 +356,6 @@ bool SPairs::simpleBuchbergerLcmCriterion(
   };
 
   bool applies = false;
-  bool almostApplies = false;
   {
     Criterion criterion(a, b, lcmAB, *this);
     if (mUseBuchbergerLcmHitCache) {
@@ -418,8 +417,6 @@ bool SPairs::simpleBuchbergerLcmCriterion(
         mBuchbergerLcmHitCache[b] = criterion.hit();
       }
     }
-    if (!applies)
-      almostApplies = criterion.almostApplies();
   }
 
   if (applies)

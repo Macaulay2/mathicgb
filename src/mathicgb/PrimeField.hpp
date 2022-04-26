@@ -222,7 +222,7 @@ auto PrimeField<T>::product(
 ) const -> Element {
   typedef typename PrimeFieldInternal::ModularProdType<T>::type BigT;
   BigT bigProd = static_cast<BigT>(a.value()) * b.value();
-  MATHICGB_ASSERT(a.value() == 0 || bigProd / a.value() == b.value());
+  MATHICGB_ASSERT(a.value() == 0 || bigProd / a.value() == static_cast<BigT>(b.value()));
   return Element(static_cast<T>(bigProd % charac()));
 }
 

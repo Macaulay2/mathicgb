@@ -28,6 +28,7 @@ public:
     const bool componentsAscendingDesired,
     const bool schreyering
   ):
+    mOrderFromLeft(false),
     mComponentsAscendingDesired(componentsAscendingDesired),
     mComponentCount(0),
     mSchreyering(schreyering),
