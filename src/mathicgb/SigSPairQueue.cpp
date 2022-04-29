@@ -206,6 +206,7 @@ namespace mathic {
         MATHICGB_ASSERT(pd != nullptr);
         MATHICGB_ASSERT(col > row);
         conf.monoid().freeRaw(*pd);
+        pd->~auto();
       }
     };
   }
