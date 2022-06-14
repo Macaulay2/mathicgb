@@ -121,6 +121,9 @@ AS_IF(
 )
 AS_IF([test "x$with_tbb" == "xno"], [TBB_CFLAGS="-DMATHICGB_NO_TBB"])
 
+AS_IF([test "x$with_tbb" = "xyes" && echo "$TBB_LIBS" | grep "\-latomic"],
+  [], [TBB_LIBS="$TBB_LIBS -latomic"])
+
 dnl ----- The librt dependency
 dnl On Linux TBB calls clock_gettime, which requires librt, but librt is not
 dnl linked in automatically. So we need to check for that.
