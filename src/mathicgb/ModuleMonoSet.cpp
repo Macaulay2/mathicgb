@@ -24,16 +24,16 @@ public:
   ConcreteModuleMonoSet(const Monoid& monoid, const size_t componentCount):
     mMonoid(monoid),
     mComponentCount(componentCount),
-    mLookups(reinterpret_cast<Lookup*>(
-      new char[sizeof(Lookup) * componentCount]
-    ))
+    mLookups(std::allocator<Lookup>().allocate(mComponentCount))
   {
     for (size_t component = 0; component < componentCount; ++component)
       new (&mLookups[component]) Lookup(monoid);
   }
 
   virtual ~ConcreteModuleMonoSet() {
-    delete[] reinterpret_cast<char*>(mLookups);
+    for(size_t component = 0; component < mComponentCount; ++component)
+      mLookups[component].~Lookup();
+    std::allocator<Lookup>().deallocate(mLookups, mComponentCount);
   }
 
   virtual bool insert(ConstMonoRef m) {
