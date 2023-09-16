@@ -74,6 +74,7 @@ namespace mtbb {
 #include <vector>
 #include <ctime>
 #include <algorithm>
+#include <memory>
 #include <chrono>
 #include <cassert>
 
