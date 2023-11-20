@@ -141,14 +141,7 @@ TEST(Range, indexRange) {
 }
 
 TEST(Range, oppositePairRange) {
-  /// MES: The following commented out code using arrays of strings, and
-  /// iterators/ranges of them, fails to compile on clang, 1 Jan 2017
-  /// (clang version 3.8, and also on earlier versions of clang):
-  // If one uses 
-  //  std::string elems[] {"hello", "world", "!"};
-  // instead of
-  int elems[] {1,13,17};
-  // this doesn't compile.  Why not??
+  const std::string elems[] {"hello", "world", "!"};
   const auto r = zip(elems, intRange(10));
   const auto opR = zip(intRange(3), elems);
   auto val1 = rangeToVector(r);
