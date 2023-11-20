@@ -301,8 +301,8 @@ public:
   typedef typename Iterator::iterator_category iterator_category;
   typedef std::pair<InnerValueType2, InnerValueType1> value_type;
   typedef typename Iterator::difference_type difference_type;
-  typedef typename Iterator::pointer pointer;
-  typedef typename Iterator::reference reference;
+  typedef value_type *pointer;
+  typedef value_type &reference;
 
   OppositePairIterator() {}
   OppositePairIterator(const Iterator& it): mIt(it) {}
