@@ -57,7 +57,7 @@ namespace {
 
 bool logTime(const char* logName, double& time) {
   auto log = LogDomainSet::singleton().logDomain(logName);
-  if (log == 0 || !log->enabled())
+  if (log == nullptr || !log->enabled())
     return false;
   time = log->loggedSecondsReal();
   return true;
@@ -65,7 +65,7 @@ bool logTime(const char* logName, double& time) {
 
 bool logNumber(const char* logName, double& number) {
   auto log = LogDomainSet::singleton().logDomain(logName);
-  if (log == 0 || !log->enabled())
+  if (log == nullptr || !log->enabled())
     return false;
   number = static_cast<double>(log->count());
   return true;
@@ -361,8 +361,8 @@ struct GroebnerConfiguration::Pimpl {
     mMaxSPairGroupSize(0),
     mMaxThreadCount(0),
     mLogging(),
-    mCallbackData(0),
-    mCallback(0)
+    mCallbackData(nullptr),
+    mCallback(nullptr)
 #ifdef MATHICGB_DEBUG
     , mHasBeenDestroyed(false)
 #endif
@@ -589,7 +589,7 @@ unsigned int GroebnerConfiguration::maxThreadCount() const {
 }
 
 void GroebnerConfiguration::setLogging(const char* logging) {
-  if (logging == 0)
+  if (logging == nullptr)
     mPimpl->mLogging.clear();
   else
     mPimpl->mLogging = logging;
@@ -890,7 +890,7 @@ namespace {
       MATHICGB_ASSERT(mCallback != 0 || mData == 0);
     }
 
-    bool isNull() const {return mCallback == 0;}
+    bool isNull() const {return mCallback == nullptr;}
     Action lastAction() const {return mLastAction;}
 
     bool operator()() {
