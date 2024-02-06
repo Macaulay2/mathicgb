@@ -629,7 +629,8 @@ TEST(Poly,lead) {
   const auto& monoid = R->monoid();
   monomial lm = stringToMonomial(R.get(), "ab");
   EXPECT_TRUE(monoid.equal(lm, I->getPoly(0)->leadMono()));
-  EXPECT_EQ(1, I->getPoly(0)->leadCoef());
+  auto val = I->getPoly(0)->leadCoef();
+  EXPECT_EQ(static_cast<decltype(val)>(1), val);
   EXPECT_EQ(0, monoid.component(I->getPoly(0)->leadMono()));
   R->freeMonomial(lm);
 }

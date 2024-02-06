@@ -23,6 +23,7 @@
 #include <mutex>
 
 namespace mtbb {
+  using ::tbb::global_control;
   using ::tbb::task_arena;
   using ::tbb::enumerable_thread_specific;
   using ::tbb::queuing_mutex;
