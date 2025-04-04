@@ -123,8 +123,7 @@ the changes in MathicGB.
 
 ***** Installation for unix systems and Cygwin
 
-gtest is downloaded automatically if it's not present (the download
-requires wget). It's used for the unit tests. tbb is necessary for
+gtest is used for the unit tests. tbb is necessary for
 parallel computation, but MathicGB will compile in a serial mode if
 tbb is not found by ./configure. pkg-config and autotools are
 required. mathic requires memtailor and mathicgb requires mathic and

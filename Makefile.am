@@ -103,10 +103,10 @@ check_PROGRAMS=$(TESTS)
 # this prevents g++ 4.8.2 from crashing and churning through memory when compiling under Ubuntu 64 14.04.1
 src/test/MonoMonoid.o src/test/Range.o : CXXFLAGS += -O0
 
-unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.la $(DEPS_LIBS) -lpthread
+unittest_LDADD = $(DEPS_LIBS) $(top_builddir)/libmathicgb.la $(DEPS_LIBS) -lpthread -lgtest
 
 test_LIBS=
-unittest_SOURCES=src/test/Range.cpp src/test/gtestInclude.cpp			\
+unittest_SOURCES=src/test/Range.cpp						\
   src/test/testMain.cpp src/test/gb-test.cpp src/test/ideals.cpp		\
   src/test/poly-test.cpp src/test/ideals.hpp src/test/SparseMatrix.cpp	\
   src/test/QuadMatrixBuilder.cpp src/test/F4MatrixBuilder.cpp			\
@@ -118,6 +118,6 @@ else
 
 check:
 	@echo
-	@echo "Configure did not locate gtest, so unittests cannot be run."
+	@echo "configured without gtest, so unittests cannot be run."
 
 endif
