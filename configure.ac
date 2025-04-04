@@ -11,12 +11,6 @@ dnl  if autoconf is told the source code is in a directory that does not
 dnl  contain this file then it knows that the directory is wrong.
 AC_CONFIG_SRCDIR([src/mathicgb.h])
 
-# Check availability and location of dependencies
-# PKG_CHECK_MODULES([MEMTAILOR], [memtailor])
-# PKG_CHECK_MODULES([MATHIC], [mathic])
-MEMTAILOR_LIBS="-lmemtailor"
-MATHIC_LIBS="-lmathic"
-
 # Locate the C++ compiler.
 AC_PROG_CXX
 AC_LANG([C++])
@@ -25,6 +19,17 @@ AC_LANG([C++])
 AX_CXX_COMPILE_STDCXX_11(, [mandatory])
 
 AM_PROG_AR
+
+# Check availability and location of dependencies
+AC_LANG([C++])
+AC_DEFUN([NO_MEMTAILOR_ERROR], AC_MSG_ERROR([memtailor is required]))
+AC_CHECK_HEADER([memtailor.h],, [NO_MEMTAILOR_ERROR])
+AC_SEARCH_LIBS([libmemtailorIsPresent], [memtailor],, [NO_MEMTAILOR_ERROR])
+
+AC_LANG([C++])
+AC_DEFUN([NO_MATHIC_ERROR], AC_MSG_ERROR([mathic is required]))
+AC_CHECK_HEADER([mathic.h],, [NO_MATHIC_ERROR])
+AC_SEARCH_LIBS([libmathicIsPresent], [mathic],, [NO_MATHIC_ERROR])
 
 dnl ----- The gtest dependency
 
@@ -114,8 +119,8 @@ AS_IF([test "x$with_tbb" == "xyes"],
   CFLAGS=$oldCFLAGS;
 )
 
-DEPS_CFLAGS="$MEMTAILOR_CFLAGS $MATHIC_CFLAGS $TBB_CFLAGS"
-DEPS_LIBS="$MEMTAILOR_LIBS $MATHIC_LIBS $TBB_LIBS $RT_LIBS"
+DEPS_CFLAGS="$TBB_CFLAGS"
+DEPS_LIBS="$TBB_LIBS $RT_LIBS"
 
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
