@@ -76,7 +76,8 @@ pkgconfig_DATA = build/autotools/mathicgb.pc
 # When making a distribution file, Automake knows to include all files
 # that are necessary to build the project. EXTRA_DIST specifies files
 # to include beyond those used in the build process.
-EXTRA_DIST = autogen.sh
+EXTRA_DIST = autogen.sh CMakeLists.txt src/CMakeLists.txt \
+	cmake/FindMathic.cmake cmake/FindMemtailor.cmake cmake/FindTBB.cmake
 
 if CLI
 dist_man_MANS = doc/mgb.1
