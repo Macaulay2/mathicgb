@@ -3,7 +3,7 @@ cmake_minimum_required(VERSION 3.12)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(mathicgb VERSION 1.0 LANGUAGES CXX)
+project(mathicgb VERSION 1.1 LANGUAGES CXX)
 
 option(enable_mgb "Build mgb" ON)
 option(with_tbb "use TBB for multithreading" auto)
