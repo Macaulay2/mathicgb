@@ -7,6 +7,7 @@ AM_CPPFLAGS = -I${top_srcdir}/ -I$(top_srcdir)/src/ $(DEPS_CFLAGS)
 
 # tell Libtool what the name of the library is.
 lib_LTLIBRARIES = libmathicgb.la
+libmathicgb_la_LDFLAGS = -version-info @MATHICGB_SO_VERSION@
 
 # libraries that are needed by this library
 libmathicgb_la_LIBADD= $(DEPS_LIBS)
