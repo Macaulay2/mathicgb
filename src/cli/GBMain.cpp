@@ -6,6 +6,7 @@
 #include "SigGBAction.hpp"
 #include "MatrixAction.hpp"
 #include "HelpAction.hpp"
+#include "VersionAction.hpp"
 #include "mathicgb/LogDomainSet.hpp"
 #include <mathic.h>
 #include <cctype>
@@ -24,6 +25,7 @@ int main(int argc, char **argv) {
     parser.registerAction<mgb::GBAction>();
     parser.registerAction<mgb::MatrixAction>();
     parser.registerAction<mgb::HelpAction>();
+    parser.registerAction<mgb::VersionAction>();
 
     std::vector<std::string> commandLine(argv, argv + argc);
     commandLine.erase(commandLine.begin());

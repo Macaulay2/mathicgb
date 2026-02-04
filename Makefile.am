@@ -91,7 +91,8 @@ mgb_SOURCES = src/cli/GBMain.cpp src/cli/CommonParams.hpp		\
   src/cli/GBCommonParams.hpp src/cli/GBCommonParams.cpp			\
   src/cli/MatrixAction.cpp src/cli/MatrixAction.hpp			\
   src/cli/SigGBAction.hpp src/cli/SigGBAction.cpp			\
-  src/cli/HelpAction.hpp src/cli/HelpAction.cpp
+  src/cli/HelpAction.hpp src/cli/HelpAction.cpp				\
+  src/cli/VersionAction.hpp src/cli/VersionAction.cpp
 mgb_LDADD = $(top_builddir)/libmathicgb.la $(DEPS_LIBS) -lpthread
 endif
 
