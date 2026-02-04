@@ -20,6 +20,54 @@ AX_CXX_COMPILE_STDCXX([11],, [mandatory])
 
 AM_PROG_AR
 
+# Enable optional maintainer mode (off by default)
+dnl AM_MAINTAINER_MODE turns off automatic reconstruction of the build
+dnl files if the source build files have changed. A developer will want
+dnl those automatic reconstructions to happen so that changes to the
+dnl build system are actually carried out. However, a user might not
+dnl have the tools required to reconfigure and the need for
+dnl reconstruction might be spurious if the last-modified date is set
+dnl incorrectly on the build files.
+dnl
+dnl Passing the option [enable] to AM_MAINTAINER_MODE makes the
+dnl non-reconstruction feature available, but only when turned on by
+dnl passing the option –disable-maintainer-mode. This option is
+dnl apparently useful to some package distributors.
+AM_MAINTAINER_MODE([enable])
+
+# Set up Automake
+dnl foreign: do not create the GNU-specific file COPYING and do not complain
+dnl   that GNU-specific files like NEWS, README, AUTHORS and ChangeLog are
+dnl   missing.
+dnl -Wall: set Automake to emit all warnings it can. Is NOT RELATED to setting
+dnl   warnings for other tools. For example, it wil not make the compiler
+dnl   get a -Wall option.
+dnl subdir-objects: Put object files in a directory structure based on
+dnl   the directory structure of the source files. This way, two source
+dnl   files with the same name in different directories do not conflict.
+AM_INIT_AUTOMAKE([foreign subdir-objects -Wall])
+
+# if --enable-silent-rules is passed to ./configure or if V=0 is passed
+# to make, then the compilation output will be much less verbose making
+# it possible to spot warnings and errors as they go by.
+AM_SILENT_RULES()
+
+# Set up the $(LN_S) macro, which creates symbolic links
+AC_PROG_LN_S
+
+# set output variable INSTALL to the name of a BSD-compatible install program.
+# Requires install-sh to be present as a fallback, even on systems where
+# the fallback is not used.
+AC_PROG_INSTALL
+
+# Set up LibTool
+LT_INIT([disable-shared])
+
+dnl Set the version for the library -- this concerns compatibility of the
+dnl source and binary interface of the library and is not the same as the
+dnl version of the project.
+AC_SUBST([MATHICGB_SO_VERSION], [0:1:0])
+
 # Check availability and location of dependencies
 AC_LANG([C++])
 AC_DEFUN([NO_MEMTAILOR_ERROR], AC_MSG_ERROR([memtailor is required]))
@@ -136,54 +184,6 @@ AC_ARG_ENABLE([cli],
      esac],
     [cli=true])
 AM_CONDITIONAL([CLI], [test x$cli = xtrue])
-
-# Enable optional maintainer mode (off by default)
-dnl AM_MAINTAINER_MODE turns off automatic reconstruction of the build
-dnl files if the source build files have changed. A developer will want
-dnl those automatic reconstructions to happen so that changes to the
-dnl build system are actually carried out. However, a user might not
-dnl have the tools required to reconfigure and the need for
-dnl reconstruction might be spurious if the last-modified date is set
-dnl incorrectly on the build files.
-dnl
-dnl Passing the option [enable] to AM_MAINTAINER_MODE makes the
-dnl non-reconstruction feature available, but only when turned on by
-dnl passing the option –disable-maintainer-mode. This option is
-dnl apparently useful to some package distributors.
-AM_MAINTAINER_MODE([enable])
-
-# Set up Automake
-dnl foreign: do not create the GNU-specific file COPYING and do not complain
-dnl   that GNU-specific files like NEWS, README, AUTHORS and ChangeLog are
-dnl   missing.
-dnl -Wall: set Automake to emit all warnings it can. Is NOT RELATED to setting
-dnl   warnings for other tools. For example, it wil not make the compiler
-dnl   get a -Wall option.
-dnl subdir-objects: Put object files in a directory structure based on
-dnl   the directory structure of the source files. This way, two source
-dnl   files with the same name in different directories do not conflict.
-AM_INIT_AUTOMAKE([foreign subdir-objects -Wall])
-
-# if --enable-silent-rules is passed to ./configure or if V=0 is passed
-# to make, then the compilation output will be much less verbose making
-# it possible to spot warnings and errors as they go by.
-AM_SILENT_RULES()
-
-# Set up the $(LN_S) macro, which creates symbolic links
-AC_PROG_LN_S
-
-# set output variable INSTALL to the name of a BSD-compatible install program.
-# Requires install-sh to be present as a fallback, even on systems where
-# the fallback is not used.
-AC_PROG_INSTALL
-
-# Set up LibTool
-LT_INIT([disable-shared])
-
-dnl Set the version for the library -- this concerns compatibility of the
-dnl source and binary interface of the library and is not the same as the
-dnl version of the project.
-AC_SUBST([MATHICGB_SO_VERSION], [0:1:0])
 
 dnl Set up AC_OUTPUT to create each file by copying an input file
 dnl while substituting the output variable values.
