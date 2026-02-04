@@ -65,6 +65,7 @@ if(enable_mgb)
     src/cli/MatrixAction.hpp   src/cli/MatrixAction.cpp
     src/cli/SigGBAction.hpp    src/cli/SigGBAction.cpp
     src/cli/HelpAction.hpp     src/cli/HelpAction.cpp
+    src/cli/VersionAction.hpp  src/cli/VersionAction.cpp
     )
   target_link_libraries(mgb mathicgb)
   install(TARGETS mgb RUNTIME DESTINATION bin)
