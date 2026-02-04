@@ -77,7 +77,8 @@ pkgconfig_DATA = build/autotools/mathicgb.pc
 # that are necessary to build the project. EXTRA_DIST specifies files
 # to include beyond those used in the build process.
 EXTRA_DIST = autogen.sh CMakeLists.txt src/CMakeLists.txt \
-	cmake/FindMathic.cmake cmake/FindMemtailor.cmake cmake/FindTBB.cmake
+	cmake/FindMathic.cmake cmake/FindMemtailor.cmake cmake/FindTBB.cmake \
+	gpl-2.0.txt gpl-3.0.txt
 
 if CLI
 dist_man_MANS = doc/mgb.1
