@@ -16,7 +16,7 @@ AC_PROG_CXX
 AC_LANG([C++])
 
 # Require C++11 support
-AX_CXX_COMPILE_STDCXX_11(, [mandatory])
+AX_CXX_COMPILE_STDCXX([11],, [mandatory])
 
 AM_PROG_AR
 
