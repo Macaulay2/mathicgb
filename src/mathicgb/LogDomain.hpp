@@ -172,7 +172,11 @@ public:
 
   typedef unsigned long long Counter;
   Counter count() const {return 0;}
-  void setCount(const Counter counter) {MATHICGB_ASSERT(false);}
+  void setCount(const Counter counter)
+  {
+    (void)counter;
+    MATHICGB_ASSERT(false);
+  }
   bool hasCount() const {return false;}
   void reset() {}
 };

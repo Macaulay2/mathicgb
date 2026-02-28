@@ -159,6 +159,7 @@ void TypicalReducer::classicReducePolySet
 }
 
 void TypicalReducer::setMemoryQuantum(size_t quantum) {
+  (void)quantum;
 }
 
 std::unique_ptr<Poly> TypicalReducer::classicReduce

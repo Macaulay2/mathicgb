@@ -138,6 +138,7 @@ ClassicGBAlg::ClassicGBAlg(
   mSPairs(mBasis, preferSparseReducers),
   mSPolyReductionCount(0)
 {
+  (void)queueType;
   // Reduce and insert the generators of the ideal into the starting basis
   size_t const basisSize = basis.size();
   std::vector<std::unique_ptr<Poly> > polys;

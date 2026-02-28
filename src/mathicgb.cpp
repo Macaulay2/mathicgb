@@ -252,6 +252,7 @@ namespace mgbi {
   }
 
   void StreamStateChecker::appendExponent(VarIndex index, Exponent exponent) {
+    (void)exponent;
     MATHICGB_ASSERT(mPimpl->debugAssertValid());
 
     MATHICGB_STREAM_CHECK(

@@ -279,6 +279,8 @@ namespace mathic {
       const Index row,
       mgb::SPairs::QueueConfiguration& conf
     ) {
+      (void)col;
+      (void)row;
       MATHICGB_ASSERT(pd != 0);
       MATHICGB_ASSERT(col > row);
       conf.freePairData(std::move(*pd));

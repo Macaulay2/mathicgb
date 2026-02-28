@@ -24,7 +24,9 @@ QuadMatrixBuilder::QuadMatrixBuilder(
   mTopRight(memoryQuantum),
   mBottomLeft(memoryQuantum),
   mBottomRight(memoryQuantum)
-{}
+{
+  (void)ring;
+}
 
 void QuadMatrixBuilder::takeRowsFrom(QuadMatrix&& matrix) {
   MATHICGB_ASSERT(&ring() == &matrix.ring());
@@ -53,6 +55,8 @@ namespace {
     const Monoid& monoid,
     const bool left
   ) {
+    (void)top;
+    (void)bottom;
     MATHICGB_ASSERT(typename ToCol::Reader(toCol).find(mono).first == 0);
 
     const auto colCount =

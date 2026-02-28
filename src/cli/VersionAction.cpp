@@ -33,6 +33,9 @@ const char* VersionAction::shortDescription() const {
   return "Print Mathicgb version";
 }
 
-void VersionAction::pushBackParameters(std::vector<mathic::CliParameter*>& parameters) {}
+void VersionAction::pushBackParameters(std::vector<mathic::CliParameter*>& parameters)
+{
+  (void)parameters;
+}
 
 MATHICGB_NAMESPACE_END

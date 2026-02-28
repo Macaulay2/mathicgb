@@ -55,6 +55,7 @@ namespace ReducerHelper {
     // know what type Entry is.
     template<class Entry>
     Entry deduplicate(Entry a, Entry b) const {
+      (void)b;
       MATHICGB_ASSERT(false);
       return a;
     }
