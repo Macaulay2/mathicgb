@@ -466,12 +466,16 @@ namespace mgb { // Part of the public interface of MathicGB
     Component comCount() const {return mComCount;}
 
     void idealBegin() {}
-    void idealBegin(size_t polyCount) {}
+    void idealBegin(size_t polyCount) { (void)polyCount; }
     void appendPolynomialBegin() {}
-    void appendPolynomialBegin(size_t termCount) {}
-    void appendTermBegin(Component com) {}
-    void appendExponent(VarIndex index, Exponent exponent) {}
-    void appendTermDone(Coefficient coefficient) {}
+    void appendPolynomialBegin(size_t termCount) { (void)termCount; }
+    void appendTermBegin(Component com) { (void)com; }
+    void appendExponent(VarIndex index, Exponent exponent)
+    {
+      (void)index;
+      (void)exponent;
+    }
+    void appendTermDone(Coefficient coefficient) { (void)coefficient; }
     void appendPolynomialDone() {}
     void idealDone() {}
 

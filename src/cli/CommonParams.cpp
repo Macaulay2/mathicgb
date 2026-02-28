@@ -38,6 +38,7 @@ void CommonParams::directOptions(
   std::vector<std::string> tokens,
   mathic::CliParser& parser
 ) {
+  (void)parser;
   if (tokens.size() < mMinDirectParams)
     mathic::reportError("Too few direct options");
   if (tokens.size() > mMaxDirectParams)

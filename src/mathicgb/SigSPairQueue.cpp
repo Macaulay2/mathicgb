@@ -74,6 +74,7 @@ public:
   }
 
   virtual void pushPairs(size_t pairWith, IndexSigs& pairs) {
+    (void)pairWith;
 #ifdef MATHICGB_DEBUG
     {
       auto tmp = monoid().alloc();
@@ -136,6 +137,10 @@ private:
     typedef bool CompareResult;
     bool compare(int colA, int rowA, PairData a,
                  int colB, int rowB, PairData b) const {
+      (void)colA;
+      (void)rowA;
+      (void)colB;
+      (void)rowB;
       return mBasis.ring().monoid().lessThan(*b, *a);
     }
     bool cmpLessThan(bool v) const {return v;}
@@ -203,6 +208,8 @@ namespace mathic {
         Index row,
         mgb::ConcreteSigSPairQueue::Configuration& conf
       ) {
+        (void)col;
+        (void)row;
         MATHICGB_ASSERT(pd != nullptr);
         MATHICGB_ASSERT(col > row);
         conf.monoid().freeRaw(*pd);

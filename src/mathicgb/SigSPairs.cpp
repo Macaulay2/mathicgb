@@ -31,7 +31,10 @@ SigSPairs::SigSPairs(
   //  mReducer(reducer),
   mPostponeKoszuls(postponeKoszuls),
   mQueue(SigSPairQueue::create(*GB))
-{}
+{
+  (void)reducer;
+  (void)queueType;
+}
 
 SigSPairs::~SigSPairs()
 {

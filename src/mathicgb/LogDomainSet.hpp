@@ -16,7 +16,10 @@ MATHICGB_NAMESPACE_BEGIN
 class LogDomainSet {
 public:
   void registerLogDomain(LogDomain<true>& domain);
-  void registerLogDomain(const LogDomain<false>& domain) {}
+  void registerLogDomain(const LogDomain<false>& domain)
+  {
+    (void)domain;
+  }
 
   void registerLogAlias(const char* alias, const char* of);
 

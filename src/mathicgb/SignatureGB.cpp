@@ -145,6 +145,7 @@ bool SignatureGB::processSPair
   (Mono sig, const SigSPairs::PairContainer& pairs)
 {
   MATHICGB_ASSERT(!pairs.empty());
+  (void)pairs;
 
   // the module term to reduce is multiple * GB->getSignature(gen)
   size_t gen = GB->minimalLeadInSig(*sig);

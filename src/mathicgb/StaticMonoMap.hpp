@@ -97,6 +97,8 @@ private:
     bool getSortOnInsert() const {return false;}
     template<class A, class B>
     bool isLessThan(const A& a, const B& b) const {
+      (void)a;
+      (void)b;
       MATHICGB_ASSERT(false);
       return false;
     }

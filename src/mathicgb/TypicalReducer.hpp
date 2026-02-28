@@ -80,9 +80,17 @@ protected:
     return hasLead;
   }
 
-  virtual void insertTail(NewConstTerm multiplier, const Poly& f) {}
-  virtual void insert(ConstMonoRef multiplier, const Poly& f) {}
-  virtual bool leadTerm(NewConstTerm& lead) {return false;}
+  virtual void insertTail(NewConstTerm multiplier, const Poly& f)
+  {
+    (void)multiplier;
+    (void)f;
+  }
+  virtual void insert(ConstMonoRef multiplier, const Poly& f)
+  {
+    (void)multiplier;
+    (void)f;
+  }
+  virtual bool leadTerm(NewConstTerm& lead) { (void)lead; return false;}
 
   virtual void removeLeadTerm() = 0;
   virtual void resetReducer() = 0;
