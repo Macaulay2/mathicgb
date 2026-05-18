@@ -2,7 +2,7 @@ if(CMAKE_BUILD_TYPE STREQUAL Debug)
   add_compile_options(-DMATHICGB_DEBUG -DMATHIC_DEBUG -DMEMT_DEBUG)
 endif()
 
-add_library(mathicgb STATIC
+add_library(mathicgb
   mathicgb.h
   mathicgb.cpp
   mathicgb/MonoArena.hpp
