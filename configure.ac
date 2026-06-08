@@ -168,6 +168,23 @@ AS_IF([test "x$with_tbb" == "xyes"],
   CFLAGS=$oldCFLAGS;
 )
 
+dnl ----- The libatomic dependency
+dnl On some architectures (m68k, powerpc, etc.) TBB uses 64-bit atomic
+dnl operations that are not natively supported and require linking with -latomic.
+AS_IF([test "x$with_tbb" == "xyes"],
+  [AC_MSG_CHECKING([whether -latomic is needed to support TBB on this platform])
+   AC_LINK_IFELSE([AC_LANG_PROGRAM([
+       #include <atomic>
+       ], [std::atomic<int64_t> x; x++])],
+       [AC_MSG_RESULT([no])],
+       [LIBS="$LIBS -latomic"
+        AC_LINK_IFELSE([AC_LANG_PROGRAM([
+           #include <atomic>
+           ], [std::atomic<int64_t> x; x++])],
+           [AC_MSG_RESULT([yes])],
+           [AC_MSG_RESULT([error])
+            AC_MSG_ERROR([unable to handle 64-bit atomics required by TBB])])])])
+
 DEPS_CFLAGS="$TBB_CFLAGS"
 DEPS_LIBS="$TBB_LIBS $RT_LIBS"
 
