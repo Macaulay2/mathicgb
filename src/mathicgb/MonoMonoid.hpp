@@ -83,7 +83,7 @@ namespace MonoMonoidInternal {
     bool varsReversed() const {return mVarsReversed;}
 
   protected:
-    typedef std::vector<Exponent> HashCoefficients;
+    typedef std::vector<HashValue> HashCoefficients;
     typedef std::vector<Exponent> Gradings;
 
     static Gradings makeGradings(const Order& order) {
@@ -627,7 +627,7 @@ public:
     // See computeHash() for an explanation of all the casts.
     const auto hashA = static_cast<HashValue>(hash(a));
     const auto hashB = static_cast<HashValue>(hash(b));
-    return static_cast<HashValue>(static_cast<Exponent>(hashA + hashB));
+    return static_cast<HashValue>(toExponent(hashA + hashB));
   }
 
   /// Returns true if all the exponents of mono are zero. In other
@@ -958,7 +958,7 @@ public:
         degrees[grading] = monoidFrom.degree(from, grading);
     }
     if (StoreHash)
-      access(to, hashIndex()) = monoidFrom.hash(from);
+      access(to, hashIndex()) = toExponent(monoidFrom.hash(from));
 
     MATHICGB_ASSERT(debugValid(to));
     // todo: check equal
@@ -1037,7 +1037,7 @@ public:
     MATHICGB_ASSERT(debugValid(b));
 
     for (auto i = lastEntryIndex(); i != beforeEntriesIndexBegin(); --i)
-      access(prod, i) = access(a, i) + access(b, i);
+      access(prod, i) = addWrap(access(a, i), access(b, i));
 
     MATHICGB_ASSERT(debugValid(prod));
   }
@@ -1048,7 +1048,7 @@ public:
     MATHICGB_ASSERT(debugValid(prod));
 
     for (auto i = entriesIndexBegin(); i < entriesIndexEnd(); ++i)
-      access(prod, i) += access(a, i);
+      access(prod, i) = addWrap(access(prod, i), access(a, i));
 
     MATHICGB_ASSERT(debugValid(prod));
   }
@@ -1060,7 +1060,7 @@ public:
     MATHICGB_ASSERT(debugValid(by));
 
     for (auto i = entriesIndexBegin(); i < entriesIndexEnd(); ++i)
-      access(quo, i) = access(num, i) - access(by, i);
+      access(quo, i) = subtractWrap(access(num, i), access(by, i));
 
     MATHICGB_ASSERT(debugValid(quo));
   }
@@ -1072,7 +1072,7 @@ public:
     MATHICGB_ASSERT(debugValid(num));
 
     for (auto i = entriesIndexBegin(); i < entriesIndexEnd(); ++i)
-      access(num, i) -= access(by, i);
+      access(num, i) = subtractWrap(access(num, i), access(by, i));
 
     MATHICGB_ASSERT(debugValid(num));
   }
@@ -1089,7 +1089,7 @@ public:
     );
 
     for (auto i = entriesIndexBegin(); i < entriesIndexEnd(); ++i)
-      access(quo, i) = access(num, i) - access(by, i);
+      access(quo, i) = subtractWrap(access(num, i), access(by, i));
 
     MATHICGB_ASSERT(debugValid(quo));
   }
@@ -1886,24 +1886,50 @@ private:
     return true;
   }
 
+  /// HashValue widened to at least unsigned int, as integer promotion would
+  /// turn a narrower type back into a signed int that can overflow.
+  typedef typename std::common_type<HashValue, unsigned int>::type
+    UnsignedExponent;
+
+  static Exponent toExponent(const UnsignedExponent value) {
+    static_assert(
+      static_cast<Exponent>(static_cast<UnsignedExponent>(-1)) ==
+        static_cast<Exponent>(-1),
+      "Converting an out of range unsigned value to an Exponent must wrap "
+      "around."
+    );
+    return static_cast<Exponent>(value);
+  }
+
+  static UnsignedExponent toUnsigned(const Exponent value) {
+    return static_cast<UnsignedExponent>(value);
+  }
+
+  /// Returns a+b and a-b modulo 2^n, as signed overflow is undefined behavior.
+  static Exponent addWrap(const Exponent a, const Exponent b) {
+    return toExponent(toUnsigned(a) + toUnsigned(b));
+  }
+
+  static Exponent subtractWrap(const Exponent a, const Exponent b) {
+    return toExponent(toUnsigned(a) - toUnsigned(b));
+  }
+
   HashValue computeHash(ConstMonoRef mono) const {
-    HashValue hash = HasComponent ? component(mono) : 0;
-    for (VarIndex var = 0; var < varCount(); ++var) {
-      hash +=
-        static_cast<HashValue>(exponent(mono, var)) * hashCoefficients()[var];
-    }
+    UnsignedExponent hash = HasComponent ? component(mono) : 0;
+    for (VarIndex var = 0; var < varCount(); ++var)
+      hash += toUnsigned(exponent(mono, var)) * hashCoefficients()[var];
 
     // Hash values are stored as exponents. If the cast to an exponent
     // changes the value, then we need computeHashValue to match that
     // change by casting to an exponent and back. Otherwise the computed
     // hash value will not match a hash value that has been stored.
-    return static_cast<HashValue>(static_cast<Exponent>(hash));
+    return static_cast<HashValue>(toExponent(hash));
   }
 
   void setHash(MonoRef mono) const {
     if (!StoreHash)
       return;
-    rawPtr(mono)[hashIndex()] = computeHash(mono);
+    rawPtr(mono)[hashIndex()] = toExponent(computeHash(mono));
     MATHICGB_ASSERT(debugHashValid(mono));
   }
 
@@ -1914,7 +1940,10 @@ private:
   ) const {
     if (!StoreHash)
       return;
-    rawPtr(mono)[hashIndex()] += newComponent - oldComponent;
+    auto& hash = rawPtr(mono)[hashIndex()];
+    hash = toExponent(
+      toUnsigned(hash) + toUnsigned(newComponent) - toUnsigned(oldComponent)
+    );
     MATHICGB_ASSERT(debugHashValid(mono));
   }
 
@@ -1927,8 +1956,12 @@ private:
     if (!StoreHash)
       return;
     MATHICGB_ASSERT(var < varCount());
-    rawPtr(mono)[hashIndex()] +=
-      (newExponent - oldExponent) * hashCoefficients()[var];
+    auto& hash = rawPtr(mono)[hashIndex()];
+    hash = toExponent(
+      toUnsigned(hash) +
+        (toUnsigned(newExponent) - toUnsigned(oldExponent)) *
+          hashCoefficients()[var]
+    );
     MATHICGB_ASSERT(debugHashValid(mono));
   }
 
