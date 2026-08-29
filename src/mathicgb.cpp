@@ -425,13 +425,6 @@ GroebnerConfiguration::GroebnerConfiguration(
 ):
   mPimpl(new Pimpl(modulus, varCount, comCount))
 {
-  if (modulus > std::numeric_limits<unsigned short>::max()) {
-    MATHICGB_ASSERT_NO_ASSUME(false);
-    std::ostringstream str;
-    str << "Modulus " << modulus
-      << " is too large. MathicGB only supports 16 bit moduli.";
-    mathic::reportError(str.str());
-  }
   if (!isPrime(modulus)) {
     MATHICGB_ASSERT_NO_ASSUME(false);
     std::ostringstream str;
@@ -945,6 +938,16 @@ namespace mgbi {
     default:
     case GConf::DefaultReducer:
     case GConf::MatrixReducer:
+      // The F4 matrix reducer stores coefficients as 16 bit scalars. The
+      // classic reducers go through PrimeField and handle any modulus that
+      // the interface accepts, so only reject the modulus here.
+      if (conf.modulus() > std::numeric_limits<unsigned short>::max()) {
+        std::ostringstream str;
+        str << "Modulus " << conf.modulus()
+          << " is too large for the matrix (F4) reducer, which only supports "
+          << "16 bit moduli. Use the classic reducer for this modulus.";
+        mathic::reportError(str.str());
+      }
       reducerType = Reducer::Reducer_F4_New;
       break;
     }
