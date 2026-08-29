@@ -1036,7 +1036,7 @@ public:
     MATHICGB_ASSERT(debugValid(a));
     MATHICGB_ASSERT(debugValid(b));
 
-    for (auto i = lastEntryIndex(); i != beforeEntriesIndexBegin(); --i)
+    for (auto i = entriesIndexBegin(); i < entriesIndexEnd(); ++i)
       access(prod, i) = addWrap(access(a, i), access(b, i));
 
     MATHICGB_ASSERT(debugValid(prod));
@@ -1990,7 +1990,6 @@ private:
   VarIndex entriesIndexBegin() const {return 0;}
   VarIndex entriesIndexEnd() const {return entryCount();}
   VarIndex beforeEntriesIndexBegin() const {return entriesIndexBegin() - 1;}
-  VarIndex lastEntryIndex() const {return entriesIndexEnd() - 1;}
 
   using Base::hashCoefficients;
 
