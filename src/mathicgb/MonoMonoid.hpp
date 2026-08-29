@@ -1335,7 +1335,12 @@ public:
     }
 
     bool isNull() const {return mMono.isNull();}
-    void toNull() {mPool->free(std::move(*this));}
+    void toNull() {
+      // A Mono with no pool owns nothing, so there is nothing to free.
+      MATHICGB_ASSERT(mPool != nullptr || isNull());
+      if (mPool != nullptr)
+        mPool->free(std::move(*this));
+    }
 
     MonoPtr ptr() {return mMono;}
     ConstMonoPtr ptr() const {return mMono;}
