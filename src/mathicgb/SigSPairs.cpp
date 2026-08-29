@@ -199,7 +199,7 @@ void SigSPairs::makePreSPairs(size_t newGen)
 
     // check low ratio divisors
     if (mUseBaseDivisors &&
-      divisor1.baseDivisor != static_cast<size_t>(-1) && 
+      divisor1.baseDivisor != static_cast<size_t>(-1) &&
       GB->ratioCompare(oldGen, divisor1.ratioLessThan) == LT) {
       // if no divisor1, also no divisor 2 and also
       // divisor1 has larger ratio, so skip both checks if divisor1 fails due
@@ -210,7 +210,7 @@ void SigSPairs::makePreSPairs(size_t newGen)
          mKnownSyzygyTri.bitUnordered(divisor1.baseDivisor, oldGen) &&
          monoid().divides(oldLead, divisor1.baseMonomial))
         || // or if divisor2 is a hit
-        (divisor2.baseDivisor != static_cast<size_t>(-1) && 
+        (divisor2.baseDivisor != static_cast<size_t>(-1) &&
          GB->ratioCompare(oldGen, divisor2.ratioLessThan) == LT &&
          divisor2.baseDivisor != oldGen &&
          mKnownSyzygyTri.bitUnordered(divisor2.baseDivisor, oldGen) &&
@@ -267,7 +267,7 @@ void SigSPairs::makePreSPairs(size_t newGen)
 
     if (mUseSingularCriterionEarly) {
       MATHICGB_ASSERT(cmp == GT || cmp == LT);
-      size_t const givesSig = (cmp == GT ? newGen : oldGen);    
+      size_t const givesSig = (cmp == GT ? newGen : oldGen);
       if (
         GB->ratioCompare(GB->minimalLeadInSig(pairSig), givesSig) == GT &&
         !monoid().relativelyPrime(newLead, oldLead)

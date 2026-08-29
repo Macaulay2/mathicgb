@@ -75,7 +75,7 @@ TEST(QuadMatrixBuilder, Empty) {
   QuadMatrixBuilder::Monomials monoLeft;
   QuadMatrixBuilder::Monomials monoRight;
   QuadMatrixBuilder b(ring, map, monoLeft, monoRight);
-  const char* matrixStr = 
+  const char* matrixStr =
     "Left columns:\n"
     "Right columns:\n"
     "matrix with no rows | matrix with no rows\n"
@@ -164,7 +164,7 @@ TEST(QuadMatrixBuilder, SortColumns) {
   // construct builder and reverse lex order
   std::unique_ptr<PolyRing> ring(ringFromString("32003 6 1\n1 1 1 1 1 1"));
   Basis basis(*ring);
-  
+
   // one row top, no rows bottom, no columns
   {
     QuadMatrixBuilder::Map map(*ring);
@@ -174,7 +174,7 @@ TEST(QuadMatrixBuilder, SortColumns) {
     b.rowDoneTopLeftAndRight();
     auto matrix = b.buildMatrixAndClear();
     matrix.sortColumnsLeftRightParallel();
-    const char* matrixStr = 
+    const char* matrixStr =
       "Left columns:\n"
       "Right columns:\n"
       "0:                  | 0:                 \n"

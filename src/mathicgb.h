@@ -643,7 +643,7 @@ namespace mgb {
   // ** Implementation of the class IdealStreamLog
   // This class has to be inline as it is a template.
 
-  template<class Stream> 
+  template<class Stream>
   IdealStreamLog<Stream>::IdealStreamLog(std::ostream& log, Stream& stream):
     mModulus(stream.modulus()),
     mVarCount(stream.varCount()),
@@ -656,7 +656,7 @@ namespace mgb {
       << ", comCount=" << mComCount << '\n';
   }
 
-  template<class Stream> 
+  template<class Stream>
   IdealStreamLog<Stream>::IdealStreamLog(
     std::ostream& log,
     Coefficient modulus,
@@ -676,24 +676,24 @@ namespace mgb {
       << mComCount << ");\n";
   }
 
-  template<class Stream> 
+  template<class Stream>
   IdealStreamLog<Stream>::~IdealStreamLog() {
     mLog << "// s.~IdealStreamLog();\n";
   }
 
-  template<class Stream> 
+  template<class Stream>
   typename IdealStreamLog<Stream>::Coefficient
   IdealStreamLog<Stream>::modulus() const {
     return mModulus;
   }
 
-  template<class Stream> 
+  template<class Stream>
   typename IdealStreamLog<Stream>::VarIndex
   IdealStreamLog<Stream>::varCount() const {
     return mVarCount;
   }
 
-  template<class Stream> 
+  template<class Stream>
   typename IdealStreamLog<Stream>::Component
   IdealStreamLog<Stream>::comCount() const {
     return mComCount;
@@ -706,35 +706,35 @@ namespace mgb {
       mStream->idealBegin();
   }
 
-  template<class Stream> 
+  template<class Stream>
   void IdealStreamLog<Stream>::idealBegin(size_t polyCount) {
     mLog << "s.idealBegin(" << polyCount << "); // polyCount\n";
     if (mStream != 0)
       mStream->idealBegin(polyCount);
   }
 
-  template<class Stream> 
+  template<class Stream>
   void IdealStreamLog<Stream>::appendPolynomialBegin() {
     mLog << "s.appendPolynomialBegin();\n";
     if (mStream != 0)
       mStream->appendPolynomialBegin();
   }
 
-  template<class Stream> 
+  template<class Stream>
   void IdealStreamLog<Stream>::appendPolynomialBegin(size_t termCount) {
     mLog << "s.appendPolynomialBegin(" << termCount << ");\n";
     if (mStream != 0)
       mStream->appendPolynomialBegin(termCount);
   }
 
-  template<class Stream> 
+  template<class Stream>
   void IdealStreamLog<Stream>::appendTermBegin(const Component com) {
     mLog << "s.appendTermBegin(" << com << ");\n";
     if (mStream != 0)
       mStream->appendTermBegin(com);
   }
 
-  template<class Stream> 
+  template<class Stream>
   void IdealStreamLog<Stream>::appendExponent(VarIndex index, Exponent exponent) {
     mLog << "s.appendExponent(" << index << ", " << exponent <<
       "); // index, exponent\n";
@@ -742,21 +742,21 @@ namespace mgb {
       mStream->appendExponent(index, exponent);
   }
 
-  template<class Stream> 
+  template<class Stream>
   void IdealStreamLog<Stream>::appendTermDone(Coefficient coefficient) {
     mLog << "s.appendTermDone(" << coefficient << "); // coefficient\n";
     if (mStream != 0)
       mStream->appendTermDone(coefficient);
   }
 
-  template<class Stream> 
+  template<class Stream>
   void IdealStreamLog<Stream>::appendPolynomialDone() {
     mLog << "s.appendPolynomialDone();\n";
     if (mStream != 0)
       mStream->appendPolynomialDone();
   }
 
-  template<class Stream> 
+  template<class Stream>
   void IdealStreamLog<Stream>::idealDone() {
     mLog << "s.idealDone();\n";
     if (mStream != 0)

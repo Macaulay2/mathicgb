@@ -481,7 +481,7 @@ void MathicIO<M, BF>::writeTerm(
         this->writeComponent(ring.monoid(), mono, out);
       return;
     }
-  } 
+  }
   writeMonomial(ring.monoid(), writeComponent, mono, out);
 }
 
@@ -507,7 +507,7 @@ void MathicIO<M, BF>::readMonomial(
     while (true) {
       const auto letterCount = 'z' - 'a' + 1;
       const auto letter = in.peek();
-      
+
       VarIndex var;
       if ('a' <= letter && letter <= 'z')
         var = letter - 'a';
@@ -523,7 +523,7 @@ void MathicIO<M, BF>::readMonomial(
         return;
       }
       in.get(); // skip past letter
-      
+
       MATHICGB_ASSERT(var < 2 * letterCount);
       if (var >= monoid.varCount()) {
         std::ostringstream err;
@@ -539,7 +539,7 @@ void MathicIO<M, BF>::readMonomial(
           " must not be written twice in one monomial.";
         in.reportError(err.str());
       }
-      
+
       if (in.peekDigit())
         monoid.setExternalExponent(var, in.readInteger<Exponent>(), mono);
       else

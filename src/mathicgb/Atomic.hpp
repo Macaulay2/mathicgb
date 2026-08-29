@@ -86,7 +86,7 @@ namespace AtomicInternal {
   void seqCstStore(const T value, T& ref) {
     const auto ptr = static_cast<volatile T*>(&ref);
     while (!__sync_bool_compare_and_swap(ptr, *ptr, value)) {}
-  }    
+  }
 }
 #endif
 
@@ -240,7 +240,7 @@ namespace AtomicInternal {
         // reordered to before this load. So no DLL reorderings past this
         // load from after to before (up). So we need a read barrier AFTER the
         // load. It is a compiler only barrier since x86 and x64 CPUs do not do
-        // DLL reorderings. 
+        // DLL reorderings.
         const auto value = mValue;
         compilerReadMemoryBarrier();
         return value;

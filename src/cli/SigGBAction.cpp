@@ -93,7 +93,7 @@ void SigGBAction::performAction() {
       ogb << "-- gb: ----\n";
       alg.getGB()->display(ogb);
     }
-      
+
     // print syzygy basis
     {
       std::ofstream syzygyOut(mParams.inputFileNameStem(0) + ".syz");

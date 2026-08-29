@@ -41,67 +41,67 @@ namespace mgb {
                  bool preferSparseReducers,
                  size_t queueType
                  );
-    
+
     // Replaces the current basis with a Grobner basis of the same ideal.
     void computeGrobnerBasis();
-    
+
     // How many S-pairs were not eliminated before reduction of the
     // corresponding S-polynomial.
     uint64 sPolyReductionCount() const {return mSPolyReductionCount;}
-    
+
     // Returns the current basis.
     PolyBasis& basis() {return mBasis;}
-    
+
     // Shows statistics on what the algorithm has done.
     void printStats(std::ostream& out) const;
-    
+
     void printMemoryUse(std::ostream& out) const;
-    
+
     size_t getMemoryUse() const;
-    
+
     void setBreakAfter(unsigned int elements) {
       mBreakAfter = elements;
     }
-    
+
     void setPrintInterval(unsigned int reductions) {
       mPrintInterval = reductions;
     }
-    
+
     /// A value of zero means to let the algorithm decide a reasonable
     /// value based on the other settings.
     void setSPairGroupSize(unsigned int groupSize);
-    
+
     void setReducerMemoryQuantum(size_t memoryQuantum) {
       mReducer.setMemoryQuantum(memoryQuantum);
     }
-    
+
     void setUseAutoTopReduction(bool value) {
       mUseAutoTopReduction = value;
     }
-    
+
     void setUseAutoTailReduction(bool value) {
       mUseAutoTailReduction = value;
     }
-    
+
     /// callback is called every once in a while and then it has the
     /// option of stopping the computation. callback can be null, in
     /// which case no call is made and the computation continues.
     void setCallback(std::function<bool(void)> callback) {
       mCallback = std::move(callback);
     }
-    
+
   private:
     // Perform a step of the algorithm.
     void step();
-    
+
     void autoTailReduce();
-    
+
     void insertReducedPoly(std::unique_ptr<Poly> poly);
-    
+
     // clears polynomials.
-    void insertPolys(std::vector<std::unique_ptr<Poly> >& polynomials);    
+    void insertPolys(std::vector<std::unique_ptr<Poly> >& polynomials);
   };
-  
+
   ClassicGBAlg::ClassicGBAlg(
                              const Basis& basis,
                              Reducer& reducer,
@@ -133,14 +133,14 @@ namespace mgb {
       polys.push_back(make_unique<Poly>(*basis.getPoly(gen)));
     insertPolys(polys);
   }
-  
+
   void ClassicGBAlg::setSPairGroupSize(unsigned int groupSize) {
     if (groupSize == 0)
       groupSize = mReducer.preferredSetSize();
     else
       mSPairGroupSize = groupSize;
   }
-  
+
   void ClassicGBAlg::insertPolys(
                                  std::vector<std::unique_ptr<Poly> >& polynomials
                                  ) {
@@ -154,30 +154,30 @@ namespace mgb {
           if ((*it)->isZero())
             continue;
         }
-        
+
         mBasis.insert(std::move(*it));
         mSPairs.addPairs(mBasis.size() - 1);
       }
       polynomials.clear();
       return;
     }
-    
+
     std::vector<size_t> toRetire;
     std::vector<std::unique_ptr<Poly>> toReduce;
     std::vector<std::unique_ptr<Poly>> toInsert;
     std::swap(toInsert, polynomials);
-    
+
     while (!toInsert.empty()) {
       // todo: sort by lead term to avoid insert followed by immediate
       // removal.
-      
+
       // insert polynomials from toInsert with minimal lead term and
       // extract those from the basis that become non-minimal.
       for (auto it = toInsert.begin(); it != toInsert.end(); ++it) {
         assert(it->get() != 0);
         if ((*it)->isZero())
           continue;
-        
+
         // We check for a divisor from mBasis because a new reducer
         // might have been added since we did the reduction or perhaps a
         // non-reduced polynomial was passed in.
@@ -194,19 +194,19 @@ namespace mgb {
       }
       toInsert.clear();
       assert(toRetire.empty());
-      
+
       // reduce everything in toReduce
       if (!toReduce.empty()) {
         mReducer.classicReducePolySet(toReduce, mBasis, toInsert);
         toReduce.clear();
       }
     }
-    
+
     assert(toRetire.empty());
     assert(toInsert.empty());
     assert(toReduce.empty());
   }
-  
+
   void ClassicGBAlg::insertReducedPoly(
                                        std::unique_ptr<Poly> polyToInsert
                                        ) {
@@ -215,7 +215,7 @@ namespace mgb {
       return;
     assert(mBasis.divisor(polyToInsert->leadMono()) ==
                     static_cast<size_t>(-1));
-    
+
     if (tracingLevel > 20) {
       std::cerr << "inserting basis element " << mBasis.size() << ": ";
       if (tracingLevel > 100) {
@@ -229,17 +229,17 @@ namespace mgb {
         std::cerr << std::endl;
       }
     }
-    
+
     if (!mUseAutoTopReduction) {
       size_t const newGen = mBasis.size();
       mBasis.insert(std::move(polyToInsert));
       mSPairs.addPairs(newGen);
       return;
     }
-    
+
     std::vector<size_t> toRetireAndReduce;
     std::vector<Poly*> toReduce;
-    
+
     try {
       do {
         // reduce polynomial and insert into basis
@@ -268,10 +268,10 @@ namespace mgb {
           }
           if (reduced->isZero())
             continue;
-          reduced->makeMonic(); 
+          reduced->makeMonic();
           mBasis.insert(std::move(reduced));
         }
-        
+
         // form S-pairs and retire basis elements that become top reducible.
         const size_t newGen = mBasis.size() - 1;
         assert(toRetireAndReduce.empty());
@@ -292,18 +292,18 @@ namespace mgb {
     assert(toReduce.empty());
     assert(toRetireAndReduce.empty());
   }
-  
+
   void ClassicGBAlg::computeGrobnerBasis() {
     size_t counter = 0;
     mTimer.reset();
-    
+
     if (mUseAutoTailReduction)
       autoTailReduce();
-    
+
     while (!mSPairs.empty()) {
       if (mCallback != nullptr && !mCallback())
         break;
-      
+
       step();
       if (mBreakAfter != 0 && mBasis.size() > mBreakAfter) {
         std::cerr
@@ -324,7 +324,7 @@ namespace mgb {
       (i, mReducer->classicTailReduce(mBasis.poly(i), mBasis));
     */
   }
-  
+
   void ClassicGBAlg::step() {
     assert(!mSPairs.empty());
     if (tracingLevel > 30)
@@ -343,7 +343,7 @@ namespace mgb {
       assert(p.second != static_cast<size_t>(-1));
       assert(!mBasis.retired(p.first));
       assert(!mBasis.retired(p.second));
-    
+
       spairGroup.push_back(p);
     }
     if (spairGroup.empty())
@@ -392,7 +392,7 @@ namespace mgb {
                    return false;
                  };
     std::sort(reduced.begin(), reduced.end(), order);
-  
+
     insertPolys(reduced);
     if (mUseAutoTailReduction)
       autoTailReduce();

@@ -23,8 +23,8 @@ public:
   ReducerNoDedup(const PolyRing& R);
   virtual ~ReducerNoDedup();
 
-  virtual std::string description() const { 
-    return mQueue.getName() + "-nodedup"; 
+  virtual std::string description() const {
+    return mQueue.getName() + "-nodedup";
   }
 
   virtual void insertTail(NewConstTerm multiplier, const Poly& f);
@@ -109,11 +109,11 @@ bool ReducerNoDedup<Q>::leadTerm(NewConstTerm& result) {
         return false;
       mLeadTerm = mQueue.top();
       mQueue.pop();
-    
+
       while (true) {
         if (mQueue.empty())
           break;
-      
+
         auto entry = mQueue.top();
         if (!mRing.monoid().equal(*entry.mono, *mLeadTerm.mono))
           break;

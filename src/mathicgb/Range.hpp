@@ -504,7 +504,7 @@ bool operator!=(
 
 template<class OuterIterator>
 Flatten<OuterIterator> makeFlatten(
-  OuterIterator outerIterator, 
+  OuterIterator outerIterator,
   OuterIterator outerEnd
 ) {
   return Flatten<OuterIterator>(outerIterator, outerEnd);

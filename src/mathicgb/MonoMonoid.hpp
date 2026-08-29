@@ -248,7 +248,7 @@ namespace MonoMonoidInternal {
     const HashCoefficients mHashCoefficients;
 
     /// This is initialized before mGradings, so it has to be ordered
-    /// above mGradings. 
+    /// above mGradings.
     const bool mOrderIsTotalDegreeRevLex;
 
     /// If true then lex is used to break ties. Otherwise, revlex is
@@ -295,7 +295,7 @@ public:
   /// Is true if the monomials come from a module.
   using Base::HasComponent;
 
-  /// Is true if the hash value is stored rather than computed at each 
+  /// Is true if the hash value is stored rather than computed at each
   /// hash request. This imposes extra computation when updating a monomial,
   /// but for most operations that overhead is much less than the time for
   /// computing a hash value from scratch.
@@ -553,11 +553,11 @@ public:
   }
 
   bool isProductOfHintTrue(
-    ConstMonoRef a, 
-    ConstMonoRef b, 
+    ConstMonoRef a,
+    ConstMonoRef b,
     ConstMonoRef ab
   ) const {
-    // We compare more than one exponent at a time using 64 bit integers. This 
+    // We compare more than one exponent at a time using 64 bit integers. This
     // might go one 32 bit value at the end too far, but since that space is
     // either a degree or a hash value that is fine --- those values will also
     // match if the monomials are equal. This does not work for negative
@@ -568,7 +568,7 @@ public:
     // bit will not interfere. For this reason we need to have a degree
     // or a hash value stored there - otherwise two equal monomials could
     // have different things stored next to them which would confuse this code.
-    
+
     // todo: ensure 8 byte alignment. Though there seem to be no ill effects
     // for unaligned access. Performance seems to be no worse than for using
     // 32 bit integers directly.
@@ -581,7 +581,7 @@ public:
     for (VarIndex i = varCount() / 2; i != beforeEntriesIndexBegin(); --i) {
       MATHICGB_ASSERT(access(a, i*2) >= 0);
       MATHICGB_ASSERT(i == varCount() / 2 || access(a, i*2+1) >= 0);
-      
+
       uint64 A, B, AB;
       // We have to use std::memcpy here because just casting to a int64 breaks
       // the strict aliasing rule which implies undefined behavior. Both MSVC and
@@ -593,7 +593,7 @@ public:
       orOfXor |= AB ^ (A + B);
     }
     MATHICGB_ASSERT((orOfXor == 0) == isProductOf(a, b, ab));
-    return orOfXor == 0; 
+    return orOfXor == 0;
   }
 
   MATHICGB_INLINE bool isTwoProductsOfHintTrue(
@@ -640,7 +640,7 @@ public:
   /// Returns true if a divides b. Equal monomials divide each other.
   /// Doesn't take component into account - see dividesWithComponent.
   bool divides(ConstMonoRef div, ConstMonoRef into) const {
-    // todo: enable this when the code works with it - see 
+    // todo: enable this when the code works with it - see
     // dividesWithComponent.
     //if (HasComponent && component(div) != component(into))
     //  return false;
@@ -798,7 +798,7 @@ public:
     MATHICGB_ASSERT(debugOrderValid(b));
 
     VarIndex index;
-    
+
     if (StoreOrder)
       index = orderIndexEnd();
     else {
@@ -1050,7 +1050,7 @@ public:
     for (auto i = entriesIndexBegin(); i < entriesIndexEnd(); ++i)
       access(prod, i) += access(a, i);
 
-    MATHICGB_ASSERT(debugValid(prod));      
+    MATHICGB_ASSERT(debugValid(prod));
   }
 
   /// Sets quo to num/by. by must divide num.
@@ -1492,7 +1492,7 @@ public:
       typedef ptrdiff_t difference_type;
       typedef ConstMonoPtr pointer;
       typedef ConstMonoRef reference;
-    
+
       const_iterator(): mIt(), mEntriesPerMono(0) {}
       // The following is replaced by the default copy constructor.  Remove these 3 lines of comments once it is known to be working.
       //const_iterator(const const_iterator& it):
@@ -1500,7 +1500,7 @@ public:
       const_iterator(const const_iterator& it) = default;
       const_iterator& operator=(const const_iterator& it) = default;
 
-      
+
       bool operator==(const const_iterator& it) const {return mIt == it.mIt;}
       bool operator!=(const const_iterator& it) const {return mIt != it.mIt;}
 
@@ -1523,9 +1523,9 @@ public:
         typename RawVector::const_iterator it,
         size_t entryCount
       ): mIt(it), mEntriesPerMono(entryCount) {}
-      
+
       typename RawVector::const_iterator mIt;
-      size_t mEntriesPerMono;		     
+      size_t mEntriesPerMono;
     };
 
 
@@ -1545,7 +1545,7 @@ public:
     MonoVector& operator=(MonoVector&& v) {
       MATHICGB_ASSERT(monoid() == v.monoid());
       mMonos = std::move(v.mMonos);
-      return *this;      
+      return *this;
     }
 
 
@@ -1563,7 +1563,7 @@ public:
     const_iterator cend() const {return end();}
 
     // *** Operators
-    
+
     /// Returns true if *this and v contain the same monomials in the same
     /// order. This ought to be a free-standing function, but it cannot be,
     /// because template argument deduction cannot deduce a type T from

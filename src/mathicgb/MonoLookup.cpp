@@ -82,7 +82,7 @@ namespace {
     virtual size_t highBaseDivisor(size_t newGenerator) const {
       return mLookup.highBaseDivisor(newGenerator, sigBasis());
     }
-      
+
     virtual void lowBaseDivisors(
       std::vector<size_t>& divisors,
       size_t maxDivisors,
@@ -130,7 +130,7 @@ namespace {
 
   class ConcreteFactory : public MonoLookup::Factory {
   public:
-    ConcreteFactory(const Monoid& monoid, int type): 
+    ConcreteFactory(const Monoid& monoid, int type):
       mMonoid(monoid),
       mType(type)
     {}

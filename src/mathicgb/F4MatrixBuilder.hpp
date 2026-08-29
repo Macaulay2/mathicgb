@@ -98,7 +98,7 @@ private:
     ConstMonoPtr sPairMultiply;
   };
 
-#if 1  //TBB_MAJOR_VERSION >= 2021  
+#if 1  //TBB_MAJOR_VERSION >= 2021
   using TaskFeeder = mtbb::feeder<RowTask>;
   //#else
   //  using TaskFeeder = mtbb::mtbbFeeder<RowTask>;
@@ -144,7 +144,7 @@ private:
     ConstMonoRef monoB,
     TaskFeeder& feeder
   );
-  
+
   MATHICGB_INLINE
   std::pair<QuadMatrixBuilder::LeftRightColIndex, ConstMonoRef>
   findOrCreateColumn(

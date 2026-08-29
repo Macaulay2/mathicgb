@@ -188,12 +188,12 @@ private:
         return true;
       if (cmp == LT)
         return false;
-      
+
       const bool aRetired = mBasis.retired(rowA) || mBasis.retired(colA);
       const bool bRetired = mBasis.retired(rowB) || mBasis.retired(colB);
       if (aRetired || bRetired)
         return !bRetired;
-      
+
       if (mPreferSparseSPairs) {
         const auto termCountA =
           mBasis.basisElement(colA).termCount() +
@@ -211,8 +211,8 @@ private:
     bool cmpLessThan(bool v) const {return v;}
 
     // The following methods are not required of a configuration.
-	OrderMonoid::Mono allocPairData() {return orderMonoid().alloc();}
-	void freePairData(OrderMonoid::Mono&& mono) {
+    OrderMonoid::Mono allocPairData() {return orderMonoid().alloc();}
+    void freePairData(OrderMonoid::Mono&& mono) {
       return orderMonoid().free(std::move(mono));
     }
 
@@ -220,7 +220,7 @@ private:
     const Monoid& monoid() const {return mMonoid;}
     const OrderMonoid& orderMonoid() const {return mOrderMonoid;}
 
-	const PolyBasis& mBasis;
+    const PolyBasis& mBasis;
     const Monoid& mMonoid;
     const OrderMonoid& mOrderMonoid;
     const bool mPreferSparseSPairs;
@@ -271,7 +271,7 @@ namespace mathic {
         mgb::SPairs::OrderMonoid::Mono(conf.allocPairData());
       conf.computePairData(col, row, *pd);
     }
-    
+
     template<>
     inline void destructPairData(
       mgb::SPairs::OrderMonoid::Mono* pd,
@@ -284,7 +284,7 @@ namespace mathic {
       MATHICGB_ASSERT(pd != 0);
       MATHICGB_ASSERT(col > row);
       conf.freePairData(std::move(*pd));
-    }	
+    }
   }
 }
 

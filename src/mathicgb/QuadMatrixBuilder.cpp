@@ -41,7 +41,7 @@ void QuadMatrixBuilder::takeRowsFrom(QuadMatrix&& matrix) {
 namespace {
   /// Creates a column and updates the associated data structures that
   /// are passed in. Copies mono - ownership is not taken over. The
-  /// purpose of this function is to avoid code duplication. It is a            
+  /// purpose of this function is to avoid code duplication. It is a
   /// template in order to avoid referring to private types of
   /// QuadMatrixBuilder.
   template<class ToMono, class ToCol, class Monoid>

@@ -36,7 +36,7 @@ int main(int argc, char **argv) {
     return -1;
   } catch (std::exception& e) {
     mathic::display(e.what());
-    return -1;  
+    return -1;
   } catch (...) {
     std::cout << "UNKNOWN ERROR" << std::endl;
     // maybe there is some outer exception handler that might say something

@@ -155,7 +155,7 @@ TEST(MathicIO, ReadWriteBasis) {
   check("0", "0\n", true);
   check("1 0", "1\n 0\n", false);
   check("1 0", "1\n 0\n", true);
-  
+
   check("1 1", "1\n 1\n", false);
   check("1 a<0>", "1\n a<0>\n", true);
   check("2 a b", "2\n a\n b\n", false);
@@ -227,7 +227,7 @@ TEST(MathicIO, ReadWriteTerm) {
       Coefficient readCoef = f.zero();
       Scanner in(str);
       MathicIO<>().readTerm(ring, doComponent, readCoef, *monoRead, in);
-      
+
       ASSERT_EQ(coef, readCoef.value());
 
       // print monomial

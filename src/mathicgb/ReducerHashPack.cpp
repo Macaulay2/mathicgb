@@ -34,7 +34,7 @@ public:
   ReducerHashPack(const PolyRing& R);
   virtual ~ReducerHashPack();
 
-  virtual std::string description() const { 
+  virtual std::string description() const {
     return mQueue.getName() + "-hashed-packed";
   }
 
@@ -49,7 +49,7 @@ public:
   virtual void resetReducer();
 
 private:
-  // Represents a term multiple of a polynomial, 
+  // Represents a term multiple of a polynomial,
   // together with a current term of the multiple.
   struct MultipleWithPos {
     MultipleWithPos(const Poly& poly, NewConstTerm multiple);

@@ -45,7 +45,7 @@ public:
   virtual void resetReducer();
 
 private:
-  // Represents a term multiple of a polynomial, 
+  // Represents a term multiple of a polynomial,
   // together with a current term of the multiple.
   struct MultipleWithPos {
     MultipleWithPos(const Poly& poly, NewConstTerm multiple);
@@ -54,7 +54,7 @@ private:
     const Poly::ConstTermIterator end;
     NewTerm multiple;
 
-    // invariant: current is the monomial product of multiple.monom 
+    // invariant: current is the monomial product of multiple.monom
     // and pos.mono().
     MonoPtr current;
 
@@ -91,7 +91,7 @@ private:
   };
 private:
   class MonomialFree;
-  
+
   const PolyRing& mRing;
   NewTerm mLeadTerm;
   bool mLeadTermKnown;
@@ -250,10 +250,10 @@ bool ReducerPackDedup<Q>::leadTerm(NewConstTerm& result) {
           }
           chain = next;
         }
-      
+
         if (mQueue.empty())
           break;
-      
+
         entry = mQueue.top();
         if (!mRing.monoid().equal(*entry->current, *mLeadTerm.mono))
           break;

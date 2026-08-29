@@ -64,7 +64,7 @@ void SigPolyBasis::insert(Mono ownedSig, std::unique_ptr<Poly> f) {
   const auto index = mSignatures.size();
   mSignatures.push_back(ownedSig.release());
   auto sig = *mSignatures.back();
-  
+
   const auto component = monoid().component(sig);
   MATHICGB_ASSERT(component < mSignatureLookup.size());
   mSignatureLookup[component]->insert(sig, index);

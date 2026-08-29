@@ -47,7 +47,7 @@ std::vector<Reducer::Registration*>& reducerTypes() {
 }
 
 Reducer::Registration::Registration(
-  const char* name, 
+  const char* name,
   ReducerType id,
   std::unique_ptr<Reducer> (*create)(const PolyRing&)
 ):

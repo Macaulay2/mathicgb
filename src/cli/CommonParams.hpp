@@ -16,7 +16,7 @@ public:
 
   void directOptions
     (std::vector<std::string> tokens, mathic::CliParser& parser);
-    
+
   void pushBackParameters(std::vector<mathic::CliParameter*>& parameters);
 
   /// Takes appropriate action depending on the parameters. For example this

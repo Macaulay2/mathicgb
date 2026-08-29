@@ -60,7 +60,7 @@ public:
     mMonoLookup->remove(leadMono(index));
     delete mEntries[index].poly;
     mEntries[index].poly = newValue.release();
-    mMonoLookup->insert(leadMono(index), index);    
+    mMonoLookup->insert(leadMono(index), index);
     MATHICGB_ASSERT(mEntries[index].poly != nullptr);
   }
 
@@ -158,7 +158,7 @@ public:
   /// Returns how many bytes has been allocated by this object.
   size_t getMemoryUse() const;
 
-  
+
   void usedAsStart(size_t index) const {
     MATHICGB_ASSERT(index < size());
     ++mEntries[index].usedAsStartCount;
@@ -168,7 +168,7 @@ public:
     MATHICGB_ASSERT(index < size());
     return mEntries[index].usedAsStartCount;
   }
-  
+
   void usedAsReducer(size_t index) const {
     MATHICGB_ASSERT(index < size());
     ++mEntries[index].usedAsReducerCount;
@@ -198,7 +198,7 @@ public:
     MATHICGB_ASSERT(index < size());
     return mEntries[index].nonSignatureReducerCount;
   }
-  
+
 private:
   // Slow versions use simpler code. Used to check results in debug mode.
   bool leadMinimalSlow(size_t index) const;

@@ -219,11 +219,11 @@ public:
   }
 
   void appendRowAndNormalize(const SparseMatrix& matrix, RowIndex row, Scalar modulus);
-  
+
   void appendRow(const SparseMatrix& matrix, RowIndex row);
 
   void appendRowWithModulus(const std::vector<uint64>& v, Scalar modulus);
-  
+
   template<class T>
   void appendRow(const std::vector<T>& v, ColIndex leadCol = 0);
 
@@ -263,7 +263,7 @@ public:
   class ConstRowIterator {
   public:
     typedef const std::pair<ColIndex, Scalar> value_type;
-	typedef ptrdiff_t difference_type;
+    typedef ptrdiff_t difference_type;
     typedef size_t distance_type;
     typedef value_type* pointer;
     typedef value_type& reference;
@@ -318,7 +318,7 @@ public:
   class RowIterator {
   public:
     typedef const std::pair<ColIndex, Scalar> value_type;
-	typedef ptrdiff_t difference_type;
+    typedef ptrdiff_t difference_type;
     typedef size_t distance_type;
     typedef value_type* pointer;
     typedef value_type& reference;
@@ -403,7 +403,7 @@ private:
       mColIndices(std::move(block.mColIndices)),
       mScalars(std::move(block.mScalars)),
       mPreviousBlock(block.mPreviousBlock),
-      mHasNoRows(block.mHasNoRows) 
+      mHasNoRows(block.mHasNoRows)
     {
       block.mPreviousBlock = 0;
       block.mHasNoRows = true;
@@ -452,7 +452,7 @@ void SparseMatrix::appendRow(
 
   const auto count = static_cast<ColIndex>(v.size());
   for (ColIndex col = leadCol; col < count; ++col) {
-	MATHICGB_ASSERT(v[col] < std::numeric_limits<Scalar>::max());
+    MATHICGB_ASSERT(v[col] < std::numeric_limits<Scalar>::max());
     if (v[col] != 0)
       appendEntry(col, static_cast<Scalar>(v[col]));
   }

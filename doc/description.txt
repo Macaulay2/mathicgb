@@ -762,7 +762,7 @@ preserve the invariant, but then it becomes very easy to null out your
 std::unique_ptr by accident. It's quite confusing for "b = a" to
 change a. We only expect it to change b. If you try the code above,
 you will get an error on the third line. The reason for that is that
-std::unique_ptr has an 
+std::unique_ptr has an
 
   operator=(std:unique_ptr&&)
 
@@ -1130,7 +1130,7 @@ not even using const_cast. Example:
   const int b = 1; // must not change
   const int& bb = b;
   const_cast<int&>(bb) = 2; // undefined behavior!
-  
+
 
 -- Do #includes from least general to most general
 
@@ -1720,7 +1720,7 @@ class.
 Project (medium-effort, low-difficulty): Migrate the remaining uses of
 io-util over to use MathicIO and then remove io-util.
 
-*** KoszulQueue.hpp 
+*** KoszulQueue.hpp
 
 Used to keep track of pending Koszul syzygy signatures in the
 signature basis (SB) algorithm. SB keeps a priority queue (ordered
@@ -2150,7 +2150,7 @@ input it should all go through the same scanner since the scanner
 keeps track of the line number for better error messages - that only
 works if no part of the input is read from outside of the scanner.
 
- 
+
 *** mathicgb/ScopeExit.hpp
 
 Implements a scope guard. Very convenient for ad-hoc RAII
@@ -2302,7 +2302,7 @@ algorithm and then a sub-class can specialize the detailed steps, thus
 sharing a lot of code between the various reducers.
 
 
-*** Unchar.hpp 
+*** Unchar.hpp
 
 std::ostream and std::istream handle characters differently from other
 integers. That is not desired when using char as an integer. Use

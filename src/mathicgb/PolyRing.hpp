@@ -67,7 +67,7 @@ T modularSum(T a, T b, T modulus) {
   MATHICGB_ASSERT(b < modulus);
   auto f = makeField(modulus);
   return f.sum(f.toElementInRange(a), f.toElementInRange(b)).value();
-} 
+}
 
 /** Returns -a mod modulus. It is required that 0 <= a < modulus. */
 template<class T>
@@ -280,7 +280,7 @@ public:
     A.freeTop(m.unsafeGetRepresentation());
   }
 
-  //  Allocate a monomial from a pool that has had its size set to 
+  //  Allocate a monomial from a pool that has had its size set to
   //   maxMonomialByteSize()
   //  Free monomials here using the SAME pool
   Monomial allocMonomial(memt::BufferPool &P) const {
@@ -295,7 +295,7 @@ public:
     return ptr;
   }
 
-  // Free monomial 'm' obtained by allocMonomial(P) 
+  // Free monomial 'm' obtained by allocMonomial(P)
   // by calling freeMonomial(P,m)
   void freeMonomial(memt::BufferPool &P, Monomial m) const {
     P.free(m.unsafeGetRepresentation());
@@ -381,11 +381,11 @@ public:
   inline void setHashOnly(Monomial& a) const;
 
   // returns LT, EQ, or GT, depending on sig ? (m2 * sig2).
-  int monomialCompare(ConstMonomial a, 
-                      ConstMonomial b) const; 
+  int monomialCompare(ConstMonomial a,
+                      ConstMonomial b) const;
   // returns LT, EQ or GT
-  int monomialCompare(ConstMonomial sig, 
-                      ConstMonomial m2, 
+  int monomialCompare(ConstMonomial sig,
+                      ConstMonomial m2,
                       ConstMonomial sig2) const;
 
   // If this method returns true for monomials a and b then it is guaranteed
@@ -453,29 +453,29 @@ public:
 
   void monomialCopy(ConstMonomial  a, Monomial &result) const;
 
-  void monomialQuotientAndMult(ConstMonomial a, 
-                               ConstMonomial b, 
-                               ConstMonomial c, 
+  void monomialQuotientAndMult(ConstMonomial a,
+                               ConstMonomial b,
+                               ConstMonomial c,
                                Monomial& result) const;
   // result is set to (a//b) * c
 
-  inline bool monomialRelativelyPrime(ConstMonomial a, 
+  inline bool monomialRelativelyPrime(ConstMonomial a,
                                       ConstMonomial b) const;
 
   void monomialFindSignature(ConstMonomial v1,
                              ConstMonomial v2,
                              ConstMonomial u1,
-                             Monomial& t1) const; 
+                             Monomial& t1) const;
   // answer into the already allocated t1
 
   size_t monomialSizeOfSupport(ConstMonomial m) const;
 
-  inline void monomialLeastCommonMultiple(ConstMonomial a, 
-                                          ConstMonomial b, 
+  inline void monomialLeastCommonMultiple(ConstMonomial a,
+                                          ConstMonomial b,
                                           Monomial& l) const;
 
-  bool monomialIsLeastCommonMultiple(ConstMonomial a, 
-                                     ConstMonomial b, 
+  bool monomialIsLeastCommonMultiple(ConstMonomial a,
+                                     ConstMonomial b,
                                      ConstMonomial l) const;
 
   // Returns true if there is a variable var such that hasLarger raises var to
@@ -485,16 +485,16 @@ public:
     ConstMonomial smaller1,
     ConstMonomial smaller2) const;
 
-  void monomialParse(std::istream& i, 
+  void monomialParse(std::istream& i,
                      Monomial& result) const;
 
-  void monomialDisplay(std::ostream& o, 
-                       ConstMonomial a, 
-                       bool print_comp=true, 
+  void monomialDisplay(std::ostream& o,
+                       ConstMonomial a,
+                       bool print_comp=true,
                        bool print_one=true) const;
   void monomialDisplay(FILE* file,
-                       ConstMonomial a, 
-                       bool printComponent = true, 
+                       ConstMonomial a,
+                       bool printComponent = true,
                        bool printOne = true) const;
 
   void printMonomialFrobbyM2Format(std::ostream& out, ConstMonomial m) const;
@@ -531,8 +531,8 @@ inline bool PolyRing::monomialEqualHintTrue(
 }
 
 inline bool PolyRing::monomialIsProductOfHintTrue(
-  const ConstMonomial a, 
-  const ConstMonomial b, 
+  const ConstMonomial a,
+  const ConstMonomial b,
   const ConstMonomial ab
 ) const {
   return monoid().isProductOfHintTrue(a, b, ab);
@@ -549,15 +549,15 @@ MATHICGB_INLINE bool PolyRing::monomialIsTwoProductsOfHintTrue(
 }
 
 inline bool PolyRing::monomialIsProductOf(
-  ConstMonomial a, 
-  ConstMonomial b, 
+  ConstMonomial a,
+  ConstMonomial b,
   ConstMonomial ab
 ) const {
   return monoid().isProductOf(a, b, ab);
 }
 
-inline void PolyRing::monomialMult(ConstMonomial a, 
-                                   ConstMonomial b, 
+inline void PolyRing::monomialMult(ConstMonomial a,
+                                   ConstMonomial b,
                                    Monomial &result) const
 {
   monoid().multiply(a, b, result);
@@ -585,8 +585,8 @@ inline bool PolyRing::monomialIsDivisibleBy(ConstMonomial a,
   return monoid().divides(b, a);
 }
 
-inline void PolyRing::monomialDivide(ConstMonomial a, 
-                                     ConstMonomial b, 
+inline void PolyRing::monomialDivide(ConstMonomial a,
+                                     ConstMonomial b,
                                      Monomial& result) const
 {
   return monoid().divide(b, a, result);
@@ -601,14 +601,14 @@ inline void PolyRing::monomialColons(
   monoid().colons(a, b, aColonB, bColonA);
 }
 
-inline void PolyRing::monomialDivideToNegative(ConstMonomial a, 
-                                               ConstMonomial b, 
-                                               Monomial& result) const 
+inline void PolyRing::monomialDivideToNegative(ConstMonomial a,
+                                               ConstMonomial b,
+                                               Monomial& result) const
 {
   monoid().divideToNegative(b, a, result);
 }
 
-inline bool PolyRing::monomialRelativelyPrime(ConstMonomial a, 
+inline bool PolyRing::monomialRelativelyPrime(ConstMonomial a,
                                               ConstMonomial b) const
 {
   return monoid().relativelyPrime(a, b);
@@ -625,7 +625,7 @@ inline void PolyRing::monomialLeastCommonMultiple(
 inline bool PolyRing::monomialHasStrictlyLargerExponent(
   ConstMonomial hasLarger,
   ConstMonomial smaller1,
-  ConstMonomial smaller2) const 
+  ConstMonomial smaller2) const
 {
   return !monoid().dividesLcm(hasLarger, smaller1, smaller2);
 }

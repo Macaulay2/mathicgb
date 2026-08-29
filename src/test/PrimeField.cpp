@@ -136,9 +136,9 @@ TEST(PrimeField, Product) {
   const PrimeField<unsigned char> pf251(251);
   ASSERT_EQ(pf251.zero(), pf251.product(pf251.one(), pf251.zero()));
   ASSERT_EQ(pf251.one(), pf251.product(pf251.one(), pf251.one()));
-  ASSERT_EQ(pf251.one(), 
+  ASSERT_EQ(pf251.one(),
     pf251.product(pf251.toElement(-1), pf251.toElement(-1)));
-  ASSERT_EQ(pf251.one(), 
+  ASSERT_EQ(pf251.one(),
     pf251.product(pf251.toElement(2), pf251.toElement(126)));
 
   const PrimeField<unsigned char> pf101(101);

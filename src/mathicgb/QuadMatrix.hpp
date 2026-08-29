@@ -50,7 +50,7 @@ public:
 
   typedef std::vector<ConstMonoPtr> Monomials;
 
-  SparseMatrix topLeft; 
+  SparseMatrix topLeft;
   SparseMatrix topRight;
   SparseMatrix bottomLeft;
   SparseMatrix bottomRight;

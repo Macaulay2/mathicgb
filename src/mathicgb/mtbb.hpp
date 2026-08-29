@@ -38,28 +38,28 @@ namespace mtbb {
   template<class Key, class T, class Hash, class KeyEqual>
   using unordered_map = ::tbb::concurrent_unordered_map<Key, T, Hash, KeyEqual>;
 
-  template<typename T>  
+  template<typename T>
 #if TBB_VERSION_MAJOR >= 2021
   using feeder = ::tbb::feeder<T>;
 #else
   using feeder = ::tbb::parallel_do_feeder<T>;
 #endif
-  
+
   template<typename T1, typename T2>
   static inline void parallel_for_each(T1 a, T1 b, T2 c)
   {
-#if TBB_VERSION_MAJOR >= 2021    
+#if TBB_VERSION_MAJOR >= 2021
     tbb::parallel_for_each(a,b,c);
 #else
     tbb::parallel_do(a,b,c);
-#endif    
+#endif
   }
 
   inline int numThreads(int nthreads)
   {
     return (nthreads != 0 ? nthreads :
-#if TBB_VERSION_MAJOR >= 2021    
-            tbb::info::default_concurrency() 
+#if TBB_VERSION_MAJOR >= 2021
+            tbb::info::default_concurrency()
 #else
             tbb::task_scheduler_init::default_num_threads()
 #endif
@@ -95,7 +95,7 @@ namespace mtbb {
   {
     return 1;
   }
-  
+
   class mutex {
   public:
     mutex(): mLocked(false) {}
@@ -125,12 +125,12 @@ namespace mtbb {
         if (mMutex != nullptr)
           release();
       }
-      
+
       void acquire(mutex& m) {
         assert(mMutex == nullptr);
         mMutex = &m;
       }
-      
+
       bool try_acquire(mutex& m) {
         assert(mMutex == nullptr);
         if (!m.try_lock())
@@ -138,17 +138,17 @@ namespace mtbb {
         mMutex = &m;
         return true;
       }
-      
+
       void release() {
         assert(mMutex != nullptr);
         mMutex->unlock();
         mMutex = nullptr;
       }
-      
+
     private:
       mutex* mMutex;
     };
-    
+
   private:
     bool mLocked;
   };
@@ -160,7 +160,7 @@ namespace mtbb {
 
   template<class Key, class T, class Hash, class KeyEqual>
   using unordered_map = ::std::unordered_map<Key, T, Hash, KeyEqual>;
-  
+
   template<class T>
   class enumerable_thread_specific {
   public:
@@ -171,7 +171,7 @@ namespace mtbb {
     bool empty() const {return mObj.get() == nullptr;}
 
     using reference = T&;
-      
+
     T& local() {
       if (empty())
         mObj = std::make_unique<T>(mCreater());
@@ -201,7 +201,7 @@ namespace mtbb {
     std::function<T()> mCreater;
     std::unique_ptr<T> mObj;
   };
-  
+
   template<class Value>
   class blocked_range {
   public:
@@ -224,7 +224,7 @@ namespace mtbb {
     const_iterator mEnd;
     size_type mGrainSize;
   };
-    
+
   template<class Range, class Func>
   void parallel_for(Range&& range, Func&& f) {
     f(range);

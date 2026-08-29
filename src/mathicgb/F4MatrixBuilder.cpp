@@ -232,7 +232,7 @@ auto F4MatrixBuilder::createColumn(
   ConstMonoRef monoB,
   TaskFeeder& feeder
 ) -> std::pair<F4MatrixBuilder::LeftRightColIndex, ConstMonoRef> {
-  const mtbb::lock_guard guard(mCreateColumnLock);    
+  const mtbb::lock_guard guard(mCreateColumnLock);
   // see if the column exists now after we have synchronized
   {
     const auto found(ColReader(mMap).findProduct(monoA, monoB));
@@ -298,7 +298,7 @@ updateReader:
     MATHICGB_ASSERT(!ring().field().isZero(origScalar));
     const auto maybeNegated =
       negate ? field().negativeNonZero(origScalar) : origScalar;
-	MATHICGB_ASSERT(maybeNegated < std::numeric_limits<Scalar>::max());
+    MATHICGB_ASSERT(maybeNegated < std::numeric_limits<Scalar>::max());
     builder.appendEntryBottom(*col.first, static_cast<Scalar>(maybeNegated));
   }
   builder.rowDoneBottomLeftAndRight();
@@ -316,7 +316,7 @@ void F4MatrixBuilder::appendRowTop(
     ColReader reader(mMap);
     const auto col = findOrCreateColumn
       (it.mono(), multiple, reader, feeder);
-	MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
+    MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
     MATHICGB_ASSERT(!field().isZero(it.coef()));
     builder.appendEntryTop
       (col.first, static_cast<Scalar>(it.coef()));
@@ -325,14 +325,14 @@ void F4MatrixBuilder::appendRowTop(
 updateReader:
   ColReader colMap(mMap);
   while (it != end) {
-	MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
+    MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
     MATHICGB_ASSERT(!field().isZero(it.coef()));
     const auto scalar1 = static_cast<Scalar>(it.coef());
     const auto mono1 = it.mono();
 
     auto it2 = it;
     ++it2;
-	MATHICGB_ASSERT(it2.coef() < std::numeric_limits<Scalar>::max());
+    MATHICGB_ASSERT(it2.coef() < std::numeric_limits<Scalar>::max());
     MATHICGB_ASSERT(!field().isZero(it2.coef()));
     const auto scalar2 = static_cast<Scalar>(it2.coef());
     const auto mono2 = it2.mono();

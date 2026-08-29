@@ -55,7 +55,7 @@ public:
     // The above two cases turn rows specified like aF-bG into rows specified
     // more simply as just aF. Note that we can interchange aF and bG in these
     // arguments with no problems.
-    // 
+    //
     // These two cases will apply to all
     // S-pairs with a given leading monomial if and only if there is a single
     // bG that appears in all of those S-pairs. The absolute best case is
@@ -156,7 +156,7 @@ public:
       F4ProtoMatrix block;
     };
 
-    mtbb::enumerable_thread_specific<ThreadData> threadData([&](){  
+    mtbb::enumerable_thread_specific<ThreadData> threadData([&](){
       // We need to grab a lock since monoid isn't internally synchronized.
       const mtbb::lock_guard guard(mCreateColumnLock);
       ThreadData data = {
@@ -241,8 +241,8 @@ public:
 
     quadMatrix = projection.makeAndClear(mMemoryQuantum);
 
-    MATHICGB_LOG(F4MatrixSizes) 
-      << "F4[" 
+    MATHICGB_LOG(F4MatrixSizes)
+      << "F4["
       << mathic::ColumnPrinter::commafy(quadMatrix.rowCount())
       << " by "
       << mathic::ColumnPrinter::commafy(
@@ -360,7 +360,7 @@ public:
       ColReader reader(mMap);
       const auto col = findOrCreateColumn
         (it.mono(), multiple, reader, feeder);
-	  MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
+      MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
       MATHICGB_ASSERT(!field().isZero(it.coef()));
       *indices = col.first;
       ++indices;
@@ -369,14 +369,14 @@ public:
   updateReader:
     ColReader colMap(mMap);
     while (it != end) {
-	  MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
+      MATHICGB_ASSERT(it.coef() < std::numeric_limits<Scalar>::max());
       MATHICGB_ASSERT(!field().isZero(it.coef()));
       // Unused.  Remove.      const auto scalar1 = static_cast<Scalar>(it.coef());
       const auto mono1 = it.mono();
 
       auto it2 = it;
       ++it2;
-	  MATHICGB_ASSERT(it2.coef() < std::numeric_limits<Scalar>::max());
+      MATHICGB_ASSERT(it2.coef() < std::numeric_limits<Scalar>::max());
       MATHICGB_ASSERT(!field().isZero(it2.coef()));
       // Unused.  Remove.  const auto scalar2 = static_cast<Scalar>(it2.coef());
       const auto mono2 = it2.mono();

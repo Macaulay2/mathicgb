@@ -286,7 +286,7 @@ void ClassicGBAlg::insertReducedPoly(
         }
         if (reduced->isZero())
           continue;
-        reduced->makeMonic(); 
+        reduced->makeMonic();
         mBasis.insert(std::move(reduced));
       }
 
@@ -361,7 +361,7 @@ void ClassicGBAlg::step() {
     MATHICGB_ASSERT(p.second != static_cast<size_t>(-1));
     MATHICGB_ASSERT(!mBasis.retired(p.first));
     MATHICGB_ASSERT(!mBasis.retired(p.second));
-    
+
     spairGroup.push_back(p);
   }
   if (spairGroup.empty())
@@ -410,7 +410,7 @@ void ClassicGBAlg::step() {
     return false;
   };
   std::sort(reduced.begin(), reduced.end(), order);
-  
+
   insertPolys(reduced);
   if (mUseAutoTailReduction)
     autoTailReduce();
@@ -562,7 +562,7 @@ void ClassicGBAlg::printStats(std::ostream& out) const {
   value << mic::ColumnPrinter::commafy(clLongestReduction) << '\n';
   extra << '\n';*/
 
-  //SPairs::Stats sPairStats = mSPairs.stats();  
+  //SPairs::Stats sPairStats = mSPairs.stats();
   unsigned long long marginal = sPairStats.sPairsConsidered;
 
   unsigned long long const primeHits = sPairStats.relativelyPrimeHits;

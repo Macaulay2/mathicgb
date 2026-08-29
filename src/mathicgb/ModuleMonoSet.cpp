@@ -101,7 +101,7 @@ public:
     }
   }
 
-  
+
   virtual size_t elementCount() const {
     size_t count = 0;
     for (size_t c = 0; c < componentCount(); ++c)

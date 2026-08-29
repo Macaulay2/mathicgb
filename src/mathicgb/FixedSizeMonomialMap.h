@@ -192,7 +192,7 @@ public:
   std::pair< std::pair<const mapped_type*, ConstMonoPtr>, bool>
   insert(const value_type& value) {
     const mtbb::lock_guard lockGuard(mInsertionMutex);
-    
+
     // find() loads buckets with memory_order_consume, so it may seem like
     // we need some extra synchronization to make sure that we have the
     // most up to date view of the bucket that value.first goes in -
@@ -298,7 +298,7 @@ private:
 
   static size_t hashMaskToBucketCount(const HashValue mask) {
     const auto count = static_cast<size_t>(mask) + 1u; // should be power of 2
-    MATHICGB_ASSERT(count > 0 && (count & (count - 1)) == 0); 
+    MATHICGB_ASSERT(count > 0 && (count & (count - 1)) == 0);
     return count;
   }
 
@@ -330,9 +330,9 @@ public:
     typedef std::forward_iterator_tag iterator_category;
     typedef std::pair<mapped_type, ConstMonoRef> value_type;
     typedef ptrdiff_t difference_type;
-	typedef size_t distance_type;
-	typedef value_type* pointer;
-	typedef value_type& reference;
+    typedef size_t distance_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
 
     const_iterator(): mNode(0), mBucket(0), mBucketsEnd(0) {}
 
