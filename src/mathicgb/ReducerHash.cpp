@@ -22,7 +22,7 @@ class ReducerHash : public TypicalReducer {
 public:
   ReducerHash(const PolyRing &ring);
 
-  virtual std::string description() const { 
+  virtual std::string description() const {
     return mQueue.getName() + "-hashed";
   }
 
@@ -47,7 +47,7 @@ public:
       return ring().monoid().lessThan(a->mono(), b->mono());
     }
   };
-  
+
 private:
   mutable std::vector<PolyHashTable::Node*> mNodesTmp;
   const PolyRing &mRing;

@@ -11,7 +11,7 @@
 #include <algorithm>
 #include <vector>
 #include <stdexcept>
-#include <map>  
+#include <map>
 #include <string>
 #include <cstdio>
 #include <iostream>
@@ -233,7 +233,7 @@ namespace {
 
     mtbb::enumerable_thread_specific<DenseRow> denseRowPerThread([&](){
       return DenseRow();
-    }); 
+    });
 
     SparseMatrix tmp(qm.topRight.memoryQuantum());
 
@@ -275,10 +275,10 @@ namespace {
         mtbb::lock_guard lockGuard(lock);
         //        const std::lock_guard<std::mutex> lockGuard(lock);
         for (size_t pivot = 0; pivot < pivotCount; ++pivot) {
-		  MATHICGB_ASSERT(denseRow[pivot] < std::numeric_limits<SparseMatrix::Scalar>::max());
+          MATHICGB_ASSERT(denseRow[pivot] < std::numeric_limits<SparseMatrix::Scalar>::max());
           if (denseRow[pivot] != 0)
             tmp.appendEntry(rowThatReducesCol[pivot], static_cast<SparseMatrix::Scalar>(denseRow[pivot]));
-	    }
+        }
         tmp.rowDone();
         rowOrder[tmp.rowCount() - 1] = row;
       }
@@ -307,7 +307,7 @@ namespace {
       //      const std::lock_guard<std::mutex> lockGuard(lock);
 
       bool zero = true;
-	  for (SparseMatrix::ColIndex col = 0; col < rightColCount; ++col) {
+      for (SparseMatrix::ColIndex col = 0; col < rightColCount; ++col) {
         const auto entry =
           static_cast<SparseMatrix::Scalar>(denseRow[col] % modulus);
         if (entry != 0) {
@@ -406,7 +406,7 @@ namespace {
     const auto colCount = toReduce.computeColCount();
     const auto rowCount = toReduce.rowCount();
 
-    // convert to dense representation 
+    // convert to dense representation
     std::vector<DenseRow> dense(rowCount);
     mtbb::parallel_for(mtbb::blocked_range<SparseMatrix::RowIndex>(0, rowCount),
       [&](const mtbb::blocked_range<SparseMatrix::RowIndex>& range)
@@ -600,7 +600,7 @@ SparseMatrix::ColIndex leadingColumn(
   const std::vector< std::vector<SparseMatrix::Scalar>>& matrix,
   const SparseMatrix::RowIndex row,
   const SparseMatrix::ColIndex colCount,
-  SparseMatrix::ColIndex startAtCol 
+  SparseMatrix::ColIndex startAtCol
 ) {
   assert(row < matrix.size());
   assert(matrix[row].size() == colCount);
@@ -617,14 +617,14 @@ void rowReducedEchelonMatrix(
   const SparseMatrix::Scalar modulus
 ) {
   assert(matrix.empty() || matrix[0].size() == colCount);
-  const	SparseMatrix::RowIndex rowCount =
+  const SparseMatrix::RowIndex rowCount =
     static_cast<SparseMatrix::RowIndex>(matrix.size());
   // pivotRowOfCol[i] is the pivot in column i or rowCount
   // if we have not identified such a pivot so far.
   std::vector<SparseMatrix::RowIndex> pivotRowOfCol(colCount, rowCount);
-  
+
   // row reduce to row echelon form
-  for(SparseMatrix::RowIndex row=0; row<rowCount;++row) { 
+  for(SparseMatrix::RowIndex row=0; row<rowCount;++row) {
     SparseMatrix::ColIndex leadingCol = 0;
     while (true) { // reduce row by previous pivots
       leadingCol = leadingColumn(matrix, row, colCount, leadingCol);
@@ -637,13 +637,13 @@ void rowReducedEchelonMatrix(
         break; // row is now a pivot
       }
       const auto multiple = modularNegative(matrix[row][leadingCol], modulus);
-	  addRowMultipleInplace
-	    (matrix, pivotRow, multiple, row, leadingCol, colCount, modulus);
+      addRowMultipleInplace
+        (matrix, pivotRow, multiple, row, leadingCol, colCount, modulus);
     }
   }
 
   // row reduce to reduced row echelon form
-  for (SparseMatrix::RowIndex row = 0; row < rowCount;++row) { 
+  for (SparseMatrix::RowIndex row = 0; row < rowCount;++row) {
     const auto lead = leadingColumn(matrix, row, colCount, 0);
     if (lead == colCount)
       continue; // row is zero
@@ -652,11 +652,11 @@ void rowReducedEchelonMatrix(
       if(pivotRow == rowCount)
         continue; // no pivot for this column
       const auto multiple = modularNegative(matrix[row][col], modulus);
-	  addRowMultipleInplace
+      addRowMultipleInplace
         (matrix, pivotRow, multiple, row, col, colCount, modulus);
     }
   }
-}   
+}
 
 SparseMatrix reduceToEchelonFormShrawan(
   const SparseMatrix& toReduce,
@@ -757,7 +757,7 @@ SparseMatrix F4MatrixReducer::reducedRowEchelonForm(
   if (useShrawan) {
     if (useDelayedModulus)
       return reduceToEchelonFormShrawanDelayedModulus(matrix, mModulus);
-    else    
+    else
       return reduceToEchelonFormShrawan(matrix, mModulus);
   } else {
     // todo: actually do some work to find a good way to determine

@@ -50,7 +50,7 @@ public:
 private:
   virtual void resetReducer();
 
-  // Represents a term multiple of a polynomial, 
+  // Represents a term multiple of a polynomial,
   // together with a current term of the multiple.
   struct MultipleWithPos {
     MultipleWithPos(const Poly& poly, NewConstTerm multiple);
@@ -59,7 +59,7 @@ private:
     const Poly::ConstTermIterator end;
     NewTerm multiple;
 
-    // invariant: current is the monomial product of multiple.monom 
+    // invariant: current is the monomial product of multiple.monom
     // and pos.getMonomial().
     MonoPtr current;
 
@@ -130,7 +130,7 @@ ReducerPack<Q>::MultipleWithPos::MultipleWithPos(
 
 template<template<typename> class Q>
 void ReducerPack<Q>::MultipleWithPos::computeCurrent(const PolyRing& ring) {
-  ring.monoid().multiply(*multiple.mono, pos.mono(), *current);  
+  ring.monoid().multiply(*multiple.mono, pos.mono(), *current);
 }
 
 template<template<typename> class Q>
@@ -161,7 +161,7 @@ bool ReducerPack<Q>::leadTerm(NewConstTerm& result)
       MultipleWithPos* entry = mQueue.top();
       std::swap(mLeadTerm.mono, entry->current);
       entry->currentCoefficient(mRing, mLeadTerm.coef);
-    
+
       while (true) {
         ++entry->pos;
         if (entry->pos == entry->end) {
@@ -172,10 +172,10 @@ bool ReducerPack<Q>::leadTerm(NewConstTerm& result)
           entry->computeCurrent(mRing);
           mQueue.decreaseTop(entry);
         }
-      
+
         if (mQueue.empty())
           break;
-      
+
         entry = mQueue.top();
         if (!mRing.monoid().equal(*entry->current, *mLeadTerm.mono))
           break;

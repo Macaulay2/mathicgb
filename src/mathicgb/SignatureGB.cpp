@@ -212,7 +212,7 @@ bool SignatureGB::step() {
 
   while (!mKoszuls.empty() && R->monoid().lessThan(mKoszuls.top(), *sig))
     mKoszuls.pop();
-  
+
   if (!mKoszuls.empty() && R->monoid().equal(mKoszuls.top(), *sig)) {
     ++stats_koszulEliminated;
     // This signature is of a syzygy that is not in Hsyz, so add it
@@ -259,7 +259,7 @@ bool SignatureGB::step() {
       std::swap(p.first, p.second);
 
     auto greaterSig = GB->signature(p.first);
-    auto smallerLead = GB->leadMono(p.second);   
+    auto smallerLead = GB->leadMono(p.second);
     monomial koszul = R->allocMonomial();
     monoid().multiply(greaterSig, smallerLead, koszul);
     if (Hsyz->member(koszul))
@@ -330,7 +330,7 @@ void SignatureGB::displayPaperStats(std::ostream& out) const {
   name << "Removed via low base divisor:\n";
   value << mic::ColumnPrinter::commafy(stats.lowBaseDivisorHits) << '\n';
   extra << '\n';
-  
+
   name << "Removed via high base divisor:\n";
   value << mic::ColumnPrinter::commafy(stats.highBaseDivisorHits) << '\n';
   extra << '\n';
@@ -382,11 +382,11 @@ void SignatureGB::displayPaperStats(std::ostream& out) const {
   extra << '\n';*/
 
   /*
-  unsigned long long nleft = considered 
-    - stats.nonregularSPairs 
-    - stats.lowBaseDivisorHits 
+  unsigned long long nleft = considered
+    - stats.nonregularSPairs
+    - stats.lowBaseDivisorHits
     - stats.highBaseDivisorHits
-    - stats.syzygyModuleHits 
+    - stats.syzygyModuleHits
     - stats.earlyRelativelyPrimePairs
     - stats.earlySingularCriterionPairs;
   if (nleft != stats.queuedPairs) {
@@ -401,7 +401,7 @@ void SignatureGB::displayPaperStats(std::ostream& out) const {
     - reducerStats.singularReductions
     - reducerStats.zeroReductions
     - nonzeroReductions;
-  
+
   name << "Number of spairs unaccounted for:\n";
   value << mic::ColumnPrinter::commafy(nleft) << '\n';
   extra << '\n';*/

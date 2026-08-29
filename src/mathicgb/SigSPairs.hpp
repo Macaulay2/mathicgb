@@ -105,7 +105,7 @@ private:
     BaseDivisor& divisor2,
     size_t& highDivisorCmp,
     size_t newGenerator);
-  
+
   const PolyRing *R;
 
   // if true, apply the early singular criterion

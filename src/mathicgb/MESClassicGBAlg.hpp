@@ -16,7 +16,7 @@ namespace mgbF4 {
     int monoLookupType;
     bool preferSparseReducers;
     size_t sPairQueueType;
-    
+
     unsigned int breakAfter;
     unsigned int printInterval;
     unsigned int sPairGroupSize;
@@ -25,7 +25,7 @@ namespace mgbF4 {
     bool useAutoTailReduction;
     std::function<bool(void)> callback;
   };
-  
+
   Basis computeGBClassicAlg(Basis&& inputBasis, ClassicGBAlgParams params);
   Basis computeModuleGBClassicAlg(Basis&& inputBasis, ClassicGBAlgParams params);
 };

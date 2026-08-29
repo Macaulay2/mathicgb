@@ -138,7 +138,7 @@ private:
 
   static size_t hashMaskToBucketCount(const HashValue mask) {
     const auto count = static_cast<size_t>(mask) + 1u; // should be power of 2
-    MATHICGB_ASSERT(count > 0 && (count & (count - 1)) == 0); 
+    MATHICGB_ASSERT(count > 0 && (count & (count - 1)) == 0);
     return count;
   }
 

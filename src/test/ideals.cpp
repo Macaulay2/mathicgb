@@ -8,7 +8,7 @@
 using namespace mgb;
 
 std::string smallIdealComponentLastDescending() {
-  return 
+  return
     "32003 6\n"
     "1 1 1 1 1 1 1\n"
     "_revlex revcomponent\n"
@@ -37,7 +37,7 @@ const char* idealSmallInitial =
   "  bc\n  b2\n  acd\n  abd\n  a2be\n  a2d2\n  a3de\n  a4e2\n";
 
 std::string liuIdealComponentLastDescending() {
-  return 
+  return
     "2 6\n"
     "1 1 1 1 1 1 1\n"
     "_revlex revcomponent\n"
@@ -48,7 +48,7 @@ std::string liuIdealComponentLastDescending() {
     "ab+ac+df+ef\n";
 }
 
-const char* liu_gb_strat0_free1 = 
+const char* liu_gb_strat0_free1 =
 "\
 0 <0>  bc+bd+af+ef\n\
 1 <1>  ac+cd+bf+ef\n\
@@ -167,7 +167,7 @@ const char* weispfennig97_syzygies_strat0_free5 =
 const char* weispfennig97_initial_strat0_free5 =
   "  b4\n  a2b2c\n  a3b2\n  a4d2\n  b3c4\n  ab3c3\n  a2bc3d2\n  a3c3d2\n  ab3c2d2\n  a3bc4\n  a3bd5\n  a2c5d2\n  ab2c4d2\n  a2b3d5\n  b2c6d2\n  abc6d2\n  a2c4d5\n  bc8d2\n  ac6d5\n  abc5d5\n  bc7d5\n  c9d5\n";
 
-const char* Gert93RawIdeal = 
+const char* Gert93RawIdeal =
   "3\n"
   "ab-b2-4bc+ae\n"
   "a2c-6bc2+a2f\n"

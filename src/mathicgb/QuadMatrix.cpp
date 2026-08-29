@@ -108,12 +108,12 @@ std::string QuadMatrix::toString() const {
 
 size_t QuadMatrix::memoryUse() const {
   return topLeft.memoryUse() + topRight.memoryUse() +
-	bottomLeft.memoryUse() + bottomRight.memoryUse();
+    bottomLeft.memoryUse() + bottomRight.memoryUse();
 }
 
 size_t QuadMatrix::memoryUseTrimmed() const {
   return topLeft.memoryUseTrimmed() + topRight.memoryUseTrimmed() +
-	bottomLeft.memoryUseTrimmed() + bottomRight.memoryUseTrimmed();
+    bottomLeft.memoryUseTrimmed() + bottomRight.memoryUseTrimmed();
 }
 
 void QuadMatrix::printStatistics(std::ostream& out) const {
@@ -171,8 +171,8 @@ void QuadMatrix::printStatistics(std::ostream& out) const {
 
   out << '\n' << pr
     << "       Total memory: " << ColPr::bytesInUnit(memoryUse()) << " ("
-	<< ColPr::percentInteger(memoryUseTrimmed(), totalMemory)
-	<< " used)\n\n";
+    << ColPr::percentInteger(memoryUseTrimmed(), totalMemory)
+    << " used)\n\n";
 }
 
 QuadMatrix QuadMatrix::toCanonical() const {
@@ -242,7 +242,7 @@ QuadMatrix QuadMatrix::toCanonical() const {
 
   matrix.leftColumnMonomials = leftColumnMonomials;
   matrix.rightColumnMonomials = rightColumnMonomials;
-  
+
   return matrix;
 }
 
@@ -314,12 +314,12 @@ void QuadMatrix::sortColumnsLeftRightParallel() {
   typedef SparseMatrix::ColIndex ColIndex;
   std::vector<ColIndex> leftPermutation;
   std::vector<ColIndex> rightPermutation;
-  
+
   mtbb::parallel_for(0, 2, 1, [&](int i) {
     if (i == 0)
       leftPermutation =
         sortColumnMonomialsAndMakePermutation(leftColumnMonomials, monoid());
-    else 
+    else
       rightPermutation =
         sortColumnMonomialsAndMakePermutation(rightColumnMonomials, monoid());
   });
@@ -356,7 +356,7 @@ SparseMatrix::Scalar QuadMatrix::read(FILE* file) {
   rightColumnMonomials.clear();
 
   const auto topLeftModulus = topLeft.read(file);
-#ifdef MATHICGB_DEBUG  
+#ifdef MATHICGB_DEBUG
   const auto topRightModulus = topRight.read(file);
   const auto bottomLeftModulus = bottomLeft.read(file);
   const auto bottomRightModulus = bottomRight.read(file);

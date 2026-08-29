@@ -48,7 +48,7 @@ public:
   MonoArena& operator=(MonoArena&& a) {
     MATHICGB_ASSERT(monoid() == a.monoid());
     mVectors = std::move(a.mVectors);
-    return *this;      
+    return *this;
   }
 
 

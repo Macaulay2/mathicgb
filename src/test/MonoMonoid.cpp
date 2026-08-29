@@ -123,8 +123,8 @@ void testMonoVector() {
     for (VarIndex var = 0; var < varCount; ++var) {
       const auto exponent = expect(i, var, varCount);
       if (exponent != 0) {
-	allZero = false;
-	monoid.setExponent(var, exponent, v.back());
+    allZero = false;
+    monoid.setExponent(var, exponent, v.back());
       }
     }
     ASSERT_EQ(allZero, monoid.isIdentity(v.back())); // isIdentity false
@@ -171,7 +171,7 @@ void testMonoVector() {
   ASSERT_FALSE(v3 != v2); // operator!=, false, same length
   v3.push_back();
   ASSERT_TRUE(v3 != v2); // operator!=, true, different length
-  
+
 
   ASSERT_FALSE(v3 == v);
   v3 = v; // copy assignment
@@ -199,7 +199,7 @@ TYPED_TEST(Monoids, MonoVector) {
   typedef TypeParam Monoid;
   typedef typename Monoid::MonoVector MonoVector;
 
-  testMonoVector<Monoid, MonoVector>(); 
+  testMonoVector<Monoid, MonoVector>();
 }
 
 TYPED_TEST(Monoids, MonoArena) {
@@ -298,9 +298,9 @@ TYPED_TEST(Monoids, MonoPool) {
       }
       monos.emplace_back(std::move(m1));
     }
-    
+
     // This ensures that we get to each entry in monos exactly once.
-    MATHICGB_ASSERT((count % 17) != 0); 
+    MATHICGB_ASSERT((count % 17) != 0);
     int i = 0;
     do {
       MATHICGB_ASSERT(!monos[i].isNull());
@@ -364,7 +364,7 @@ TYPED_TEST(Monoids, setExponentAndComponent) {
 
   v.push_back(); // a
   m.setExponent(0, 1, v.back());
- 
+
   v.push_back(); // z
   m.setExponent(25, 1, v.back());
 
@@ -439,7 +439,7 @@ TYPED_TEST(Monoids, MultiplyDivide) {
     ASSERT_TRUE(m.isProductOf(a, b, c));
     ASSERT_TRUE(m.isProductOfHintTrue(a, b, c));
     ASSERT_TRUE(m.isTwoProductsOfHintTrue(a, a, b, c, c));
-    
+
 
     // a*b == c using multiply
     m.multiply(a, b, mono);
@@ -527,7 +527,7 @@ TYPED_TEST(Monoids, MultiplyDivide) {
     m.divideToNegative(a, b, mono);
     m.multiply(a, mono, mono);
     ASSERT_TRUE(m.equal(mono, b));
-    
+
     m.divideToNegative(b, a, mono);
     m.multiply(b, mono, mono);
     ASSERT_TRUE(m.equal(mono, a));
@@ -636,7 +636,7 @@ TYPED_TEST(Monoids, Order) {
       ASSERT_EQ(m.compare(*greater, *greater), Monoid::EqualTo);
       ASSERT_TRUE(m.equal(*greater, *greater));
       ASSERT_FALSE(m.lessThan(*greater, *greater));
-      
+
       for (auto lesser = v.begin(); lesser != greater; ++lesser) {
         ASSERT_FALSE(m.equal(*lesser, *greater));
         ASSERT_TRUE(m.lessThan(*lesser, *greater))
@@ -790,7 +790,7 @@ TYPED_TEST(Monoids, HasAmpleCapacityTotalDegree) {
 
   for (VarIndex varCount = 1; varCount < 33; ++varCount) {
     Monoid monoidTotalDegree(varCount);
-    
+
     std::vector<Exponent> ones(varCount, 1);
     Monoid monoidTotalDegreeImplicit
       (Order(varCount, std::move(ones), Order::RevLexBaseOrderFromRight));
@@ -959,4 +959,3 @@ TYPED_TEST(Monoids, CopyEqualConversion) {
     ASSERT_TRUE(some.equal(some2, some3));
   }
 }
-

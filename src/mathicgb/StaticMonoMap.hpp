@@ -408,7 +408,7 @@ ReturnType staticMonoLookupMake(
       return Functor<0, 1, 1>::make(std::forward<Params>(params));
     else
       return Functor<0, 0, 1>::make(std::forward<Params>(params));
-    
+
   case 2:
     if (allowRemovals)
       return Functor<1, 1, 1>::make(std::forward<Params>(params));
@@ -430,7 +430,7 @@ ReturnType staticMonoLookupMake(
   default:
     MATHICGB_ASSERT_NO_ASSUME(false);
     throw std::runtime_error("Unknown code for monomial data structure");
-  }  
+  }
 }
 
 MATHICGB_NAMESPACE_END

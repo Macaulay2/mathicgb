@@ -25,7 +25,7 @@ public:
   virtual const char* name() const;
   virtual const char* description() const;
   virtual const char* shortDescription() const;
-  
+
   virtual void pushBackParameters(std::vector<mic::CliParameter*>& parameters);
 
 private:

@@ -176,7 +176,7 @@ private:
       mBaseOrder == LexBaseOrderFromLeft ||
       mBaseOrder == RevLexBaseOrderFromLeft ||
       mBaseOrder == LexBaseOrderFromRight ||
-      mBaseOrder == RevLexBaseOrderFromRight 
+      mBaseOrder == RevLexBaseOrderFromRight
     );
 #endif
     return true;

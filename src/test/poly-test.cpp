@@ -89,7 +89,7 @@ TEST(Monomial, parse) {
 
 TEST(Monomial,compare) {
   std::unique_ptr<PolyRing> R(ringFromString("32003 6 1\n1 1 1 1 1 1"));
-  
+
   Monomial mone = stringToMonomial(R.get(), "<0>");
   Monomial mone2 = stringToMonomial(R.get(), "1");
   Monomial m1 = stringToMonomial(R.get(), "ab2<0>");
@@ -209,7 +209,7 @@ void testMonomialOps(const PolyRing* R, std::string s1, std::string s2)
   Monomial m2 = stringToMonomial(R, s2);
   //  Monomial m3 = stringToMonomial(R, "abcdef<0>");
 
- 
+
   Monomial m4 = R->allocMonomial();
   Monomial lcm = R->allocMonomial();
   Monomial m8 = R->allocMonomial();
@@ -538,11 +538,11 @@ TEST(MTArray,KDTree1) {
 
 //#warning "remove this code"
 #if 0
-bool test_find_signatures(const PolyRing *R, 
-			  const_monomial u1, 
-			  const_monomial u2, 
-			  const_monomial v1, 
-			  const_monomial v2)
+bool test_find_signatures(const PolyRing *R,
+              const_monomial u1,
+              const_monomial u2,
+              const_monomial v1,
+              const_monomial v2)
 {
   monomial g = new int[R->maxMonomialSize()];
   monomial t1 = new int[R->maxMonomialSize()];
@@ -555,7 +555,7 @@ bool test_find_signatures(const PolyRing *R,
   monomial x1g = new int[R->maxMonomialSize()];
   monomial p = new int[R->maxMonomialSize()];
   monomial m = new int[R->maxMonomialSize()];
-  
+
 
   R->monomialFindSignature(v1,v2,u1,t1);
   R->monomialFindSignature(v2,v1,u2,t2);
@@ -598,8 +598,8 @@ TEST(OldMonomial, findSignatures) {
   PolyRing *R = ringFromString("32003 6 1\n1 1 1 1 1 1");
   monomial v1 = monomialFromString(R, "0 3  5 2  1 2  0 1"); // ab2f2
   monomial v2 = monomialFromString(R, "0 3  2 3  1 1  0 1"); // abc3
-  monomial u1 = monomialFromString(R, "2 3  4 1  1 2  0 1"); // 
-  monomial u2 = monomialFromString(R, "3 2  1 1  0 2"); // 
+  monomial u1 = monomialFromString(R, "2 3  4 1  1 2  0 1"); //
+  monomial u2 = monomialFromString(R, "3 2  1 1  0 2"); //
   EXPECT_TRUE(test_find_signatures(R,u1,u2,v1,v2));
 }
 #endif

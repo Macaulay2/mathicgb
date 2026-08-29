@@ -135,7 +135,7 @@ namespace {
     }
   private:
     size_t const mNewGen;
-	mathic::BitTriangle& mEliminated;
+    mathic::BitTriangle& mEliminated;
     std::vector<size_t>& mIndexes;
   };
 }
@@ -169,27 +169,27 @@ namespace {
   template<class PairIterator>
   class SecondIterator {
   public:
-	typedef typename PairIterator::iterator_category iterator_category;
+    typedef typename PairIterator::iterator_category iterator_category;
     typedef decltype(reinterpret_cast<typename PairIterator::value_type*>(0)->second) value_type;
-	typedef typename PairIterator::difference_type difference_type;
-	typedef value_type* pointer;
-	typedef value_type& reference;
+    typedef typename PairIterator::difference_type difference_type;
+    typedef value_type* pointer;
+    typedef value_type& reference;
 
-	SecondIterator(PairIterator pairIterator): mIterator(pairIterator) {}
-	SecondIterator& operator++() {++mIterator; return *this;}
+    SecondIterator(PairIterator pairIterator): mIterator(pairIterator) {}
+    SecondIterator& operator++() {++mIterator; return *this;}
     const value_type operator*() const {return mIterator->second;}
-	difference_type operator-(const SecondIterator<PairIterator>& it) const {
-	  return mIterator - it.mIterator;
-	}
-	bool operator==(const SecondIterator<PairIterator>& it) const {
-	  return mIterator == it.mIterator;
-	}
-	bool operator!=(const SecondIterator<PairIterator>& it) const {
-	  return mIterator != it.mIterator;
-	}
+    difference_type operator-(const SecondIterator<PairIterator>& it) const {
+      return mIterator - it.mIterator;
+    }
+    bool operator==(const SecondIterator<PairIterator>& it) const {
+      return mIterator == it.mIterator;
+    }
+    bool operator!=(const SecondIterator<PairIterator>& it) const {
+      return mIterator != it.mIterator;
+    }
 
   private:
-	PairIterator mIterator;
+    PairIterator mIterator;
   };
   template<class Iter>
   SecondIterator<Iter> makeSecondIterator(Iter it) {
@@ -260,7 +260,7 @@ void SPairs::addPairs(size_t newGen) {
       (b.second, newGen, b.first, a.second, newGen, a.first);
   });
   mQueue.addColumnDescending
-	(makeSecondIterator(prePairs.begin()), makeSecondIterator(prePairs.end()));
+    (makeSecondIterator(prePairs.begin()), makeSecondIterator(prePairs.end()));
 }
 
 size_t SPairs::getMemoryUse() const {
@@ -656,7 +656,7 @@ bool SPairs::advancedBuchbergerLcmCriterionSlow(size_t a, size_t b) const {
       monoid().lcm(leadNode, leadOther, lcm);
       if (!eliminated(node.first, other) && monoid().equal(*lcm, *lcmAB))
         continue; // not an edge in G
-      
+
       if (graph[i].second == NotConnected) {
         graph[i].second = node.second;
         todo.push_back(i);

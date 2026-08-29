@@ -58,7 +58,7 @@ public:
   // the purpose of pairWith is to make it possible to make an
   // assertion saying that the caller and the queue agree on what
   // pairWith is.
-  // 
+  //
   // ATTENTION: pairsConsumed will be cleared and the signatures in it
   // will be freed on the ring. This is because the queue will need to
   // alter pairsConsumed in various ways and clearing it after that is

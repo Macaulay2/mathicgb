@@ -69,7 +69,7 @@ void PolyRing::monomialMultTo(Monomial &a, ConstMonomial b) const
 }
 
 
-void PolyRing::monomialCopy(ConstMonomial a, 
+void PolyRing::monomialCopy(ConstMonomial a,
                             Monomial& result) const
 {
   monoid().copy(a, result);
@@ -91,7 +91,7 @@ void PolyRing::monomialFindSignature(ConstMonomial v1,
   monoid().colonMultiply(v1, v2, u1, t1);
 }
 
-size_t PolyRing::monomialSizeOfSupport(ConstMonomial m) const 
+size_t PolyRing::monomialSizeOfSupport(ConstMonomial m) const
 {
   return monoid().sizeOfSupport(m);
 }
@@ -116,7 +116,7 @@ void PolyRing::mysteriousSPairMonomialRoutine(ConstMonomial newSig,
 // allowed letters: a-zA-Z
 // also allowed instead of letter: [ number ], [0] refers to first var, etc.
 // What about errors??
-void PolyRing::monomialParse(std::istream &i, 
+void PolyRing::monomialParse(std::istream &i,
                              Monomial& result) const
 {
 //  monoid().parseM2(i, result);
@@ -160,9 +160,9 @@ void PolyRing::monomialParse(std::istream &i,
   setWeightsAndHash(result);
 }
 
-void PolyRing::monomialDisplay(std::ostream &o, 
-                               ConstMonomial a, 
-                               bool print_comp, 
+void PolyRing::monomialDisplay(std::ostream &o,
+                               ConstMonomial a,
+                               bool print_comp,
                                bool print_one) const
 {
   // We display a monomial in the form that can be used with monomialParse
@@ -186,9 +186,9 @@ void PolyRing::monomialDisplay(std::ostream &o,
     o << "1";
 }
 
-void PolyRing::monomialDisplay(FILE* file, 
-                               ConstMonomial mono, 
-                               bool printComponent, 
+void PolyRing::monomialDisplay(FILE* file,
+                               ConstMonomial mono,
+                               bool printComponent,
                                bool printOne) const
 {
   const unsigned int letterCount = 26;

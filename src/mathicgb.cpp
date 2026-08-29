@@ -243,7 +243,7 @@ namespace mgbi {
       "The component passed to appendTermBegin must be strictly less "
       "than the number of components."
     );
-     
+
     mPimpl->state = Pimpl::MakingTerm;
     mPimpl->seenTermCount += 1;
     mPimpl->lastVar = std::numeric_limits<decltype(mPimpl->lastVar)>::max();
@@ -274,7 +274,7 @@ namespace mgbi {
     );
 
     mPimpl->lastVar = index;
-    
+
     MATHICGB_ASSERT(mPimpl->debugAssertValid());
   }
 
@@ -295,7 +295,7 @@ namespace mgbi {
       "appendTermDone() must only be called after appendTermBegin()."
     );
     mPimpl->state = Pimpl::MakingPoly;
-    
+
     MATHICGB_ASSERT(mPimpl->debugAssertValid());
   }
 
@@ -458,7 +458,7 @@ GroebnerConfiguration::~GroebnerConfiguration() {
 auto GroebnerConfiguration::modulus() const -> Coefficient {
   return mPimpl->mModulus;
 }
- 
+
 auto GroebnerConfiguration::varCount() const -> VarIndex {
   return mPimpl->mVarCount;
 }
@@ -655,7 +655,7 @@ struct GroebnerInputIdealStream::Pimpl {
   Monomial monomial;
   const GroebnerConfiguration conf;
   MATHICGB_IF_DEBUG(bool hasBeenDestroyed);
-  MATHICGB_IF_DEBUG(StreamStateChecker checker); 
+  MATHICGB_IF_DEBUG(StreamStateChecker checker);
 };
 
 GroebnerInputIdealStream::GroebnerInputIdealStream(
@@ -929,7 +929,7 @@ namespace mgbi {
     const auto tbbMaxThreadCount = maxThreadCount == 0 ?
       mtbb::task_arena::automatic : maxThreadCount;
     mtbb::task_arena scheduler(tbbMaxThreadCount);
-    
+
     // Set up logging
     LogDomainSet::singleton().reset();
     LogDomainSet::singleton().performLogCommands(conf.logging());
@@ -974,7 +974,7 @@ namespace mgbi {
             computeGBClassicAlg(std::move(basis), params) :
             computeModuleGBClassicAlg(std::move(basis), params);
     });
-    
+
     typedef mgb::GroebnerConfiguration::Callback::Action Action;
     if (callback.lastAction() != Action::StopWithNoOutputAction) {
       PimplOf()(output).basis = make_unique<Basis>(std::move(gb));

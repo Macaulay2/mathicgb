@@ -90,7 +90,7 @@ public:
   virtual void setMemoryQuantum(size_t quantum) = 0;
 
 
-  // ***** Kinds of reducers and creating a Reducer 
+  // ***** Kinds of reducers and creating a Reducer
 
   enum ReducerType {
     Reducer_TourTree_NoDedup = 7,
@@ -130,7 +130,7 @@ public:
   class Registration {
   public:
     Registration(
-      const char* name, 
+      const char* name,
       ReducerType id,
       std::unique_ptr<Reducer> (*create)(const PolyRing&)
     );
@@ -138,7 +138,7 @@ public:
   private:
     friend class Reducer;
 
-    const char* mName; 
+    const char* mName;
     ReducerType mId;
     std::unique_ptr<Reducer> (*mCreate)(const PolyRing&);
   };
@@ -157,7 +157,7 @@ public:
         return CREATE; \
       } \
     ); \
-  } 
+  }
 
 MATHICGB_NAMESPACE_END
 #endif

@@ -47,7 +47,7 @@ namespace {
     }
 
     const PolyRing& ring() const {return *mRing;}
-     
+
   private:
     std::unique_ptr<PolyRing> mRing;
     Basis mIdeal;
@@ -91,13 +91,13 @@ TEST(F4MatrixBuilder, SPair) {
     scheduler.execute([&builder,&qm]{
       builder.buildMatrixAndClear(qm);
     });
-    const char* const str1 = 
+    const char* const str1 =
       "Left columns: c2d\n"
       "Right columns: bd 1\n"
       "0: 0#1   | 0: 1#3  \n"
       "         |         \n"
       "0: 0#100 | 0: 0#100\n";
-    const char* const str2 = 
+    const char* const str2 =
       "Left columns: c2d\n"
       "Right columns: bd 1\n"
       "0: 0#1 | 0: 0#1\n"
@@ -120,7 +120,7 @@ TEST(F4MatrixBuilder, OneByOne) {
     scheduler.execute([&builder, &qm]{
       builder.buildMatrixAndClear(qm);
     });
-    const char* str = 
+    const char* str =
       "Left columns: a2\n"
       "Right columns:\n"
       "0: 0#1 | 0:\n"
@@ -140,7 +140,7 @@ TEST(F4MatrixBuilder, DirectReducers) {
     F4MatrixBuilder& builder = maker.create();
 
     Poly p1(builder.ring());
-    { 
+    {
       std::istringstream in("a3+b2+c+d");
       Scanner scanner(in);
       p1 = MathicIO<>().readPoly(builder.ring(), false, scanner);
@@ -181,7 +181,7 @@ TEST(F4MatrixBuilder, IteratedReducer) {
     builder.addPolynomialToMatrix(p1.leadMono(), p2);
     QuadMatrix qm(builder.ring());
     builder.buildMatrixAndClear(qm);
-    const char* str = 
+    const char* str =
       "Left columns: a5 a4 a3 a2 a\n"
       "Right columns: 1\n"
       "0: 4#1       | 0: 0#100\n"

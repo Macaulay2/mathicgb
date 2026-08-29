@@ -24,7 +24,7 @@ namespace UncharInternal {
   template<bool Signed = std::is_signed<char>::value>
   struct ExtendedChar {typedef signed short type;};
   template<>
-  struct ExtendedChar<false> {typedef unsigned short type;};    
+  struct ExtendedChar<false> {typedef unsigned short type;};
 };
 
 template<>

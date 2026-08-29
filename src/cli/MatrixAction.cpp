@@ -115,7 +115,7 @@ void MatrixAction::performAction() {
         CFile filePbm(wrongFilePbm, "wb");
         lowerRightMatrix.writePBM(filePbm.handle());
       } else if (tracingLevel > 0) {
-        std::cerr << "Match for " << inputFileName 
+        std::cerr << "Match for " << inputFileName
           << " -> " << ReducedLowerRightMatrixExtension << ".\n";
       }
     }

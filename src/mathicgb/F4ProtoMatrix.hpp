@@ -52,4 +52,3 @@ private:
 
 MATHICGB_NAMESPACE_END
 #endif
-    

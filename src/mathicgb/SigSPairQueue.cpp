@@ -26,13 +26,13 @@ namespace {
   template<class PairIterator>
   class IndexIterator {
   public:
-    
+
     typedef typename PairIterator::iterator_category iterator_category;
     typedef decltype(reinterpret_cast<typename PairIterator::value_type*>(0)->i) value_type;
     typedef typename PairIterator::difference_type difference_type;
     typedef value_type* pointer;
     typedef value_type& reference;
-    
+
     IndexIterator(PairIterator pairIterator): mIterator(pairIterator) {}
     IndexIterator& operator++() {++mIterator; return *this;}
     const value_type operator*() const {return mIterator->i;}
@@ -45,7 +45,7 @@ namespace {
     bool operator!=(const IndexIterator<PairIterator>& it) const {
       return mIterator != it.mIterator;
     }
-    
+
   private:
     PairIterator mIterator;
   };
@@ -90,19 +90,19 @@ public:
     if (columnCount() >= std::numeric_limits<BigIndex>::max())
       throw std::overflow_error
         ("Too large basis element index in constructing S-pairs.");
-    
+
     // sort and insert new column
     Comparer cmp(ring().monoid());
     std::sort(pairs.begin(), pairs.end(), cmp);
     typedef IndexIterator<std::vector<PreSPair>::const_iterator> Iter;
     mPairQueue.addColumnDescending(Iter(pairs.begin()), Iter(pairs.end()));
-    
+
     // free signatures
     for (auto& spair : pairs)
       monoid().freeRaw(spair.signature);
     pairs.clear();
   }
-  
+
   virtual std::string name() const {return "todo";}
 
   virtual size_t memoryUse() const {return mPairQueue.getMemoryUse();}

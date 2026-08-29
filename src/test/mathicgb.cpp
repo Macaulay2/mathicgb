@@ -301,7 +301,7 @@ namespace {
           s.appendExponent(3, 1);
         s.appendTermDone(1);
       s.appendPolynomialDone();
- 
+
       s.appendPolynomialBegin(3); // bd<0>-a<1>+c<2>
         s.appendTermBegin(0);
           s.appendExponent(1, 1);
@@ -339,7 +339,7 @@ namespace {
           s.appendExponent(2, 1);
         s.appendTermDone(minusOne);
       s.appendPolynomialDone();
- 
+
     s.idealDone();
   }
 
@@ -499,7 +499,7 @@ TEST(MathicGBLib, NullIdealStream) {
 
 TEST(MathicGBLib, IdealStreamLog) {
   {
-    const char* const idealStr = 
+    const char* const idealStr =
       "s.idealBegin();\n"
       "s.appendPolynomialBegin();\n"
       "s.appendTermBegin(0);\n"
@@ -777,7 +777,7 @@ TEST(MathicGBLib, SimpleEliminationGB) {
       mgb::GroebnerConfiguration::MatrixReducer;
     configuration.setReducer(reducer);
     configuration.setMonomialOrder(
-      mgb::GroebnerConfiguration::BaseOrder::RevLexDescendingBaseOrder, 
+      mgb::GroebnerConfiguration::BaseOrder::RevLexDescendingBaseOrder,
       gradings
     );
 

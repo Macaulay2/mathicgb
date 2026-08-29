@@ -155,7 +155,7 @@ void TypicalReducer::classicReducePolySet
     auto reducedPoly = classicReduce(**it, basis);
     if (!reducedPoly->isZero())
       reducedOut.push_back(std::move(reducedPoly));
-  }  
+  }
 }
 
 void TypicalReducer::setMemoryQuantum(size_t quantum) {

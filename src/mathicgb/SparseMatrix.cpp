@@ -175,7 +175,7 @@ void SparseMatrix::appendRowAndNormalize(
 }
 
 void SparseMatrix::appendRow(const SparseMatrix& matrix, const RowIndex row) {
-  MATHICGB_ASSERT(row < matrix.rowCount()); 
+  MATHICGB_ASSERT(row < matrix.rowCount());
 
   const auto size = matrix.entryCountInRow(row);
   while (mBlock.mScalars.capacityToGo() < size)
@@ -188,7 +188,7 @@ void SparseMatrix::appendRow(const SparseMatrix& matrix, const RowIndex row) {
   mBlock.mColIndices.memcpy(data.mIndicesBegin, size);
   rowDone();
 }
-  
+
 SparseMatrix& SparseMatrix::operator=(const SparseMatrix& matrix) {
   // todo: use copy-swap or copy-move.
   clear();
@@ -268,7 +268,7 @@ void SparseMatrix::appendRowWithModulusNormalized(
   std::vector<uint64> const& v,
   const Scalar modulus
 ) {
-  uint16 multiply = 1; 
+  uint16 multiply = 1;
   bool first = true;
   const auto count = static_cast<ColIndex>(v.size());
   for (ColIndex col = 0; col < count; ++col) {
@@ -361,7 +361,7 @@ void SparseMatrix::reserveFreeEntries(const size_t freeCount) {
     oldBlock->mColIndices.resize
       (std::distance(oldBlock->mColIndices.begin(), mRows.back().mIndicesEnd));
     oldBlock->mScalars.resize
-      (std::distance(oldBlock->mScalars.begin(), mRows.back().mScalarsEnd));      
+      (std::distance(oldBlock->mScalars.begin(), mRows.back().mScalarsEnd));
     mBlock.mPreviousBlock = oldBlock;
   }
 }

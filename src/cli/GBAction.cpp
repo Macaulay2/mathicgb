@@ -92,7 +92,7 @@ void GBAction::performAction() {
       reducerType == Reducer::Reducer_F4_Old,
       mMinMatrixToStore.value() > 0 ? projectName : "",
       mMinMatrixToStore
-    );     
+    );
     reducer = std::move(f4Reducer);
   }
 
@@ -151,4 +151,3 @@ void GBAction::pushBackParameters(
 }
 
 MATHICGB_NAMESPACE_END
-  

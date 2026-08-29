@@ -100,7 +100,7 @@ TEST(F4MatrixReducer, Reduce) {
   m.bottomRight.rowDone();
 
   MATHICGB_ASSERT(m.debugAssertValid());
-  const char* origStr = 
+  const char* origStr =
     "Left columns: a4 a3 a2 a\n"
     "Right columns: b5 b4 b3 b2 b\n"
     "0: 0#1 1#2 3#3       | 0: 2#8                  \n"
@@ -110,7 +110,7 @@ TEST(F4MatrixReducer, Reduce) {
     "                     |                         \n"
     "0:                   | 0:                      \n" // zero row
     "1: 1#9               | 1: 1#2 3#11             \n" // becomes second row
-    "2: 0#2 1#99 2#83 3#6 | 2: 2#16 3#47            \n" // zero on left red.  
+    "2: 0#2 1#99 2#83 3#6 | 2: 2#16 3#47            \n" // zero on left red.
     "3: 0#1 1#1 3#24      | 3: 0#1 2#12 3#13 4#41   \n" // becomes first row
     "4:                   | 4: 0#2 1#2 2#8 3#75 4#90\n" // zero on right red.
     "5: 3#100             | 5: 0#1 1#1 2#4 3#88 4#45\n"; // zero on right red.
