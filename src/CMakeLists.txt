@@ -1,5 +1,5 @@
 if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  add_compile_options(-DMATHICGB_DEBUG -DMATHIC_DEBUG -DMEMT_DEBUG)
+  add_compile_options(-DMATHICGB_DEBUG)
 endif()
 
 add_library(mathicgb
