@@ -64,8 +64,8 @@ private:
     }
     bool cmpLessThan(CompareResult r) const {return r == Monoid::GreaterThan;}
 
-    static const bool fastIndex = false;
-    static const bool supportDeduplication = true;
+    static constexpr bool fastIndex = false;
+    static constexpr bool supportDeduplication = true;
     bool cmpEqual(CompareResult r) const {return r == Monoid::EqualTo;}
 
     Entry deduplicate(Entry a, Entry b) {

@@ -23,7 +23,7 @@ public:
   typedef size_t VarIndex;
   typedef std::vector<Weight> Gradings;
 
-  static const size_t ComponentAfterBaseOrder = static_cast<size_t>(-1);
+  static constexpr size_t ComponentAfterBaseOrder = static_cast<size_t>(-1);
 
   enum BaseOrder {
     /// Lexicographic order with x_0 < x_1 < ... < x_n.

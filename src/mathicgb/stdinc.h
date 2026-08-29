@@ -3,6 +3,10 @@
 #endif
 #define MATHICGB_STDINC_GUARD
 
+#if __cplusplus < 201703L
+#error "mathicgb requires C++17 or later"
+#endif
+
 #ifdef _MSC_VER // For Microsoft Compiler in Visual Studio C++.
 
 /// Sometimes you know that a function will be called very rarely so you want to
@@ -309,8 +313,8 @@ typedef signed char int8;
 /// parallelized using OpenMP.
 typedef signed long OMPIndex;
 
-static const size_t BitsPerByte = 8;
-static const size_t MemoryAlignment = sizeof(void*);
+static constexpr size_t BitsPerByte = 8;
+static constexpr size_t MemoryAlignment = sizeof(void*);
 
 /// The higher the value the more detailed output about what the program
 /// is doing.

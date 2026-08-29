@@ -84,7 +84,7 @@ namespace mtbb {
   class task_arena {
   public:
     task_arena(int) {}
-    static const int automatic = 1;
+    static constexpr int automatic = 1;
     template<typename F>
     auto execute(const F& f) -> decltype(f()) {
         return f();

@@ -159,7 +159,7 @@ namespace mgb { // Part of the public interface of MathicGB
     );
     std::pair<BaseOrder, std::vector<Exponent> > monomialOrder() const;
 
-    static const size_t ComponentAfterBaseOrder = static_cast<size_t>(-1);
+    static constexpr size_t ComponentAfterBaseOrder = static_cast<size_t>(-1);
 
     /// Sets the module monomial order. This order extends the
     /// monomial order in the sense that a<b <=> aM<bM for a,b

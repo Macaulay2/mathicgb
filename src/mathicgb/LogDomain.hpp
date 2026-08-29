@@ -32,7 +32,7 @@ class LogDomain {};
 template<>
 class LogDomain<true> {
 public:
-  static const bool compileTimeEnabled = true;
+  static constexpr bool compileTimeEnabled = true;
 
   LogDomain(
     const char* const name,
@@ -145,7 +145,7 @@ private:
 template<>
 class LogDomain<false> {
 public:
-  static const bool compileTimeEnabled = false;
+  static constexpr bool compileTimeEnabled = false;
 
   LogDomain(const char* const, const char* const, const bool) {}
 
@@ -185,17 +185,17 @@ namespace LogDomainInternal {
   // Helpers for the logging macroes
 
   template<class Tag, bool Default>
-  struct SelectValue {static const bool value = Default;};
+  struct SelectValue {static constexpr bool value = Default;};
 
   template<class> struct Tag_ {};
   template<class> struct Tag_0 {};
   template<class> struct Tag_1 {};
 
   template<bool Default>
-  struct SelectValue<Tag_0<int>, Default> {static const bool value = false;};
+  struct SelectValue<Tag_0<int>, Default> {static constexpr bool value = false;};
 
   template<bool Default>
-  struct SelectValue<Tag_1<int>, Default> {static const bool value = true;};
+  struct SelectValue<Tag_1<int>, Default> {static constexpr bool value = true;};
 
   template<class L>
   struct LambdaRunner {L& log;};
@@ -224,7 +224,7 @@ MATHICGB_NAMESPACE_END
     template<class> struct Tag_MATHICGB_LOG_##NAME {}; \
     typedef MATHICGB_CONCATENATE_AFTER_EXPANSION(Tag_, MATHICGB_LOG_##NAME)<int> \
       SelectedTag_##NAME; \
-    static const bool value_##NAME = \
+    static constexpr bool value_##NAME = \
       SelectValue<SelectedTag_##NAME, DEFAULT_VALUE>::value; \
   }}
 

@@ -236,7 +236,7 @@ private:
   const PolyBasis& mBasis;
   mutable Stats mStats;
 
-  static const bool mUseBuchbergerLcmHitCache = true;
+  static constexpr bool mUseBuchbergerLcmHitCache = true;
   mutable std::vector<size_t> mBuchbergerLcmHitCache;
 
   enum Connection { // used in advancedBuchbergerLcmCriterion().
