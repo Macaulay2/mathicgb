@@ -416,7 +416,6 @@ GroebnerConfiguration::GroebnerConfiguration(
   mPimpl(new Pimpl(modulus, varCount, comCount))
 {
   if (!isPrime(modulus)) {
-    MATHICGB_ASSERT_NO_ASSUME(false);
     std::ostringstream str;
     str << "Modulus " << modulus
       << " is not prime. MathicGB only supports prime fields.";
