@@ -4,6 +4,7 @@
 #include "mathicgb/MathicIO.hpp"
 
 #include <gtest/gtest.h>
+#include <mathic/error.h>
 
 using namespace mgb;
 
@@ -262,6 +263,30 @@ TEST(MathicIO, ReadWriteBaseField) {
   std::ostringstream out;
   MathicIO<>().writeBaseField(field, out);
   ASSERT_EQ("101", out.str());
+}
+
+TEST(MathicIO, ReadBaseFieldRejectsBadModulus) {
+  const char* const bad[] = {
+    "1000004",       // composite
+    "65535",         // composite
+    "1",
+    "0",
+    "-101",
+    "1099511627791", // prime, but past PrimeField's limit of 2^32
+    "4294967297"     // just past the limit
+  };
+  for (const auto str : bad) {
+    Scanner in(str);
+    ASSERT_THROW(MathicIO<>().readBaseField(in), mathic::MathicException)
+      << "should have rejected the modulus " << str;
+  }
+
+  const char* const good[] = {"2", "101", "32003", "65537", "4294967291"};
+  for (const auto str : good) {
+    Scanner in(str);
+    ASSERT_NO_THROW(MathicIO<>().readBaseField(in))
+      << "should have accepted the modulus " << str;
+  }
 }
 
 TEST(MathicIO, ReadWriteOrder) {

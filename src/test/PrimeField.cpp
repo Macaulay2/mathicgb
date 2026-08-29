@@ -5,6 +5,7 @@
 
 #include <gtest/gtest.h>
 #include <sstream>
+#include <vector>
 
 using namespace mgb;
 
@@ -225,4 +226,71 @@ TEST(PrimeField, PlusOne) {
   const PrimeField<uint32> pf32(4294967291u);
   ASSERT_EQ
     (pf32.toElement(3015615332u), pf32.plusOne(pf32.toElement(3015615331u)));
+}
+
+TEST(PrimeField, MaxCharacteristic) {
+  // Limited by what the type can store.
+  ASSERT_EQ(255u, PrimeField<uint8>::maxCharacteristic());
+  ASSERT_EQ(65535u, PrimeField<uint16>::maxCharacteristic());
+  ASSERT_EQ(4294967295u, PrimeField<uint32>::maxCharacteristic());
+
+  // Limited by the product of two elements having to fit in 64 bits.
+  ASSERT_EQ(static_cast<uint64>(1) << 32, PrimeField<uint64>::maxCharacteristic());
+  ASSERT_EQ(
+    static_cast<unsigned long>(1) << 32,
+    PrimeField<unsigned long>::maxCharacteristic()
+  );
+
+  // It has to be usable as a constant, since the constructor compares
+  // against it on paths that makeField() reaches.
+  static_assert(PrimeField<uint16>::maxCharacteristic() == 65535, "");
+}
+
+TEST(PrimeField, CharacteristicTooLarge) {
+  typedef PrimeField<unsigned long> PF;
+  const auto max = PF::maxCharacteristic();
+
+  ASSERT_NO_THROW((void)PF(max));
+  ASSERT_NO_THROW((void)PF(4294967291u)); // largest 32 bit prime
+  ASSERT_THROW((void)PF(max + 1), mathic::MathicException);
+  ASSERT_THROW((void)PF((static_cast<unsigned long>(1) << 40) + 15),
+    mathic::MathicException);
+}
+
+TEST(PrimeField, IsPrime) {
+  ASSERT_FALSE(isPrime(0));
+  ASSERT_FALSE(isPrime(1));
+  ASSERT_TRUE(isPrime(2));
+  ASSERT_TRUE(isPrime(3));
+  ASSERT_FALSE(isPrime(4));
+
+  // The bases the test uses. Without special casing these it reports them
+  // composite, as the base is then zero modulo n.
+  ASSERT_TRUE(isPrime(7));
+  ASSERT_TRUE(isPrime(61));
+
+  ASSERT_TRUE(isPrime(101));
+  ASSERT_TRUE(isPrime(32003));      // used by the ideals in the test suite
+  ASSERT_TRUE(isPrime(65521));      // largest 16 bit prime
+  ASSERT_FALSE(isPrime(65535));
+  ASSERT_TRUE(isPrime(10000019));
+  ASSERT_TRUE(isPrime(2147483647));  // 2^31 - 1
+  ASSERT_TRUE(isPrime(4294967291u)); // largest 32 bit prime
+  ASSERT_FALSE(isPrime(4294967295u));  // 3 * 5 * 17 * 257 * 65537
+  ASSERT_FALSE(isPrime(static_cast<uint64>(1) << 32));
+
+  // A strong pseudoprime to the bases 2, 3, 5 and 7, so a more obvious
+  // choice of bases would report it prime.
+  ASSERT_FALSE(isPrime(3215031751u));
+
+  // Agree with a sieve on a range large enough to catch a systematic error.
+  const unsigned int sieveMax = 100000;
+  std::vector<bool> sieve(sieveMax + 1, true);
+  sieve[0] = sieve[1] = false;
+  for (unsigned long i = 2; i * i <= sieveMax; ++i)
+    if (sieve[i])
+      for (unsigned long j = i * i; j <= sieveMax; j += i)
+        sieve[j] = false;
+  for (unsigned int n = 0; n <= sieveMax; ++n)
+    ASSERT_EQ(sieve[n], isPrime(n)) << "disagreed with the sieve at n = " << n;
 }
