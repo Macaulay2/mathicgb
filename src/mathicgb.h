@@ -226,7 +226,7 @@ namespace mgb { // Part of the public interface of MathicGB
     bool schreyering() const;
 
     enum Reducer {
-      DefaultReducer = 0, /// Let the library decide for itself.
+      DefaultReducer = 0, /// Currently an alias for MatrixReducer.
       ClassicReducer = 1, /// The classic polynomial division algorithm.
       MatrixReducer = 2 /// use linear algebra as in F4.
     };
