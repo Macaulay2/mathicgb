@@ -15,8 +15,8 @@ AC_CONFIG_SRCDIR([src/mathicgb.h])
 AC_PROG_CXX
 AC_LANG([C++])
 
-# Require C++11 support
-AX_CXX_COMPILE_STDCXX([11],, [mandatory])
+# Require C++17 support
+AX_CXX_COMPILE_STDCXX([17],, [mandatory])
 
 AM_PROG_AR
 
@@ -92,7 +92,6 @@ AC_DEFUN([NO_GTEST_ERROR],
 
 AS_IF([test "x$with_gtest" != "xno"],
      [AC_LANG([C++])
-      AX_CXX_COMPILE_STDCXX([17],, [mandatory])
       AC_CHECK_HEADER([gtest/gtest.h],
          [AC_MSG_CHECKING([for library containing testing::InitGoogleTest])
           SAVELIBS=$LIBS
