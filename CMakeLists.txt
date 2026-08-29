@@ -30,18 +30,6 @@ set_target_properties(mathic PROPERTIES
   IMPORTED_LOCATION             "${MATHIC_LIBRARIES}"
   INTERFACE_INCLUDE_DIRECTORIES "${MATHIC_INCLUDE_DIR}")
 
-add_compile_options(
-  -DHAVE_CXX11=1
-  -DPACKAGE_NAME="${PROJECT_NAME}"
-  -DPACKAGE_TARNAME="${PROJECT_NAME}"
-  -DPACKAGE_VERSION="${PROJECT_VERSION}"
-  -DPACKAGE_STRING="${PROJECT_NAME} ${PROJECT_VERSION}"
-  -DPACKAGE_BUGREPORT=""
-  -DPACKAGE_URL=""
-  -DPACKAGE="${PROJECT_NAME}"
-  -Wall -Wextra -Wno-unused-parameter -Wno-unused-value -Wno-unused-variable -Wno-sign-compare
-  )
-
 add_subdirectory(src)
 
 set_target_properties(mathicgb PROPERTIES PUBLIC_HEADER src/mathicgb.h)
