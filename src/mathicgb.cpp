@@ -45,16 +45,6 @@ MATHICGB_NAMESPACE_BEGIN
 
 using namespace mgbi;
 
-namespace {
-  bool isPrime(unsigned int n) {
-    if (n == 0 || n == 1)
-      return false;
-    if (n == 2 || n == 3)
-      return true;
-    return true; // todo: make better test
-  }
-};
-
 bool logTime(const char* logName, double& time) {
   auto log = LogDomainSet::singleton().logDomain(logName);
   if (log == nullptr || !log->enabled())

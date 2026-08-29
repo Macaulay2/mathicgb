@@ -9,6 +9,7 @@
 #include "PolyRing.hpp"
 #include "MonoProcessor.hpp"
 #include <ostream>
+#include <sstream>
 #include <string>
 
 MATHICGB_NAMESPACE_BEGIN
@@ -181,7 +182,15 @@ public:
 
 template<class M, class BF>
 auto MathicIO<M, BF>::readBaseField(Scanner& in) -> BaseField {
-  return BaseField(in.readInteger<RawCoefficient>());
+  const auto charac = in.readInteger<RawCoefficient>();
+  BaseField field(charac);
+  if (charac < 2 || !isPrime(static_cast<uint64>(charac))) {
+    std::ostringstream err;
+    err << "Modulus " << charac
+      << " is not prime. MathicGB only supports prime fields.";
+    mathic::reportError(err.str());
+  }
+  return field;
 }
 
 template<class M, class BF>
