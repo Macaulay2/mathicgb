@@ -3,12 +3,53 @@
 #ifndef MATHICGB_PRIME_FIELD_GUARD
 #define MATHICGB_PRIME_FIELD_GUARD
 
+#include <mathic/error.h>
 #include <vector>
 #include <limits>
+#include <sstream>
 #include <type_traits>
 #include <ostream>
 
 MATHICGB_NAMESPACE_BEGIN
+
+namespace PrimeFieldInternal {
+  template<class T>
+  struct ModularProdType {};
+  template<> struct ModularProdType<uint8> {typedef uint16 type;};
+  template<> struct ModularProdType<uint16> {typedef uint32 type;};
+  template<> struct ModularProdType<uint32> {typedef uint64 type;};
+
+  template<> struct ModularProdType<int8> {typedef int16 type;};
+  template<> struct ModularProdType<int16> {typedef int32 type;};
+  template<> struct ModularProdType<int32> {typedef int64 type;};
+
+  // @todo: Remove this typedef when possible. 64 bits is not enough
+  // to store a 64 bit product. We need it right now because
+  // coefficients are handled as 64 bit in the legacy PolyRing.
+  template<> struct ModularProdType<uint64> {typedef uint64 type;};
+  template<> struct ModularProdType<long unsigned int> {typedef uint64 type;};
+  template<> struct ModularProdType<int64> {typedef uint64 type;};
+  template<> struct ModularProdType<long int> {typedef uint64 type;};
+
+  /// Returns the largest integer whose square does not exceed n. The
+  /// candidate is compared against n/candidate rather than squared, so that
+  /// the search cannot overflow the type it is searching.
+  template<class BigT>
+  constexpr BigT integerSqrt(const BigT n) {
+    if (n < 2)
+      return n;
+    BigT low = 1;
+    BigT high = n / 2 + 1;
+    while (low < high) {
+      const BigT mid = low + (high - low + 1) / 2;
+      if (mid <= n / mid)
+        low = mid;
+      else
+        high = mid - 1;
+    }
+    return low;
+  }
+}
 
 /// Implements arithmetic in a prime field. T must be an unsigned integer type
 /// that is used to store the elements of the field. The characteristic of the
@@ -73,7 +114,31 @@ public:
 
   typedef std::vector<Element> ElementVector;
 
-  PrimeField(const T primeCharacteristic): mCharac(primeCharacteristic) {}
+  /// The largest characteristic this field can represent. Elements are
+  /// multiplied by widening to ModularProdType<T>, so the largest product of
+  /// two elements, (charac() - 1)^2, has to fit in that type. For a T that
+  /// widens to 64 bits this is 2^32, which is why the legacy PolyRing cannot
+  /// go beyond a 32 bit modulus even though it stores coefficients in 64
+  /// bits.
+  static constexpr T maxCharacteristic() {
+    typedef typename PrimeFieldInternal::ModularProdType<T>::type BigT;
+    const BigT fromProduct = PrimeFieldInternal::integerSqrt<BigT>(
+      std::numeric_limits<BigT>::max()) + 1;
+    const BigT fromStorage =
+      static_cast<BigT>(std::numeric_limits<T>::max());
+    return static_cast<T>(
+      fromProduct < fromStorage ? fromProduct : fromStorage);
+  }
+
+  PrimeField(const T primeCharacteristic): mCharac(primeCharacteristic) {
+    if (primeCharacteristic > maxCharacteristic()) {
+      std::ostringstream str;
+      str << "Modulus " << static_cast<uint64>(primeCharacteristic)
+        << " is too large. The largest supported modulus is "
+        << static_cast<uint64>(maxCharacteristic()) << ".";
+      mathic::reportError(str.str());
+    }
+  }
 
   Element zero() const {return Element(0);}
   Element one() const {return Element(1);}
@@ -194,26 +259,6 @@ public:
 private:
   const T mCharac;
 };
-
-namespace PrimeFieldInternal {
-  template<class T>
-  struct ModularProdType {};
-  template<> struct ModularProdType<uint8> {typedef uint16 type;};
-  template<> struct ModularProdType<uint16> {typedef uint32 type;};
-  template<> struct ModularProdType<uint32> {typedef uint64 type;};
-
-  template<> struct ModularProdType<int8> {typedef int16 type;};
-  template<> struct ModularProdType<int16> {typedef int32 type;};
-  template<> struct ModularProdType<int32> {typedef int64 type;};
-
-  // @todo: Remove this typedef when possible. 64 bits is not enough
-  // to store a 64 bit product. We need it right now because
-  // coefficients are handled as 64 bit in the legacy PolyRing.
-  template<> struct ModularProdType<uint64> {typedef uint64 type;};
-  template<> struct ModularProdType<long unsigned int> {typedef uint64 type;};
-  template<> struct ModularProdType<int64> {typedef uint64 type;};
-  template<> struct ModularProdType<long int> {typedef uint64 type;};
-}
 
 template<class T>
 auto PrimeField<T>::product(
