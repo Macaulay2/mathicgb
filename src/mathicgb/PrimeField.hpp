@@ -49,6 +49,70 @@ namespace PrimeFieldInternal {
     }
     return low;
   }
+
+  /// Returns a^exponent mod modulus. The products are formed in 64 bits, so
+  /// modulus has to be at most 2^32 for them not to overflow.
+  inline uint64 modularPower(
+    uint64 a,
+    uint64 exponent,
+    const uint64 modulus
+  ) {
+    MATHICGB_ASSERT(modulus > 1);
+    MATHICGB_ASSERT(modulus <= (static_cast<uint64>(1) << 32));
+
+    uint64 result = 1;
+    a %= modulus;
+    while (exponent != 0) {
+      if ((exponent & 1) != 0)
+        result = (result * a) % modulus;
+      a = (a * a) % modulus;
+      exponent >>= 1;
+    }
+    return result;
+  }
+}
+
+/// Returns true if n is prime. Exact for every n up to 2^32
+inline bool isPrime(const uint64 n) {
+  MATHICGB_ASSERT(n <= (static_cast<uint64>(1) << 32));
+
+  // Miller-Rabin. Testing the bases 2, 7 and 61 decides primality for every
+  // n below 4759123141, so on this range it is exact rather than
+  // probabilistic.
+  static const uint64 bases[] = {2, 7, 61};
+
+  if (n < 2)
+    return false;
+  for (const auto base : bases)
+    if (n == base)
+      return true; // otherwise base % n == 0 below and the witness is lost
+  if (n % 2 == 0)
+    return false;
+
+  // Write n - 1 as oddPart * 2^twoCount with oddPart odd.
+  auto oddPart = n - 1;
+  unsigned int twoCount = 0;
+  while ((oddPart & 1) == 0) {
+    oddPart >>= 1;
+    ++twoCount;
+  }
+
+  for (const auto base : bases) {
+    auto x = PrimeFieldInternal::modularPower(base, oddPart, n);
+    if (x == 1 || x == n - 1)
+      continue; // this base is not a witness to n being composite
+    auto witness = true;
+    for (unsigned int i = 1; i < twoCount; ++i) {
+      x = (x * x) % n;
+      if (x == n - 1) {
+        witness = false;
+        break;
+      }
+    }
+    if (witness)
+      return false;
+  }
+  return true;
 }
 
 /// Implements arithmetic in a prime field. T must be an unsigned integer type
