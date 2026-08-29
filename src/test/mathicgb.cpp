@@ -4,6 +4,7 @@
 
 #include "mathicgb.h"
 #include <gtest/gtest.h>
+#include <stdexcept>
 
 using namespace mgb;
 
@@ -839,4 +840,82 @@ TEST(MathicGBLib, GlobalOrderOrNot) {
   mat.assign(mat5, mat5 + sizeof(mat5)/sizeof(*mat5));
   ASSERT_FALSE(conf.setMonomialOrder(lex, mat));
   ASSERT_FALSE(conf.setMonomialOrder(revLex, mat));
+}
+
+TEST(MathicGBLib, LargeModulusGB) {
+  // The classic reducer handles any modulus the interface can express, so
+  // the basis of <x^2-y, x^3-z> has to come out the same at every one of
+  // these. makeBasis and makeGroebnerBasis write -1 as modulus-1, so they
+  // do not care what the modulus is.
+  const GroebnerConfiguration::Coefficient moduli[] = {
+    101,
+    65521,      // largest 16 bit prime
+    65537,      // smallest prime above 16 bits
+    10000019,
+    2147483647, // 2^31 - 1
+    4294967291  // largest 32 bit prime
+  };
+  for (const auto modulus : moduli) {
+    mgb::GroebnerConfiguration configuration(modulus, 3, 1);
+    configuration.setReducer
+      (mgb::GroebnerConfiguration::ClassicReducer);
+    mgb::GroebnerInputIdealStream input(configuration);
+    std::ostringstream computedStr;
+    mgb::IdealStreamLog<> computed(computedStr, modulus, 3, 1);
+    mgb::IdealStreamChecker<decltype(computed)> checked(computed);
+
+    makeBasis(input);
+    mgb::computeGroebnerBasis(input, checked);
+
+    std::ostringstream correctStr;
+    mgb::IdealStreamLog<> correct(correctStr, modulus, 3, 1);
+    mgb::IdealStreamChecker<decltype(correct)> correctChecked(correct);
+    makeGroebnerBasis(correctChecked);
+
+    EXPECT_EQ(correctStr.str(), computedStr.str())
+      << "\nModulus: " << modulus
+      << "\nDisplayed expected:\n" << correctStr.str()
+      << "\nDisplayed computed:\n" << computedStr.str();
+  }
+}
+
+TEST(MathicGBLib, MatrixReducerRejectsLargeModulus) {
+  // The matrix reducer stores coefficients as 16 bit scalars, so unlike the
+  // classic reducer it cannot take a modulus that does not fit in 16 bits.
+  // The error has to come from asking for that reducer, not from the
+  // modulus on its own.
+  const GroebnerConfiguration::Coefficient tooLarge = 65537;
+  const auto reducers = {
+    mgb::GroebnerConfiguration::MatrixReducer,
+    mgb::GroebnerConfiguration::DefaultReducer // an alias for the above
+  };
+  for (const auto reducer : reducers) {
+    mgb::GroebnerConfiguration configuration(tooLarge, 3, 1);
+    configuration.setReducer(reducer);
+    mgb::GroebnerInputIdealStream input(configuration);
+    makeBasis(input);
+    mgb::NullIdealStream computed
+      (input.modulus(), input.varCount(), input.comCount());
+    ASSERT_THROW
+      (mgb::computeGroebnerBasis(input, computed), std::runtime_error);
+  }
+
+  // The same modulus is fine for the classic reducer.
+  mgb::GroebnerConfiguration configuration(tooLarge, 3, 1);
+  configuration.setReducer(mgb::GroebnerConfiguration::ClassicReducer);
+  mgb::GroebnerInputIdealStream input(configuration);
+  makeBasis(input);
+  mgb::NullIdealStream computed
+    (input.modulus(), input.varCount(), input.comCount());
+  ASSERT_NO_THROW(mgb::computeGroebnerBasis(input, computed));
+}
+
+TEST(MathicGBLib, RejectsCompositeModulus) {
+  typedef mgb::GroebnerConfiguration Conf;
+  ASSERT_NO_THROW((void)Conf(4294967291u, 3, 1)); // largest 32 bit prime
+  ASSERT_THROW((void)Conf(4294967295u, 3, 1), std::runtime_error);
+  ASSERT_THROW((void)Conf(1000004, 3, 1), std::runtime_error);
+  ASSERT_THROW((void)Conf(65535, 3, 1), std::runtime_error);
+  ASSERT_THROW((void)Conf(1, 3, 1), std::runtime_error);
+  ASSERT_THROW((void)Conf(0, 3, 1), std::runtime_error);
 }
