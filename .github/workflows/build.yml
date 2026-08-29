@@ -29,13 +29,16 @@ jobs:
           fi
       - name: Build and check
         run: |
+          set -o pipefail
           mkdir build-dir
           cd build-dir
           if test ${{ matrix.build-system }} = autotools
           then ../autogen.sh
                ../configure
                make distcheck
-          else cmake -B. -S.. -GNinja
+          else cmake -B. -S.. -GNinja 2>&1 | tee cmake.log
+               grep -q "Multithreading with TBB: ON" cmake.log ||
+                 { echo "::error::cmake failed to detect TBB"; exit 1; }
                ninja
                src/mathicgb-unit-tests
           fi

@@ -6,19 +6,36 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 project(mathicgb VERSION 1.4 LANGUAGES CXX)
 
 option(enable_mgb "Build mgb" ON)
-option(with_tbb "use TBB for multithreading" auto)
+
+# ON requires TBB, OFF builds without it, and auto uses it if it can be found.
+set(with_tbb auto CACHE STRING
+  "use TBB for multithreading: ON, OFF, or auto to use it if it is found")
+set_property(CACHE with_tbb PROPERTY STRINGS auto ON OFF)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
 find_package(Threads 2.1 REQUIRED QUIET)
 find_package(Memtailor   REQUIRED)
 find_package(Mathic      REQUIRED)
-if(with_tbb)
-  find_package(TBB       REQUIRED)
-elseif(with_tbb STREQUAL auto)
+# The auto case has to be tested first, as if(with_tbb) is true for "auto".
+# Every branch resolves with_tbb to a plain boolean, which shadows the cache
+# entry for the generator expressions in src/CMakeLists.txt.
+if(with_tbb STREQUAL "auto")
   find_package(TBB)
-  set(with_tbb ${TBB_FOUND})
+  if(TBB_FOUND)
+    set(with_tbb ON)
+  else()
+    set(with_tbb OFF)
+    message(WARNING "TBB not detected.  Compiling without multithreading "
+      "and without precise timing.")
+  endif()
+elseif(with_tbb)
+  find_package(TBB       REQUIRED)
+  set(with_tbb ON)
+else()
+  set(with_tbb OFF)
 endif()
+message(STATUS "Multithreading with TBB: ${with_tbb}")
 
 add_library(memtailor STATIC IMPORTED)
 set_target_properties(memtailor PROPERTIES
