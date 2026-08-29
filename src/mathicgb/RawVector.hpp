@@ -226,6 +226,8 @@ public:
   // memcpy onto the end of the vector.
   void memcpy(const T* from, size_t countOfT) {
     MATHICGB_ASSERT(countOfT <= capacityToGo());
+    if (countOfT == 0)
+      return; // std::memcpy requires valid pointers even for a zero count
     std::memcpy(mEnd, from, countOfT * sizeof(T));
     mEnd += countOfT;
   }
