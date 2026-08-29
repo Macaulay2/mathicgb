@@ -10,7 +10,7 @@
 
 MATHICGB_NAMESPACE_BEGIN
 
-static const size_t BufferSize =
+static constexpr size_t BufferSize =
 #ifdef MATHICGB_DEBUG
   1;
 #else

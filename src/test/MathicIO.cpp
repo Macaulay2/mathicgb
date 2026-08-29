@@ -70,9 +70,9 @@ TEST(MathicIO, ReadWriteMonomial) {
   typedef PolyRing::Monoid Monoid;
   typedef Monoid::VarIndex VarIndex;
   typedef Monoid::Exponent Exponent;
-  static const auto NoComponent = static_cast<Exponent>(-1);
-  static const auto NoExponent = NoComponent;
-  static const auto NoVar = static_cast<VarIndex>(-1);
+  static constexpr auto NoComponent = static_cast<Exponent>(-1);
+  static constexpr auto NoExponent = NoComponent;
+  static constexpr auto NoVar = static_cast<VarIndex>(-1);
 
   Monoid m(28);
 

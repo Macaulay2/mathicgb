@@ -179,8 +179,8 @@ private:
 
   // true if giving each generator an integer id based on its
   // position in a sorted order of sig-lead ratios.
-  static const bool mUseRatioRank = MATHICGB_USE_RATIO_RANK;
-  static const bool mUseStoredRatioRank = MATHICGB_USE_RATIO_RANK;
+  static constexpr bool mUseRatioRank = MATHICGB_USE_RATIO_RANK;
+  static constexpr bool mUseStoredRatioRank = MATHICGB_USE_RATIO_RANK;
 
   class RatioOrder {
   public:

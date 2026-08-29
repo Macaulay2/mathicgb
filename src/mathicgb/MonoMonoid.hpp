@@ -35,9 +35,9 @@ namespace MonoMonoidInternal {
   template<class E, bool HC, bool SH, bool SO>
   class Base {
   public:
-    static const bool HasComponent = HC;
-    static const bool StoreHash = SH;
-    static const bool StoreOrder = SO;
+    static constexpr bool HasComponent = HC;
+    static constexpr bool StoreHash = SH;
+    static constexpr bool StoreOrder = SO;
 
     typedef size_t VarIndex;
     typedef E Exponent;

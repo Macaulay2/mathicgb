@@ -16,9 +16,9 @@
 MATHICGB_NAMESPACE_BEGIN
 
 namespace {
-  static const char* QuadMatrixExtension = ".qmat";
-  static const char* LowerRightMatrixExtension = ".brmat";
-  static const char* ReducedLowerRightMatrixExtension = ".rbrmat";
+  static constexpr const char* QuadMatrixExtension = ".qmat";
+  static constexpr const char* LowerRightMatrixExtension = ".brmat";
+  static constexpr const char* ReducedLowerRightMatrixExtension = ".rbrmat";
 
   /// Returns true if the file exists - or more precisely if it can be opened
   /// for reading. Using this function to create a file only if it does not

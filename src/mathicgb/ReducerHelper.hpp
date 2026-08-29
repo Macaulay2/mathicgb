@@ -22,18 +22,18 @@ namespace ReducerHelper {
     const PolyRing& ring() const {return mRing;}
 
     // Special fields for TourTree and Heap
-    static const bool fastIndex = true;
+    static constexpr bool fastIndex = true;
 
     // Special fields for Geobuckets:
-    static const size_t geoBase = 4;
-    static const size_t minBucketSize = 8;
+    static constexpr size_t geoBase = 4;
+    static constexpr size_t minBucketSize = 8;
 
-    static const bool minBucketBinarySearch = false;
-    static const bool trackFront = true;
-    static const bool premerge = false;
-    static const bool collectMax = false;
-    static const int bucketStorage = 1;
-    static const size_t insertFactor = 1;
+    static constexpr bool minBucketBinarySearch = false;
+    static constexpr bool trackFront = true;
+    static constexpr bool premerge = false;
+    static constexpr bool collectMax = false;
+    static constexpr int bucketStorage = 1;
+    static constexpr size_t insertFactor = 1;
 
   private:
     const PolyRing& mRing;
@@ -46,7 +46,7 @@ namespace ReducerHelper {
   public:
     PlainConfiguration(const PolyRing& ring): ConfigurationBasics(ring) {}
 
-    static const bool supportDeduplication = false;
+    static constexpr bool supportDeduplication = false;
     typedef bool CompareResult;
     bool cmpLessThan(bool r) const {return r;}
 
@@ -73,7 +73,7 @@ namespace ReducerHelper {
   public:
     DedupConfiguration(const PolyRing& ring): ConfigurationBasics(ring) {}
 
-    static const bool supportDeduplication = true;
+    static constexpr bool supportDeduplication = true;
     typedef int CompareResult;
     bool cmpLessThan(int r) const {return r == LT;}
     bool cmpEqual(int r) const {return r == EQ;}

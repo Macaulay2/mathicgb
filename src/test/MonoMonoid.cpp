@@ -851,7 +851,7 @@ TYPED_TEST(Monoids, CopyEqualConversion) {
   typedef typename Monoid::Order Order;
   typedef typename Monoid::Exponent Exponent;
   typedef typename Monoid::VarIndex VarIndex;
-  static const bool HasComponent = Monoid::HasComponent;
+  static constexpr bool HasComponent = Monoid::HasComponent;
   typedef MonoMonoid<Exponent, HasComponent, false, false> MonoidNone;
   typedef MonoMonoid<Exponent, HasComponent, true, true> MonoidAll;
   for (VarIndex varCount = 1; varCount < 33; ++varCount) {

@@ -105,12 +105,12 @@ private:
 
     size_t getVarCount() const {return monoid().varCount();}
 
-    static const bool UseTreeDivMask = DM;
-    static const bool UseLinkedList = false;
-    static const bool UseDivMask = DM;
-    static const size_t LeafSize = 1;
-    static const bool PackedTree = true;
-    static const bool AllowRemovals = AR;
+    static constexpr bool UseTreeDivMask = DM;
+    static constexpr bool UseLinkedList = false;
+    static constexpr bool UseDivMask = DM;
+    static constexpr size_t LeafSize = 1;
+    static constexpr bool PackedTree = true;
+    static constexpr bool AllowRemovals = AR;
 
     bool getUseDivisorCache() const {return true;}
     bool getMinimizeOnInsert() const {return false;}

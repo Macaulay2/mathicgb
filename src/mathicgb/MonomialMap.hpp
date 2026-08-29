@@ -208,9 +208,9 @@ public:
   }
 
 private:
-  static const size_t MinBucketsPerEntry = 3; // inverse of max load factor
-  static const size_t GrowthFactor = 2;
-  static const size_t InitialBucketCount = 1 << 1;
+  static constexpr size_t MinBucketsPerEntry = 3; // inverse of max load factor
+  static constexpr size_t GrowthFactor = 2;
+  static constexpr size_t InitialBucketCount = 1 << 1;
 
   static size_t maxEntries(const size_t bucketCount) {
     return (bucketCount + (MinBucketsPerEntry - 1)) / MinBucketsPerEntry;
