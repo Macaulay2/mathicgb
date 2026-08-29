@@ -1,0 +1,7 @@
+{
+  "Exclude": [
+    "^build/",
+    "^src/test/monoidPict\\.seed$",
+    "\\.in$"
+  ]
+}

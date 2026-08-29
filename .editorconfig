@@ -1,0 +1,23 @@
+# https://editorconfig.org
+root = true
+
+[*]
+end_of_line = lf
+insert_final_newline = true
+trim_trailing_whitespace = true
+
+# Indent with spaces, not tabs.  No indent_size is set: much of the code
+# aligns continuation lines with the opening delimiter, which is not a
+# multiple of any fixed width.
+[*.{cpp,hpp,h}]
+indent_style = space
+
+# Automake requires recipe lines to use tabs, but continuation lines are
+# indented with spaces, so no single indent_style applies.
+[Makefile.am]
+indent_style = unset
+
+# PICT model and seed files are tab-delimited data.
+[*.{in,seed}]
+indent_style = tab
+trim_trailing_whitespace = false

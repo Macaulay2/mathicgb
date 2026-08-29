@@ -39,3 +39,11 @@ jobs:
                ninja
                src/mathicgb-unit-tests
           fi
+
+  style:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: editorconfig-checker/action-editorconfig-checker@v2
+      - name: Check whitespace against .editorconfig
+        run: editorconfig-checker
