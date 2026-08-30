@@ -117,7 +117,7 @@ unittest_SOURCES=src/test/Range.cpp						\
   src/test/QuadMatrixBuilder.cpp src/test/F4MatrixBuilder.cpp			\
   src/test/F4MatrixReducer.cpp src/test/mathicgb.cpp					\
   src/test/PrimeField.cpp src/test/MonoMonoid.cpp src/test/Scanner.cpp	\
-  src/test/MathicIO.cpp
+  src/test/MathicIO.cpp src/test/CFile.cpp
 
 else
 
