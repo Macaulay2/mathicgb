@@ -51,7 +51,15 @@ include(GNUInstallDirs)
 
 add_subdirectory(src)
 
-set_target_properties(mathicgb PROPERTIES PUBLIC_HEADER src/mathicgb.h)
+set(MATHICGB_SO_CURRENT  0)
+set(MATHICGB_SO_REVISION 4)
+set(MATHICGB_SO_AGE      0)
+math(EXPR MATHICGB_SOVERSION "${MATHICGB_SO_CURRENT} - ${MATHICGB_SO_AGE}")
+
+set_target_properties(mathicgb PROPERTIES
+  PUBLIC_HEADER src/mathicgb.h
+  VERSION ${MATHICGB_SOVERSION}.${MATHICGB_SO_AGE}.${MATHICGB_SO_REVISION}
+  SOVERSION ${MATHICGB_SOVERSION})
 
 install(TARGETS mathicgb LIBRARY DESTINATION lib)
 install(DIRECTORY src/mathicgb
