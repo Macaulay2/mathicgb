@@ -57,11 +57,8 @@ add_library(mathicgb
   mathicgb/stdinc.h
   )
 
-target_compile_options(mathicgb PUBLIC
-  $<$<NOT:$<BOOL:${with_tbb}>>:-DMATHICGB_NO_TBB>
-  )
-
 target_compile_definitions(mathicgb PUBLIC
+  $<$<NOT:$<BOOL:${with_tbb}>>:MATHICGB_NO_TBB>
   $<$<CONFIG:Debug>:MATHICGB_DEBUG>
   )
 
