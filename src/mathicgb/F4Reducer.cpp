@@ -46,6 +46,9 @@ MATHICGB_DEFINE_LOG_ALIAS(
 
 #include "Reducer.hpp"
 #include "PolyRing.hpp"
+#include "SparseMatrix.hpp"
+#include <mathic.h>
+#include <sstream>
 #include <string>
 
 MATHICGB_NAMESPACE_BEGIN
@@ -125,6 +128,18 @@ F4Reducer::F4Reducer(const PolyRing& ring, Type type):
   mStoreToFile(""),
   mMinEntryCountForStore(0),
   mMatrixSaveCount(0) {
+  // Checked rather than asserted: this is the caller's mistake to correct.
+  // Establishing the bound here lets F4MatrixBuilder, F4MatrixBuilder2 and
+  // F4MatrixReducer assert it.
+  const auto maxModulus = std::numeric_limits<SparseMatrix::Scalar>::max();
+  if (ring.charac() > maxModulus) {
+    std::ostringstream str;
+    str << "Modulus " << ring.charac()
+      << " is too large for the F4 matrix reducer, which only supports "
+      "moduli up to " << maxModulus
+      << ". Use one of the classic reducers for this modulus.";
+    mathic::reportError(str.str());
+  }
 }
 
 unsigned int F4Reducer::preferredSetSize() const {
