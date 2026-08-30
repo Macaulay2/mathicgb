@@ -1,7 +1,3 @@
-if(CMAKE_BUILD_TYPE STREQUAL Debug)
-  add_compile_options(-DMATHICGB_DEBUG)
-endif()
-
 add_library(mathicgb
   mathicgb.h
   mathicgb.cpp
@@ -63,6 +59,10 @@ add_library(mathicgb
 
 target_compile_options(mathicgb PUBLIC
   $<$<NOT:$<BOOL:${with_tbb}>>:-DMATHICGB_NO_TBB>
+  )
+
+target_compile_definitions(mathicgb PUBLIC
+  $<$<CONFIG:Debug>:MATHICGB_DEBUG>
   )
 
 target_link_libraries(mathicgb
