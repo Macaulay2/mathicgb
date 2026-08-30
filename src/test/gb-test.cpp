@@ -13,6 +13,7 @@
 #include "mathicgb/MathicIO.hpp"
 #include "mathicgb/Scanner.hpp"
 #include "test/ideals.hpp"
+#include <mathic/error.h>
 #include <cstdio>
 #include <string>
 #include <iostream>
@@ -324,6 +325,30 @@ spairQueue  reducerType divLookup   monTable    buchberger  postponeKoszul  useB
         << useBaseDivisors;*/
     }
   }
+}
+
+TEST(Reducer, F4RejectsLargeModulus) {
+  // Asking for F4 above 16 bits must be reported, not asserted -- it is the
+  // caller's choice to correct. See F4Reducer's constructor.
+  const auto tooLarge = ringFromString("65537 2 1\n1 1"); // 2^16 + 1, prime
+  EXPECT_THROW(
+    Reducer::makeReducer(Reducer::Reducer_F4_New, *tooLarge),
+    mathic::MathicException
+  );
+  EXPECT_THROW(
+    Reducer::makeReducer(Reducer::Reducer_F4_Old, *tooLarge),
+    mathic::MathicException
+  );
+
+  // The error must come from asking for F4, not from the modulus alone.
+  EXPECT_NO_THROW(
+    Reducer::makeReducer(Reducer::Reducer_Geobucket_Hashed, *tooLarge)
+  );
+
+  // The bound is not off by one.
+  const auto largest = ringFromString("65521 2 1\n1 1"); // largest prime < 2^16
+  EXPECT_NO_THROW(Reducer::makeReducer(Reducer::Reducer_F4_New, *largest));
+  EXPECT_NO_THROW(Reducer::makeReducer(Reducer::Reducer_F4_Old, *largest));
 }
 
 TEST(GB, small) {
