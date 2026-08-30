@@ -7,11 +7,13 @@
 #include "mathicgb/SparseMatrix.hpp"
 #include "mathicgb/F4MatrixReducer.hpp"
 #include "mathicgb/SparseMatrix.hpp"
+#include "mathicgb/PrimeField.hpp"
 #include "mathicgb/CFile.hpp"
 #include <mathic.h>
 #include <limits>
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 MATHICGB_NAMESPACE_BEGIN
 
@@ -30,6 +32,18 @@ namespace {
   /// a portable solution.
   bool fileExists(const std::string fileName) {
     return CFile(fileName, "r", CFile::NoThrowTag()).hasFile();
+  }
+
+  void checkModulus(
+    const SparseMatrix::Scalar modulus,
+    const std::string& fileName
+  ) {
+    if (isPrime(modulus))
+      return;
+    std::ostringstream err;
+    err << "The modulus " << modulus << " from the matrix file " << fileName
+      << " is not prime. MathicGB only supports prime fields.";
+    mathic::reportError(err.str());
   }
 }
 
@@ -60,7 +74,7 @@ void MatrixAction::performAction() {
     std::string inputFileName;
 
     SparseMatrix lowerRightMatrix;
-    SparseMatrix::Scalar modulus = 0; // will be changed below to a (hopefully) prime number
+    SparseMatrix::Scalar modulus = 0; // set below to a prime from the file
     if (
       extension == QuadMatrixExtension ||
       extension == "." ||
@@ -71,6 +85,7 @@ void MatrixAction::performAction() {
       QuadMatrix matrix;
       modulus = matrix.read(file.handle());
       file.close();
+      checkModulus(modulus, quadFileName);
       lowerRightMatrix = F4MatrixReducer(modulus).reduceToBottomRight(matrix);
 
       if (!fileExists(lowerRightFileName)) {
@@ -83,6 +98,7 @@ void MatrixAction::performAction() {
       inputFileName = lowerRightFileName;
       CFile file(lowerRightFileName, "rb");
       modulus = lowerRightMatrix.read(file.handle());
+      checkModulus(modulus, lowerRightFileName);
     } else {
       mathic::reportError
         ("Unknown input file extension of " + mParams.inputFileName(i));
