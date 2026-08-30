@@ -118,14 +118,19 @@ AC_ARG_WITH([tbb], AS_HELP_STRING(
       March 2013).]
 ))
 AS_IF([test "x$with_tbb" == "x"], [with_tbb="detect"])
+
+dnl Look for TBB under either module name.  $1 is what to do if it is found
+dnl and $2 if it is not; leaving $2 empty gets PKG_CHECK_MODULES's own error.
+AC_DEFUN([CHECK_TBB],
+  [PKG_CHECK_MODULES([TBB], [tbb], [$1],
+    [PKG_CHECK_MODULES([TBB], [tbb32], [$1], [$2])])])
+
 AS_IF(
   [test "x$with_tbb" == "xdetect"],
-  [PKG_CHECK_MODULES([TBB], [tbb], [with_tbb="yes"],
-    [PKG_CHECK_MODULES([TBB], [tbb32], [with_tbb="yes"], [with_tbb="no";
-      AC_MSG_WARN([TBB not detected. Compiling without multithreading and without precise timing.])])
-  ])],
-  [test "x$with_tbb" == "xyes"], [PKG_CHECK_MODULES([TBB], [tbb],,
-    [PKG_CHECK_MODULES([TBB], [tbb32])])],
+  [CHECK_TBB([with_tbb="yes"],
+    [with_tbb="no";
+     AC_MSG_WARN([TBB not detected. Compiling without multithreading and without precise timing.])])],
+  [test "x$with_tbb" == "xyes"], [CHECK_TBB()],
   [test "x$with_tbb" == "xno"], [],
   [AC_MSG_ERROR([invalid value $with_tbb for with_tbb.])]
 )
