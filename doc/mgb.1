@@ -1,18 +1,110 @@
-.TH MGB "1" "April 2015"
+.TH MGB "1" "August 2026" "mathicgb"
 .SH NAME
-Mathicgb: \- Compute (signature) Groebner bases using the fast data\%structures
-from mathic.
+mgb \- compute Groebner bases and signature Groebner bases
+.SH SYNOPSIS
+.B mgb
+.I action
+.RI [ options ]
+.RI [ project .\|.\|.]
 .SH DESCRIPTION
-.HP
-gb \- Compute a Groebner basis.
-.HP
-help \- Return information about the command line interface.
-.HP
-matrix \- Perform matrix computations.
-.HP
-siggb \- Compute a signature Groebner basis
+.B mgb
+is the command line interface to mathicgb, a library for computing Groebner
+bases and signature Groebner bases using the fast data structures from
+mathic.
+.PP
+Most actions take one or more
+.IR project s.
+A project is a file name with its extension removed:
+.B mgb gb cyclic4
+reads
+.I cyclic4.ideal
+and, if asked to write its result, produces
+.IR cyclic4.gb .
+.SH ACTIONS
+.TP
+.B gb
+Compute a Groebner basis.
+.TP
+.B siggb
+Compute a signature Groebner basis.
+.TP
+.B matrix
+Perform matrix computations.
+.TP
+.B help
+Return information about the command line interface.
+.TP
+.B version
+Print the mathicgb version.
+.SH OPTIONS
+Options are specific to each action and are not listed here, as they change
+more often than this page does.  Run
+.B mgb help
+for the list of actions and
+.BI "mgb help " action
+for the options that action accepts, along with their defaults.
+.SH FILES
+.TP
+.IB project .ideal
+Input for
+.B gb
+and
+.BR siggb .
+The characteristic of the coefficient field is given first, then the number
+of variables, then the monomial order: the number of gradings, a row of
+weights for each grading, and optionally order and component keywords such as
+.B _revlex
+and
+.BR revcomponent .
+The number of polynomials and the polynomials themselves follow.  All of this
+is whitespace separated.  See the
+.I examples
+directory of the distribution for complete files.
+.TP
+.IB project .gb
+The computed basis, written when the
+.B \-outputResult
+option is given.
+.TP
+.IB project .syz
+The signatures of the syzygies, written by
+.B siggb
+when the
+.B \-outputResult
+option is given.
+.TP
+.IB project .qmat
+A quadruple matrix, read by the
+.B matrix
+action, which writes the reduced lower right submatrix to
+.IB project .brmat
+and its reduced form to
+.IB project .rbrmat \fR.
+.SH EXAMPLES
+Compute a Groebner basis of the ideal in
+.I cyclic4.ideal
+and write it to
+.IR cyclic4.gb :
+.PP
+.RS
+.B mgb gb cyclic4 \-outputResult
+.RE
+.PP
+List the options that the
+.B gb
+action accepts:
+.PP
+.RS
+.B mgb help gb
+.RE
+.SH SEE ALSO
+The algorithms are described in "Practical Grobner Basis Computation" by
+Bjarke Hammersholt Roune and Michael Stillman, presented at ISSAC 2012 and
+available at
+.UR http://arxiv.org/abs/1206.6940
+.UE .
 .SH AUTHORS
 Mathicgb was written by Bjarke Hammersholt Roune <bjarke.roune@gmail.com> and
 Michael Stillman <mike@math.cornell.edu>. This manual page was written by Doug
-Torrance <dtorrance@piedmont.edu> for the Debian project (but may be
+Torrance <dtorrance9@gatech.edu> for the Debian project (but may be
 used by others).
