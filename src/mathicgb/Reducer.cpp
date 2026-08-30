@@ -110,7 +110,7 @@ Reducer::ReducerType Reducer::reducerType(int type)
   case 25: return Reducer_F4_Old;
   case 26: return Reducer_F4_New;
 
-  default: return Reducer_Geobucket_Hashed;
+  default: return Reducer_Default;
   }
 }
 

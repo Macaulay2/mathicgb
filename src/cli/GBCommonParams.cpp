@@ -67,7 +67,7 @@ GBCommonParams::GBCommonParams():
   mReducer(
     "reducer",
     "The data structure to use for polynomial reduction.\n",
-    4
+    Reducer::Reducer_Default
   ),
 
   mMemoryQuantum(
