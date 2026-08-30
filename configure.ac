@@ -204,7 +204,7 @@ AM_CONDITIONAL([CLI], [test x$cli = xtrue])
 dnl Set up AC_OUTPUT to create each file by copying an input file
 dnl while substituting the output variable values.
 AC_CONFIG_FILES([Makefile
-  build/autotools/mathicgb.pc:build/autotools/mathicgb.pc.in])
+  mathicgb.pc:mathicgb.pc.in])
 
 dnl Macro that is required to be at the end of any Autoconf script.
 dnl Creates config.status and launches it.

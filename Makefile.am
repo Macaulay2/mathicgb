@@ -70,7 +70,7 @@ mathicgbB_include_HEADERS = $(wildcard \
 mathicgbB_includedir = $(includedir)/mathicgb
 
 pkgconfigdir = $(libdir)/pkgconfig
-pkgconfig_DATA = build/autotools/mathicgb.pc
+pkgconfig_DATA = mathicgb.pc
 
 
 
