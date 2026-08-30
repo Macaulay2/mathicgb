@@ -27,8 +27,10 @@ CFile::~CFile() {
 }
 
 void CFile::close() {
-  if (mFile != 0)
+  if (mFile != 0) {
     fclose(mFile);
+    mFile = 0;
+  }
 }
 
 MATHICGB_NAMESPACE_END
