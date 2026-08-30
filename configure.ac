@@ -122,8 +122,8 @@ AS_IF([test "x$with_tbb" == "x"], [with_tbb="detect"])
 dnl Look for TBB under either module name.  $1 is what to do if it is found
 dnl and $2 if it is not; leaving $2 empty gets PKG_CHECK_MODULES's own error.
 AC_DEFUN([CHECK_TBB],
-  [PKG_CHECK_MODULES([TBB], [tbb], [$1],
-    [PKG_CHECK_MODULES([TBB], [tbb32], [$1], [$2])])])
+  [PKG_CHECK_MODULES([TBB], [tbb], [TBB_PC_MODULE="tbb"; $1],
+    [PKG_CHECK_MODULES([TBB], [tbb32], [TBB_PC_MODULE="tbb32"; $1], [$2])])])
 
 AS_IF(
   [test "x$with_tbb" == "xdetect"],
@@ -194,8 +194,15 @@ AS_IF([test "x$with_tbb" == "xyes"],
 DEPS_CFLAGS="$TBB_CFLAGS"
 DEPS_LIBS="$TBB_LIBS $RT_LIBS $ATOMIC_LIBS"
 
+PC_REQUIRES="memtailor mathic $TBB_PC_MODULE"
+PC_LIBS_PRIVATE="$RT_LIBS $ATOMIC_LIBS"
+AS_IF([test "x$with_tbb" == "xno"], [PC_CFLAGS="-DMATHICGB_NO_TBB"])
+
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
+AC_SUBST(PC_REQUIRES)
+AC_SUBST(PC_LIBS_PRIVATE)
+AC_SUBST(PC_CFLAGS)
 
 AC_ARG_ENABLE([cli],
     AS_HELP_STRING([--disable-cli],
