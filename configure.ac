@@ -176,16 +176,18 @@ AS_IF([test "x$with_tbb" == "xyes"],
        #include <atomic>
        ], [std::atomic<int64_t> x; x++])],
        [AC_MSG_RESULT([no])],
-       [LIBS="$LIBS -latomic"
+       [oldLIBS=$LIBS
+        LIBS="$LIBS -latomic"
         AC_LINK_IFELSE([AC_LANG_PROGRAM([
            #include <atomic>
            ], [std::atomic<int64_t> x; x++])],
-           [AC_MSG_RESULT([yes])],
+           [AC_MSG_RESULT([yes]); ATOMIC_LIBS="-latomic"],
            [AC_MSG_RESULT([error])
-            AC_MSG_ERROR([unable to handle 64-bit atomics required by TBB])])])])
+            AC_MSG_ERROR([unable to handle 64-bit atomics required by TBB])])
+        LIBS=$oldLIBS])])
 
 DEPS_CFLAGS="$TBB_CFLAGS"
-DEPS_LIBS="$TBB_LIBS $RT_LIBS"
+DEPS_LIBS="$TBB_LIBS $RT_LIBS $ATOMIC_LIBS"
 
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
