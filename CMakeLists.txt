@@ -61,9 +61,9 @@ set_target_properties(mathicgb PROPERTIES
   VERSION ${MATHICGB_SOVERSION}.${MATHICGB_SO_AGE}.${MATHICGB_SO_REVISION}
   SOVERSION ${MATHICGB_SOVERSION})
 
-install(TARGETS mathicgb LIBRARY DESTINATION lib)
+install(TARGETS mathicgb LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(DIRECTORY src/mathicgb
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
   )
 install(FILES doc/mgb.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
@@ -83,5 +83,5 @@ if(enable_mgb)
     src/cli/VersionAction.hpp  src/cli/VersionAction.cpp
     )
   target_link_libraries(mgb mathicgb)
-  install(TARGETS mgb RUNTIME DESTINATION bin)
+  install(TARGETS mgb RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
