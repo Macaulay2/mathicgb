@@ -75,6 +75,7 @@ target_include_directories(mathicgb PUBLIC
 include(CTest)
 if(BUILD_TESTING)
   add_executable(mathicgb-unit-tests
+    test/CFile.cpp
     test/F4MatrixBuilder.cpp
     test/F4MatrixReducer.cpp
     test/MathicIO.cpp
