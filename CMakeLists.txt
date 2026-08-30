@@ -67,6 +67,22 @@ install(DIRECTORY src/mathicgb
   FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
   )
 install(FILES doc/mgb.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
+
+set(prefix "${CMAKE_INSTALL_PREFIX}")
+set(exec_prefix "\${prefix}")
+set(libdir "\${exec_prefix}/${CMAKE_INSTALL_LIBDIR}")
+set(includedir "\${prefix}/${CMAKE_INSTALL_INCLUDEDIR}")
+set(PACKAGE_VERSION "${PROJECT_VERSION}")
+set(PC_REQUIRES "memtailor mathic")
+if(with_tbb)
+  string(APPEND PC_REQUIRES " tbb")
+else()
+  set(PC_CFLAGS "-DMATHICGB_NO_TBB")
+endif()
+configure_file(mathicgb.pc.in mathicgb.pc @ONLY)
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mathicgb.pc
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  )
 install(FILES README.md gpl-2.0.txt gpl-3.0.txt
   DESTINATION licenses/mathicgb
   )
