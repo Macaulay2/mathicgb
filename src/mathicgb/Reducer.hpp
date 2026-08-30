@@ -115,7 +115,10 @@ public:
     Reducer_Geobucket_Hashed_Packed,
 
     Reducer_F4_Old,
-    Reducer_F4_New
+    Reducer_F4_New,
+
+    /// Used when no reducer is asked for and for any unrecognized code.
+    Reducer_Default = Reducer_Geobucket_Hashed
   };
 
   static std::unique_ptr<Reducer> makeReducer
