@@ -47,6 +47,8 @@ set_target_properties(mathic PROPERTIES
   IMPORTED_LOCATION             "${MATHIC_LIBRARIES}"
   INTERFACE_INCLUDE_DIRECTORIES "${MATHIC_INCLUDE_DIR}")
 
+include(GNUInstallDirs)
+
 add_subdirectory(src)
 
 set_target_properties(mathicgb PROPERTIES PUBLIC_HEADER src/mathicgb.h)
@@ -56,7 +58,7 @@ install(DIRECTORY src/mathicgb
   DESTINATION include
   FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
   )
-install(FILES doc/mgb.1 TYPE MAN)
+install(FILES doc/mgb.1 DESTINATION ${CMAKE_INSTALL_MANDIR}/man1)
 install(FILES README.md gpl-2.0.txt gpl-3.0.txt
   DESTINATION licenses/mathicgb
   )
