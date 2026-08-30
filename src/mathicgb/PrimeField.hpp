@@ -72,7 +72,7 @@ namespace PrimeFieldInternal {
   }
 }
 
-/// Returns true if n is prime. Exact for every n up to 2^32
+/// Returns true if n is prime and n < 2^32.
 inline bool isPrime(const uint64 n) {
   MATHICGB_ASSERT(n <= (static_cast<uint64>(1) << 32));
 
