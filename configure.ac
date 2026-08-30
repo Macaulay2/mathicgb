@@ -136,42 +136,6 @@ AS_IF(
 )
 AS_IF([test "x$with_tbb" == "xno"], [TBB_CFLAGS="-DMATHICGB_NO_TBB"])
 
-dnl ----- The librt dependency
-dnl On Linux TBB calls clock_gettime, which requires librt, but librt is not
-dnl linked in automatically. So we need to check for that.
-
-dnl the first AC_LINK_IFELSE causes tests for lots of C++ related things,
-dnl and these print out messages. So to avoid those messages appearing
-dnl after "if librt..." and before the result for that test, we do an
-dnl empty AC_LINK_IFELSE. Probably there is a better way.
-AC_LINK_IFELSE([AC_LANG_SOURCE([[]])], [], [])
-
-dnl We check if -lrt is necessary. We need librt if we are building with TBB,
-dnl if linking and compiling works when linking with librt but it doesn't
-dnl without linking with librt.
-AS_IF([test "x$with_tbb" == "xyes"],
-  [AC_MSG_CHECKING([if librt is needed to support TBB on this platform]);
-  oldLIBS=$LIBS;
-  LIBS="$TBB_LIBS -lrt $LIBS";
-  oldCFLAGS=$CFLAGS;
-  CFLAGS="$CFLAGS $TBB_CFLAGS";
-  AC_LINK_IFELSE(
-    [AC_LANG_PROGRAM(
-      [[#]include [<]tbb/tbb.h[>]], [[tbb::tick_count::now();]]
-    )],
-    [LIBS=$oldLibs; AC_LINK_IFELSE(
-      [AC_LANG_PROGRAM(
-        [[#]include [<]tbb/tbb.h[>]], [[tbb::tick_count::now();]]
-      )],
-      [AC_MSG_RESULT([no])],
-      [AC_MSG_RESULT([yes]); RT_LIBS="-lrt"]
-    )],
-    [AC_MSG_RESULT([no])]
-  )];
-  LIBS=$oldLIBS;
-  CFLAGS=$oldCFLAGS;
-)
-
 dnl ----- The libatomic dependency
 dnl On some architectures (m68k, powerpc, etc.) TBB uses 64-bit atomic
 dnl operations that are not natively supported and require linking with -latomic.
@@ -192,10 +156,10 @@ AS_IF([test "x$with_tbb" == "xyes"],
         LIBS=$oldLIBS])])
 
 DEPS_CFLAGS="$TBB_CFLAGS"
-DEPS_LIBS="$TBB_LIBS $RT_LIBS $ATOMIC_LIBS"
+DEPS_LIBS="$TBB_LIBS $ATOMIC_LIBS"
 
 PC_REQUIRES="memtailor mathic $TBB_PC_MODULE"
-PC_LIBS_PRIVATE="$RT_LIBS $ATOMIC_LIBS"
+PC_LIBS_PRIVATE="$ATOMIC_LIBS"
 AS_IF([test "x$with_tbb" == "xno"], [PC_CFLAGS="-DMATHICGB_NO_TBB"])
 
 AC_SUBST(DEPS_CFLAGS)
