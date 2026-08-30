@@ -130,12 +130,12 @@ const char* GBAction::name() const {
 }
 
 const char* GBAction::description() const {
-  return "Compute a Grobner basis. "
+  return "Compute a Groebner basis. "
     "The project name is an optional direct parameter.";
 }
 
 const char* GBAction::shortDescription() const {
-  return "Compute a Grobner basis.";
+  return "Compute a Groebner basis.";
 }
 
 void GBAction::pushBackParameters(

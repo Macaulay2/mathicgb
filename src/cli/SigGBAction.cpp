@@ -113,12 +113,12 @@ const char* SigGBAction::name() const {
 }
 
 const char* SigGBAction::description() const {
-  return "Compute a signature Grobner basis. "
+  return "Compute a signature Groebner basis. "
     "The project name is an optional direct parameter.";
 }
 
 const char* SigGBAction::shortDescription() const {
-  return "Compute a signature Grobner basis";
+  return "Compute a signature Groebner basis";
 }
 
 void SigGBAction::pushBackParameters(
