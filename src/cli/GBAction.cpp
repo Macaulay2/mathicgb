@@ -41,8 +41,8 @@ GBAction::GBAction():
   mMinMatrixToStore(
     "storeMatrices",
     "If using a matrix-based reducer, store the matrices that are generated in "
-    "files named X-1.mat, X-2.mat and so on where X is the project name. Only "
-    "matrices with at least as many entries as the parameter are stored. "
+    "files named X-1.qmat, X-2.qmat and so on where X is the project name. "
+    "Only matrices with at least as many entries as the parameter are stored. "
     "A value of 0 indicates not to store any matrices.",
     0),
 
