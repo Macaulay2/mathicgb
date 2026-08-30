@@ -270,9 +270,7 @@ namespace mtbb {
 
   class tick_count {
   private:
-    // This really should be std::chrono::steady_clock, but GCC 4.5.3 doesn't
-    // have that.
-    typedef std::chrono::system_clock clock;
+    typedef std::chrono::steady_clock clock;
 
   public:
     tick_count(): mTime() {}
