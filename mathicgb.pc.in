@@ -6,7 +6,8 @@ includedir=@includedir@
 Name: mathicgb
 Description: C++ library for Groebner basis computation
 URL: https://github.com/broune/mathicgb
-Requires: memtailor mathic
+Requires: @PC_REQUIRES@
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lmathicgb
-Cflags: -I${includedir}/
+Libs.private: @PC_LIBS_PRIVATE@
+Cflags: -I${includedir}/ @PC_CFLAGS@
