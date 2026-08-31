@@ -47,10 +47,6 @@
 /// Tells the compiler that the current line of code cannot be reached.
 #define MATHICGB_UNREACHABLE __assume(false)
 
-/// Tells the compiler that a variable that is a pointer (not a reference)
-/// does not alias any other pointer that is used in the current scope.
-#define MATHICGB_RESTRICT __restrict
-
 #pragma warning (disable: 4996) // don't warn about e.g. std::fill on pointers
 #pragma warning (disable: 4290) // VC++ ignores throw () specification.
 #pragma warning (disable: 4127) // Warns about using "while (true)".
@@ -90,7 +86,6 @@
 #define MATHICGB_PURE __attribute__(pure)
 #define MATHICGB_MUST_CHECK_RETURN_VALUE __attribute__(warn_unused_result)
 #define MATHICGB_UNREACHABLE __builtin_unreachable()
-#define MATHICGB_RESTRICT __restrict
 
 // if on x86 (32 bit) or x64 (64 bit)
 #ifndef MATHICGB_USE_FAKE_ATOMIC
@@ -114,7 +109,6 @@
 #define MATHICGB_PURE
 #define MATHICGB_MUST_CHECK_RETURN_VALUE
 #define MATHICGB_UNREACHABLE
-#define MATHICGB_RESTRICT
 
 #endif
 
