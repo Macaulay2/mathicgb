@@ -22,28 +22,6 @@
 /// Tells the compiler to always assume that the expression X is true.
 #define MATHICGB_ASSUME(X) __assume(X)
 
-/// As MATHICGB_ASSUME, but might actually evaluate X at run-time if it has
-/// side-effects. The point is that this can be used on compilers with no other
-/// support for assuming things. So there is no difference on MS VC++.
-#define MATHICGB_ASSUME_AND_MAY_EVALUATE(X) __assume(X)
-
-/// Tells the compiler that this function returns a pointer that is not an alias
-/// for any other point that is currently valid in the program - like malloc.
-#define MATHICGB_RETURN_NO_ALIAS __declspec(restrict)
-
-/// Tells the compiler that this function will never throw an exception.
-#define MATHICGB_NOTHROW __declspec(nothrow)
-
-/// Tells the compiler that this function has no effects except the return value
-/// and the return value depends only on the arguments and first-level
-/// indirections of the arguments. (this is the common denominator of GCC
-/// and MS VC++ capabilities)
-#define MATHICGB_PURE __declspec(noalias)
-
-/// Tells the compiler that the return value of this function must be looked
-/// at by the caller. For example this is appropriate for realloc.
-#define MATHICGB_MUST_CHECK_RETURN_VALUE
-
 /// Tells the compiler that the current line of code cannot be reached.
 #define MATHICGB_UNREACHABLE __assume(false)
 
@@ -80,11 +58,6 @@
 #define MATHICGB_NO_INLINE __attribute__((noinline))
 #define MATHICGB_INLINE __attribute__((always_inline)) inline
 #define MATHICGB_ASSUME(X) ((void)0)
-#define MATHICGB_ASSUME_AND_MAY_EVALUATE(X) do {if(!(X)){MATHICGB_UNREACHABLE;}while(0)}
-#define MATHICGB_RETURN_NO_ALIAS __attribute__(malloc)
-#define MATHICGB_NOTHROW __attribute__(nothrow)
-#define MATHICGB_PURE __attribute__(pure)
-#define MATHICGB_MUST_CHECK_RETURN_VALUE __attribute__(warn_unused_result)
 #define MATHICGB_UNREACHABLE __builtin_unreachable()
 
 // if on x86 (32 bit) or x64 (64 bit)
@@ -103,11 +76,6 @@
 #define MATHICGB_NO_INLINE
 #define MATHICGB_INLINE inline
 #define MATHICGB_ASSUME(X) ((void)0)
-#define MATHICGB_ASSUME_AND_MAY_EVALUATE(X) ((void)0)
-#define MATHICGB_RETURN_NO_ALIAS
-#define MATHICGB_NOTHROW
-#define MATHICGB_PURE
-#define MATHICGB_MUST_CHECK_RETURN_VALUE
 #define MATHICGB_UNREACHABLE
 
 #endif
