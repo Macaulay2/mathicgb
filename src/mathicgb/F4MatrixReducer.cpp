@@ -128,20 +128,11 @@ namespace {
       const Iter begin,
       const Iter end
     ) {
-      // I have a matrix reduction that goes from 2.8s to 2.4s on MSVC 2012 by
-      // using entries instead of mEntries, even after removing restrict and
-      // const from entries. That does not make sense to me, but it is a fact
-      // none-the-less, so don't replace entries by mEntries unless you think
-      // it's worth a 14% slowdown of matrix reduction (the whole computation,
-      // not just this method).
-      ScalarProductSum* const MATHICGB_RESTRICT entries = mEntries.data();
-
 #ifdef MATHICGB_DEBUG
       // These asserts are separated out since otherwise they would also need
       // to be duplicated due to the manual unrolling.
       for (auto it = begin; it != end; ++it) {
         MATHICGB_ASSERT(it.index() < colCount());
-        MATHICGB_ASSERT(entries + it.index() == &mEntries[it.index()]);
       }
 #endif
       // I have a matrix reduction that goes from 2.601s to 2.480s on MSVC 2012
@@ -154,13 +145,13 @@ namespace {
       if (std::distance(begin, end) % 2 == 1) {
         // Replacing this by a goto into the middle of the following loop
         // (similar to Duff's device) made the code slower on MSVC 2012.
-        multiplyAdd(it.scalar(), multiple, entries[it.index()]);
+        multiplyAdd(it.scalar(), multiple, mEntries[it.index()]);
         ++it;
       }
       while (it != end) {
-        multiplyAdd(it.scalar(), multiple, entries[it.index()]);
+        multiplyAdd(it.scalar(), multiple, mEntries[it.index()]);
         ++it;
-        multiplyAdd(it.scalar(), multiple, entries[it.index()]);
+        multiplyAdd(it.scalar(), multiple, mEntries[it.index()]);
         ++it;
       }
     }
