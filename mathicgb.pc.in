@@ -5,7 +5,7 @@ includedir=@includedir@
 
 Name: mathicgb
 Description: C++ library for Groebner basis computation
-URL: https://github.com/broune/mathicgb
+URL: https://github.com/Macaulay2/mathicgb
 Requires: @PC_REQUIRES@
 Version: @PACKAGE_VERSION@
 Libs: -L${libdir} -lmathicgb
