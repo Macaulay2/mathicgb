@@ -390,13 +390,6 @@ auto adjPairRange(
 
 // *** Flatten range of ranges into a single range
 
-namespace FlattenNamespace {
-  template<class OuterIterator>
-  struct InnerIteratorType {
-    typedef typename std::decay<decltype(std::begin(*OuterIterator()))>::type type;
-  };
-}
-
 /// Flatten is an iterator that iterates through each range in a range
 /// of ranges. The point is to enable the flatten() function defined
 /// further down in this header. This iterator is invalidated whenever
@@ -405,12 +398,7 @@ namespace FlattenNamespace {
 template<class OuterIterator>
 class Flatten {
 public:
-  // Yes, it would inded make more sense to inline what InnerIteratorType<>
-  // does here. That worked fine on gcc 4.7.3. It did not compile on
-  // MSVC 2012. I spent a lot of time trying to track down the problem
-  // and as far as I can tell, it is a compiler bug. The work-around
-  // with InnerIteratorType works and I'm going to leave it at that.
-  typedef typename FlattenNamespace::InnerIteratorType<OuterIterator>::type
+  typedef typename std::decay<decltype(std::begin(*OuterIterator()))>::type
     InnerIterator;
   typedef typename std::iterator_traits<InnerIterator>::difference_type
     difference_type;
