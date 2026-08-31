@@ -68,7 +68,7 @@ public:
       lookup.forAll([&](const Entry& entry) {
         monomials.emplace_back(entry.mono().ptr());
       });
-      const auto& monoid = this->monoid(); // workaround for gcc 4.5.3 issue
+      const auto& monoid = this->monoid();
       const auto cmp = [&](ConstMonoPtr a, ConstMonoPtr b) {
         return monoid.lessThan(*a, *b);
       };
