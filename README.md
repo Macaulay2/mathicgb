@@ -1,8 +1,8 @@
 mathicgb
 =========
 
-Mathicgb is a program for computing Groebner basis and signature
-Grobner bases. Mathicgb is based on the fast data structures from
+Mathicgb is a program for computing Groebner bases and signature
+Groebner bases. Mathicgb is based on the fast data structures from
 [mathic](https://github.com/Macaulay2/mathic).
 
 The paper "Practical Grobner Basis Computation" describes the
