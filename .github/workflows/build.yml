@@ -5,6 +5,10 @@ on:
 
 jobs:
   build:
+    name: >-
+      ${{ matrix.build-system }} / ${{ matrix.os }} /
+      ${{ matrix.debug && 'debug' || 'release' }} /
+      ${{ matrix.tbb && 'tbb' || 'no tbb' }}
     runs-on: ${{ matrix.os }}
     strategy:
       fail-fast: false
@@ -15,6 +19,12 @@ jobs:
         os:
           - macos-latest
           - ubuntu-latest
+        debug:
+          - false
+          - true
+        tbb:
+          - true
+          - false
     steps:
       - uses: actions/checkout@v6
       - name: Install dependencies
@@ -27,6 +37,9 @@ jobs:
                echo "CPPFLAGS=-I$(brew --prefix)/include" >> $GITHUB_ENV
                echo "LDFLAGS= -L$(brew --prefix)/lib"     >> $GITHUB_ENV
           fi
+          # Build in parallel.  make reads MAKEFLAGS from the environment,
+          # so this reaches the sub-makes distcheck runs as well.
+          echo "MAKEFLAGS=-j$(getconf _NPROCESSORS_ONLN || echo 2)" >> $GITHUB_ENV
       - name: Build and check
         run: |
           set -o pipefail
@@ -34,14 +47,23 @@ jobs:
           cd build-dir
           if test ${{ matrix.build-system }} = autotools
           then ../autogen.sh
-               ../configure
-               make distcheck
-          else cmake -B. -S.. -GNinja 2>&1 | tee cmake.log
-               grep -q "Multithreading with TBB: ON" cmake.log ||
-                 { echo "::error::cmake failed to detect TBB"; exit 1; }
+               ../configure ${{ matrix.debug && '--enable-debug' || '' }} \
+                            ${{ !matrix.tbb && '--without-tbb' || '' }}
+               make
+               make check
+          else cmake -B. -S.. -GNinja \
+                 -DCMAKE_BUILD_TYPE=${{ matrix.debug && 'Debug' || 'Release' }} \
+                 -Dwith_tbb=${{ matrix.tbb && 'ON' || 'OFF' }} 2>&1 | tee cmake.log
+               grep -q "Multithreading with TBB: ${{ matrix.tbb && 'ON' || 'OFF' }}" \
+                 cmake.log ||
+                 { echo "::error::cmake did not honour with_tbb"; exit 1; }
                ninja
                src/mathicgb-unit-tests
           fi
+      - name: Check the distribution tarball
+        if: matrix.build-system == 'autotools' && !matrix.debug && matrix.tbb
+        working-directory: build-dir
+        run: make distcheck
 
   style:
     runs-on: ubuntu-latest
