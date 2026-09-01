@@ -36,9 +36,7 @@ Makefile.in
 Makefile
 configure
 .libs/
-/build/autotools/compile
-/build/autotools/mathicgb.pc
-/build/autotools/test-driver
+/mathicgb.pc
 
 # Configure build targets
 deb/

@@ -3,8 +3,8 @@ dnl AC_INIT sets up autoconf and must be first macro.
 AC_INIT([mathicgb], [1.4]) # package, version, bug-report-email
 
 # set up information about directories
-AC_CONFIG_MACRO_DIR([build/autotools/m4]) # directory of extra autoconf macroes
-AC_CONFIG_AUX_DIR([build/autotools]) # directory for auxiliary build tools (install-sh etc)
+AC_CONFIG_MACRO_DIR([m4]) # directory of extra autoconf macroes
+AC_CONFIG_AUX_DIR([build-aux]) # directory for auxiliary build tools (install-sh etc)
 
 # check that source directory is correct
 dnl  if autoconf is told the source code is in a directory that does not
