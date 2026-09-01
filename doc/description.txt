@@ -137,21 +137,6 @@ make install
 
 Parallel builds with -jN are fully supported and safe.
 
-Setting memtailor, mathic and mathicgb up in multiple different
-configurations (release, debug, debug-without-asserts,
-release-with-asserts etc.) is a lot of effort. Instead, take this file:
-
-https://github.com/broune/mathicgb/blob/master/build/setup/make-Makefile.sh
-
-Then type
-
-  ./make-Makefile.sh > Makefile
-
-then do "make". It'll download memtailor, mathic and mathicgb and link
-them up with each other in multiple configurations. The configure
-directories will be subdirectories of each project. The installed
-files will go in a common installed/ directory.
-
 Project(high-effort, medium-difficulty): Make nice packages for
 memtailor, mathic and mathicgb for the various distributions and
 Cygwin. Failing that, upload a source or perhaps even binary tarball
@@ -210,9 +195,8 @@ Visual Studio and get all the tests to run and pass.
 Project (Medium-effort, medium-difficulty): Find a better way of
 linking up with tbb that is easy to do and does not involve copying
 files around manually. Also make a .bat file that downloads all the
-necessary source and binary releases and links everything up - serving
-the same purpose as the Makefile written out by make-Makefile.sh. It
-is important that MathicGB isn't too hard to set up on MSVC because
+necessary source and binary releases and links everything up. It is
+important that MathicGB isn't too hard to set up on MSVC because
 otherwise developers won't use it and then the code will stop working
 on MSVC.
 
@@ -2370,13 +2354,12 @@ Project (medium-effort, medium-difficulty): The library interface
 should have an option to get a fully auto-reduced (including
 tail-reduced) Groebner basis at the end.
 
-Project (medium-effort, medium-difficulty): The makefile made by
-mathicgb/build/setup/make-Makefile.sh has a target called ana. This
-stands for analysis. What it does is that it runs gcc with all
-warnings that I could find anywhere turned on and it treats warnings
-as errors. memtailor, mathic and mathicgb should build with this
-target without any warnings or errors. That's currently not the case,
-so that should be fixed.
+Project (medium-effort, medium-difficulty): There should be a build
+target called ana. This stands for analysis. What it would do is run
+the compiler with all warnings that can be found turned on and treat
+warnings as errors. memtailor, mathic and mathicgb should build with
+this target without any warnings or errors. That's currently not the
+case, so that should be fixed.
 
 Project (medium-effort, medium-difficulty): Make a makefile target
 like ana, but targeting clangs static analysis tool(s). Then silence
