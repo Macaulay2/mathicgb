@@ -40,15 +40,6 @@ configure
 /build/autotools/mathicgb.pc
 /build/autotools/test-driver
 
-# Visual studio generated files
-*.suo
-*.sdf
-*.opensdf
-*.vcxproj.user
-*.psess
-*.vsp
-output/
-
 # Configure build targets
 deb/
 debnoass/

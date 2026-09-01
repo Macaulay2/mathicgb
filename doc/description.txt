@@ -3,7 +3,6 @@
 - Introduction
 - High-level view of MathicGB
 - Installation for unix systems and Cygwin
-- Installation for Visual Studio
 - C++ concepts and miscellaneous MathicGB C++ stuff
 - Description of all files in MathicGB
 - Other projects
@@ -146,59 +145,6 @@ Project(medium-effort, medium-difficulty): Make a nice website for
 mathic.
 
 Project (medium-effort, low-difficulty): Set up a trac for MathicGB.
-
-
-***** Installation for Visual Studio
-
-There are Visual Studio 2012 project files for each project in
-mathicgb/build/vs12. I have gotten these to work on both Visual Studio
-Pro 2012 Pro and Visual Studio Express 2012. Getting these files to
-work is more involved than just typing "make", though I found it to be
-worth it because Visual Studio is a first-rate development environment.
-
-You must download gtest (source release), tbb (binary release),
-memtailor (source), mathic (source) and mathicgb (source) and put them
-all in the same directory so that it has directories named:
-
-  gtest\
-  tbb\
-  memtailor\
-  mathic\
-  mathicgb\
-
-Now open mathicgb\build\vs12\mathicgb.sln. Select the configuration
-and platform that you want from the drop-down menues at the middle-top
-of the screen. You probably want the Release configuration and the x64
-platform. Now compile everything by pressing F7. As of the time of
-this writing (October 3, 2013) the code compiles in MSVC and you
-should get an error and warning-free build. If other developers have
-picked up the project since then and they are not using MSVC, then
-likely you will need to make changes to the code to get it to compile
-on MSVC.
-
-Right click the mathicgb-test project in the Solution Explorer and
-left click "Set as StartUp Project". Now press F5 to run the unit
-tests. If you have installed tbb globally this might work (is that
-possible?), but otherwise you're going to get an error that the tbb
-dll could not be found. There should be a better solution to this, but
-what I found the easiest to do is to go into tbb\bin\intel64\cv11\ and
-copy all the files there into
-mathicgb\build\vs12\output\x64\Release\. That's for an x64 Release
-build. For a Win32 build, take the files from tbb\bin\ia32\cv11\ and
-copy them into mathicgb\build\vs12\output\Win32\Release\. For a
-different configuration than Release, replace Release with the name of
-the configuration. All these directories will already exist if you try
-building a file with that configuration and platform, which is what
-I'd recommend. After doing this, you should be able to press F5 in
-Visual Studio and get all the tests to run and pass.
-
-Project (Medium-effort, medium-difficulty): Find a better way of
-linking up with tbb that is easy to do and does not involve copying
-files around manually. Also make a .bat file that downloads all the
-necessary source and binary releases and links everything up. It is
-important that MathicGB isn't too hard to set up on MSVC because
-otherwise developers won't use it and then the code will stop working
-on MSVC.
 
 
 ***** C++ concepts and miscellaneous MathicGB C++ stuff
