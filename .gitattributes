@@ -2,9 +2,6 @@
 # made on Windows can reintroduce the CRLF endings cleaned up in f78d6be.
 * text=auto
 
-# Visual Studio files are conventionally CRLF.
-*.sln text eol=crlf
-
 # PICT model and seed files are tab-delimited; leave them exactly as-is.
 *.in  -text
 *.seed -text
