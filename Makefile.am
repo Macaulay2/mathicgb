@@ -1,5 +1,5 @@
 # Options passed to the C and C++ PreProcessor (CPP) and compiler
-AM_CPPFLAGS = -I${top_srcdir}/ -I$(top_srcdir)/src/ $(DEPS_CFLAGS)
+AM_CPPFLAGS = -I${top_srcdir}/ -I$(top_srcdir)/src/ $(DEPS_CFLAGS) $(DEBUG_CFLAGS)
 
 # tell Libtool what the name of the library is.
 lib_LTLIBRARIES = libmathicgb.la

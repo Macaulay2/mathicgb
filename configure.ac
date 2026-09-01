@@ -155,13 +155,24 @@ AS_IF([test "x$with_tbb" == "xyes"],
             AC_MSG_ERROR([unable to handle 64-bit atomics required by TBB])])
         LIBS=$oldLIBS])])
 
+dnl ----- Our own assertions
+AC_ARG_ENABLE([debug],
+    AS_HELP_STRING([--enable-debug], [enable mathicgb's assertions]),
+    [case "${enableval}" in
+	yes) DEBUG_CFLAGS="-DMATHICGB_DEBUG" ;;
+	no)  ;;
+	*) AC_MSG_ERROR([bad value "${enableval}" for --enable-debug]) ;;
+     esac])
+
 DEPS_CFLAGS="$TBB_CFLAGS"
 DEPS_LIBS="$TBB_LIBS $ATOMIC_LIBS"
 
 PC_REQUIRES="memtailor mathic $TBB_PC_MODULE"
 PC_LIBS_PRIVATE="$ATOMIC_LIBS"
 AS_IF([test "x$with_tbb" == "xno"], [PC_CFLAGS="-DMATHICGB_NO_TBB"])
+PC_CFLAGS="$PC_CFLAGS $DEBUG_CFLAGS"
 
+AC_SUBST(DEBUG_CFLAGS)
 AC_SUBST(DEPS_CFLAGS)
 AC_SUBST(DEPS_LIBS)
 AC_SUBST(PC_REQUIRES)
