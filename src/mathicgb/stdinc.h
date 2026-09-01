@@ -43,33 +43,12 @@
 // other things too.
 #define NOMINMAX
 
-#ifndef MATHICGB_USE_FAKE_ATOMIC
-#if defined (_M_IX86) || defined(_M_X64) // if on x86 (32 bit) or x64 (64 bit)
-#define MATHICGB_USE_CUSTOM_ATOMIC_X86_X64
-#define MATHICGB_USE_CUSTOM_ATOMIC_4BYTE
-#ifdef _M_X64 // if on x64 (64 bit)
-#define MATHICGB_USE_CUSTOM_ATOMIC_8BYTE
-#endif
-#endif
-#endif
-
 #elif defined (__GNUC__) // GCC compiler
 
 #define MATHICGB_NO_INLINE __attribute__((noinline))
 #define MATHICGB_INLINE __attribute__((always_inline)) inline
 #define MATHICGB_ASSUME(X) ((void)0)
 #define MATHICGB_UNREACHABLE __builtin_unreachable()
-
-// if on x86 (32 bit) or x64 (64 bit)
-#ifndef MATHICGB_USE_FAKE_ATOMIC
-#if defined (_X86_) || defined(__x86_64__)
-#define MATHICGB_USE_CUSTOM_ATOMIC_X86_X64
-#define MATHICGB_USE_CUSTOM_ATOMIC_4BYTE
-#ifdef __x86_64__ // if on x64 (64 bit)
-#define MATHICGB_USE_CUSTOM_ATOMIC_8BYTE
-#endif
-#endif
-#endif
 
 #else
 
