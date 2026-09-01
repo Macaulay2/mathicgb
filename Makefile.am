@@ -1,6 +1,6 @@
 # options passed to aclocal, which is a tool for making macroes visible to
 # autoconf. We use -I to tell aclocal where we put the local macros.
-ACLOCAL_AMFLAGS = -I build/autotools/m4
+ACLOCAL_AMFLAGS = -I m4
 
 # Options passed to the C and C++ PreProcessor (CPP) and compiler
 AM_CPPFLAGS = -I${top_srcdir}/ -I$(top_srcdir)/src/ $(DEPS_CFLAGS)
