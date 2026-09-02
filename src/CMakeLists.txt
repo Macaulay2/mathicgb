@@ -80,6 +80,7 @@ if(BUILD_TESTING)
     test/MathicIO.cpp
     test/MonoMonoid.cpp
     test/PrimeField.cpp
+    test/QuadMatrix.cpp
     test/QuadMatrixBuilder.cpp
     test/Range.cpp
     test/Scanner.cpp

@@ -356,11 +356,9 @@ SparseMatrix::Scalar QuadMatrix::read(FILE* file) {
   rightColumnMonomials.clear();
 
   const auto topLeftModulus = topLeft.read(file);
-#ifdef MATHICGB_DEBUG
-  const auto topRightModulus = topRight.read(file);
-  const auto bottomLeftModulus = bottomLeft.read(file);
-  const auto bottomRightModulus = bottomRight.read(file);
-#endif
+  [[maybe_unused]] const auto topRightModulus = topRight.read(file);
+  [[maybe_unused]] const auto bottomLeftModulus = bottomLeft.read(file);
+  [[maybe_unused]] const auto bottomRightModulus = bottomRight.read(file);
   // todo: this should throw some kind of invalid format exception instead of
   // these asserts.
   MATHICGB_ASSERT(topLeftModulus == topRightModulus);
