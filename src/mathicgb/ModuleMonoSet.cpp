@@ -174,6 +174,7 @@ std::unique_ptr<ModuleMonoSet> ModuleMonoSet::make(
   const size_t components,
   const bool allowRemovals
 ) {
+  checkStaticMonoLookupCode(type);
   return ModuleMonoSetFactory().make(monoid, type, components, allowRemovals);
 }
 

@@ -10,6 +10,7 @@
 #include <mathic.h>
 #include <type_traits>
 #include <ostream>
+#include <sstream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -397,6 +398,17 @@ staticMonoLookupCodes() {
 inline void displayStaticMonoLookupCodes(std::ostream& out) {
   for (const auto& code : staticMonoLookupCodes())
     out << "  " << code.first << "   " << code.second << '\n';
+}
+
+inline void checkStaticMonoLookupCode(const int code) {
+  for (const auto& valid : staticMonoLookupCodes())
+    if (valid.first == code)
+      return;
+  std::ostringstream err;
+  err << "Unknown code " << code << " for the monomial data structure.\n"
+    "The supported codes are:\n";
+  displayStaticMonoLookupCodes(err);
+  mathic::reportError(err.str());
 }
 
 /// Function for creating statically compiled classes that use
