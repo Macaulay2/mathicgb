@@ -9,7 +9,9 @@
 #include "PolyRing.hpp"
 #include <mathic.h>
 #include <type_traits>
+#include <ostream>
 #include <string>
+#include <utility>
 #include <vector>
 
 MATHICGB_NAMESPACE_BEGIN
@@ -379,6 +381,23 @@ public:
 private:
   BaseLookup mLookup;
 };
+
+/// Keep in step with the switch in staticMonoLookupMake.
+inline const std::vector<std::pair<int, std::string>>&
+staticMonoLookupCodes() {
+  static const std::vector<std::pair<int, std::string>> codes{
+    {1, "list, using divmasks"},
+    {2, "KD-tree, using divmasks"},
+    {3, "list"},
+    {4, "KD-tree"}
+  };
+  return codes;
+}
+
+inline void displayStaticMonoLookupCodes(std::ostream& out) {
+  for (const auto& code : staticMonoLookupCodes())
+    out << "  " << code.first << "   " << code.second << '\n';
+}
 
 /// Function for creating statically compiled classes that use
 /// StaticMonoLookup based on run-time values.
