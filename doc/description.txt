@@ -1194,30 +1194,6 @@ exceptions.
 
 ***** Description of all files in MathicGB
 
-*** mathicgb/Atomic.hpp
-
-Offers a MathicGB alternative to std::atomic with some of the same
-interface. Use this class instead of std::atomic. It was necessary to
-use this class because the std::atomic implementations that shipped
-with GCC and MSVC were so slow that they were just completely
-unusable. This is supposed to be better in newer versions. When not on
-MSVC or GCC, Atomic is simply a thin wrapper on top of std::atomic.
-
-Atomic also has another use in that you can define
-MATHICGB_USE_FAKE_ATOMIC. Then Atomic does not actually implement
-atomic operations. This way, we can measure the overhead for atomicity
-and memory ordering by running on one thread, since the atomicity and
-memory ordering is not necessary for one thread.
-
-Project (medium-effort, easy-difficulty): Figure out if GCC and MSVC
-really do ship a usable-speed std::atomic now and, if so, which
-versions are good and which are bad. Then let Atomic be implemented in
-terms of std::atomic on those good versions while retaining the fast
-custom implementation for the bad versions. The main effort involved
-here is in getting access to all the different versions of GCC and
-MSVC. This project could also be done for Clang.
-
-
 *** mathicgb/Basis.hpp
 
 A container of Polynomials that does nothing fancy. There is really no
@@ -1347,16 +1323,15 @@ Parallelism is achieved here by having each core work on separate rows
 of the matrix. The main point of synchronization between the cores is
 that they need to agree on which monomial has which column index. This
 is achieved via a lockless-for-readers hash table, implemented using
-std::atomic (well, actually mgb::Atomic, but it's the same thing). To
-understand the parallelism here you will need to understand how
-lockless algorithms work and the interface of std::atomic, which is
-going to be a significant effort to learn. The outcome of this way of
-doing it is that look-ups in the hash table are no slower on x86 than
-they would be in a serial program - it's the same CPU instructions
-being run (there might be a slight slowdown if contending for a cache
-line with a writer, but that's very rare). Writers do need to hold a
-lock for insertion, but since look-ups are much more frequent than
-column insertions, this is not so bad.
+std::atomic. To understand the parallelism here you will need to
+understand how lockless algorithms work and the interface of
+std::atomic, which is going to be a significant effort to learn. The
+outcome of this way of doing it is that look-ups in the hash table are
+no slower on x86 than they would be in a serial program - it's the
+same CPU instructions being run (there might be a slight slowdown if
+contending for a cache line with a writer, but that's very rare).
+Writers do need to hold a lock for insertion, but since look-ups are
+much more frequent than column insertions, this is not so bad.
 
 TBB (Intel Thread Building blocks) is used to keep track of the work
 items to do so that cores can do work-stealing without much overhead.
