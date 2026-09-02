@@ -171,6 +171,7 @@ std::unique_ptr<MonoLookup::Factory> MonoLookup::makeFactory(
   const Monoid& monoid,
   const int type
 ) {
+  checkStaticMonoLookupCode(type);
   return std::unique_ptr<Factory>(new ConcreteFactory(monoid, type));
 }
 
