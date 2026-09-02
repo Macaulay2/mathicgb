@@ -552,7 +552,7 @@ SparseMatrix::Scalar SparseMatrix::read(FILE* file) {
   }
 
   MATHICGB_ASSERT(mBlock.mPreviousBlock == 0); // still only one block
-  return modulus;
+  return static_cast<Scalar>(modulus);
 }
 
 void SparseMatrix::writePBM(FILE* file) {
