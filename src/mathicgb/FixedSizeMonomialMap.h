@@ -3,7 +3,7 @@
 #ifndef MATHICGB_FIXED_SIZE_MONOMIAL_MAP_GUARD
 #define MATHICGB_FIXED_SIZE_MONOMIAL_MAP_GUARD
 
-#include "Atomic.hpp"
+#include <atomic>
 #include "mtbb.hpp"
 #include "PolyRing.hpp"
 #include <memtailor.h>
@@ -48,16 +48,16 @@ public:
   ):
     mHashToIndexMask(computeHashMask(requestedBucketCount)),
     mBuckets(
-      make_unique_array<Atomic<Node*>>(hashMaskToBucketCount(mHashToIndexMask))
+      make_unique_array<std::atomic<Node*>>(
+        hashMaskToBucketCount(mHashToIndexMask)
+      )
     ),
     mRing(ring),
     mNodeAlloc(Node::bytesPerNode(ring.monoid()))
   {
     // Calling new int[x] does not zero the array. std::atomic has a trivial
-    // constructor so the same thing is true of new atomic[x]. Calling
-    // new int[x]() is supposed to zero initialize but this apparently
-    // does not work on GCC. So we have to fill the table with nulls
-    // manually. This was wonderful to debug btw.
+    // constructor so the same thing is true of new atomic[x]. So we have to
+    // fill the table with nulls manually. This was wonderful to debug btw.
     // We can store relaxed as the constructor does not run concurrently.
     setTableEntriesToNullRelaxed();
   }
@@ -76,7 +76,9 @@ public:
   ):
     mHashToIndexMask(computeHashMask(requestedBucketCount)),
     mBuckets(
-      make_unique_array<Atomic<Node*>>(hashMaskToBucketCount(mHashToIndexMask))
+      make_unique_array<std::atomic<Node*>>(
+        hashMaskToBucketCount(mHashToIndexMask)
+      )
     ),
     mRing(map.ring()),
     mNodeAlloc(std::move(map.mNodeAlloc))
@@ -84,6 +86,7 @@ public:
     // We can store relaxed as the constructor does not run concurrently.
     const auto relax = std::memory_order_relaxed;
 
+    // The new buckets need nulling, as in the other constructor.
     setTableEntriesToNullRelaxed();
     const auto tableEnd = map.mBuckets.get() + map.bucketCount();
     for (auto tableIt = map.mBuckets.get(); tableIt != tableEnd; ++tableIt) {
@@ -275,7 +278,7 @@ private:
     }
 
   private:
-    Atomic<Node*> mNext;
+    std::atomic<Node*> mNext;
     exponent mMono[1];
   };
 
@@ -319,7 +322,7 @@ private:
   }
 
   const HashValue mHashToIndexMask;
-  std::unique_ptr<Atomic<Node*>[]> const mBuckets;
+  std::unique_ptr<std::atomic<Node*>[]> const mBuckets;
   const PolyRing& mRing;
   memt::BufferPool mNodeAlloc; // nodes are allocated from here.
   mtbb::mutex mInsertionMutex;
@@ -364,8 +367,8 @@ public:
   private:
     friend class FixedSizeMonomialMap<T>;
     const_iterator(
-      const Atomic<Node*>* const bucketBegin,
-      const Atomic<Node*>* const bucketEnd
+      const std::atomic<Node*>* const bucketBegin,
+      const std::atomic<Node*>* const bucketEnd
     ):
       mBucket(bucketBegin),
       mBucketsEnd(bucketEnd)
@@ -402,8 +405,8 @@ public:
     }
 
     const Node* mNode;
-    const Atomic<Node*>* mBucket;
-    const Atomic<Node*>* mBucketsEnd;
+    const std::atomic<Node*>* mBucket;
+    const std::atomic<Node*>* mBucketsEnd;
   };
 };
 

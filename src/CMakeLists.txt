@@ -17,7 +17,6 @@ add_library(mathicgb
   mathicgb/ReducerHelper.hpp
   mathicgb/MonomialMap.hpp
   mathicgb/RawVector.hpp
-  mathicgb/Atomic.hpp
   mathicgb/ScopeExit.hpp
   mathicgb/FixedSizeMonomialMap.h # change name?
   mathicgb/ReducerPack.hpp        mathicgb/ReducerPack.cpp

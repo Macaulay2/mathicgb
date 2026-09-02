@@ -42,7 +42,7 @@ libmathicgb_la_SOURCES = src/mathicgb/MonoArena.hpp						\
   src/mathicgb/F4MatrixBuilder.cpp src/mathicgb/QuadMatrix.hpp			\
   src/mathicgb/QuadMatrix.cpp src/mathicgb/F4MatrixReducer.cpp			\
   src/mathicgb/F4MatrixReducer.hpp src/mathicgb/MonomialMap.hpp			\
-  src/mathicgb/RawVector.hpp src/mathicgb/Atomic.hpp					\
+  src/mathicgb/RawVector.hpp							\
   src/mathicgb/FixedSizeMonomialMap.h src/mathicgb/CFile.hpp			\
   src/mathicgb/CFile.cpp src/mathicgb/LogDomain.hpp						\
   src/mathicgb/LogDomain.cpp src/mathicgb/LogDomainSet.hpp				\

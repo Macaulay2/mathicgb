@@ -5,7 +5,7 @@
 
 #include "FixedSizeMonomialMap.h"
 #include "mtbb.hpp"
-#include "Atomic.hpp"
+#include <atomic>
 #include "PolyRing.hpp"
 #include <memtailor.h>
 #include <limits>
@@ -216,7 +216,7 @@ private:
     return (bucketCount + (MinBucketsPerEntry - 1)) / MinBucketsPerEntry;
   }
 
-  Atomic<FixedSizeMap*> mMap;
+  std::atomic<FixedSizeMap*> mMap;
   const PolyRing& mRing;
   mutable mtbb::mutex mInsertionMutex;
 
