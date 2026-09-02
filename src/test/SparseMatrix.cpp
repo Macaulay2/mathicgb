@@ -7,7 +7,9 @@
 #include "mathicgb/PolyRing.hpp"
 #include "mathicgb/io-util.hpp"
 #include "mathicgb/MathicIO.hpp"
+#include "mathicgb/CFile.hpp"
 #include <gtest/gtest.h>
+#include <cstdio>
 #include <memory>
 #include <string>
 
@@ -87,4 +89,31 @@ TEST(SparseMatrix, toRow) {
   ASSERT_EQ(*parsePoly(*ring, "10a5"), p);
   mat.rowToPolynomial(2, monomials, p);
   ASSERT_EQ(*parsePoly(*ring, "20a3+40a1"), p);
+}
+
+TEST(SparseMatrix, ReadRejectsAnOversizedModulus) {
+  const char* const fileName = "SparseMatrix-modulus-test.tmp";
+  SparseMatrix mat;
+  mat.appendEntry(0, 5);
+  mat.rowDone();
+
+  // write() takes a Scalar, so the only way to get an out-of-range modulus
+  // into a file is to patch the field, which sits after two uint32s.
+  {
+    CFile file(fileName, "wb");
+    mat.write(101, file.handle());
+  }
+  {
+    CFile file(fileName, "r+b");
+    const uint32 modulus = 65637; // 65536 + 101, so it truncates to 101
+    ASSERT_EQ(0, std::fseek(file.handle(), 2 * sizeof(uint32), SEEK_SET));
+    ASSERT_EQ(1, std::fwrite(&modulus, sizeof(modulus), 1, file.handle()));
+  }
+
+  SparseMatrix read;
+  {
+    CFile file(fileName, "rb");
+    ASSERT_THROW(read.read(file.handle()), mathic::MathicException);
+  }
+  ASSERT_EQ(0, std::remove(fileName));
 }

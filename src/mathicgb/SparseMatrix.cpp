@@ -498,6 +498,13 @@ SparseMatrix::Scalar SparseMatrix::read(FILE* file) {
   const auto rowCount = readOne<uint32>(file);
   [[maybe_unused]] const auto colCount = readOne<uint32>(file);
   const auto modulus = readOne<uint32>(file);
+  if (modulus > std::numeric_limits<Scalar>::max()) {
+    std::ostringstream err;
+    err << "The matrix file has modulus " << modulus
+      << ", which does not fit in the " << 8 * sizeof(Scalar)
+      << " bits that this file format stores coefficients in.";
+    mathic::reportError(err.str());
+  }
   const auto entryCount64 = readOne<uint64>(file);
   if (entryCount64 > std::numeric_limits<size_t>::max())
     throw std::bad_alloc();
