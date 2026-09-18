@@ -4,12 +4,14 @@
 #include "SigGBAction.hpp"
 
 #include "mathicgb/Basis.hpp"
+#include "mathicgb/ModuleMonoSet.hpp"
 #include "mathicgb/SignatureGB.hpp"
 #include "mathicgb/io-util.hpp"
 #include "mathicgb/Scanner.hpp"
 #include "mathicgb/MathicIO.hpp"
 #include <fstream>
 #include <iostream>
+#include <sstream>
 
 MATHICGB_NAMESPACE_BEGIN
 
@@ -32,9 +34,20 @@ SigGBAction::SigGBAction():
     "useBaseDivisors",
     "Use high ratio and low ratio base divisors to eliminate "
     "S-spairs quickly based on signature.",
-    true)
+    true),
 
-{}
+  mMonomialTable(
+    "monomialTable",
+    "The kind of monomial table data structure to use.\n",
+    2
+  )
+
+{
+  std::ostringstream out;
+  out << "Module monomial set data structures codes:\n";
+  ModuleMonoSet::displayCodes(out);
+  mMonomialTable.appendToDescription(out.str());
+}
 
 void SigGBAction::directOptions(
   std::vector< std::string> tokens,
@@ -67,7 +80,7 @@ void SigGBAction::performAction() {
     std::move(processor),
     Reducer::reducerType(mGBParams.mReducer.value()),
     mGBParams.mMonoLookup.value(),
-    mGBParams.mMonomialTable.value(),
+    mMonomialTable.value(),
     mPostponeKoszul.value(),
     mUseBaseDivisors.value(),
     mGBParams.mPreferSparseReducers.value(),
@@ -129,6 +142,7 @@ void SigGBAction::pushBackParameters(
   parameters.push_back(&mUseSingularCriterionEarly);
   parameters.push_back(&mPostponeKoszul);
   parameters.push_back(&mUseBaseDivisors);
+  parameters.push_back(&mMonomialTable);
 }
 
 MATHICGB_NAMESPACE_END
