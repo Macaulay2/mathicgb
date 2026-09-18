@@ -86,7 +86,7 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/mathicgb.pc"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 install(FILES README.md gpl-2.0.txt gpl-3.0.txt
-  DESTINATION licenses/mathicgb
+  DESTINATION ${CMAKE_INSTALL_DOCDIR}
   )
 
 set(mathicgb_cmakedir "${CMAKE_INSTALL_LIBDIR}/cmake/mathicgb")
