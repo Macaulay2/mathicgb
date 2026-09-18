@@ -65,6 +65,45 @@ jobs:
         working-directory: build-dir
         run: make distcheck
 
+      - name: Test installed CMake packages
+        if: matrix.build-system == 'cmake'
+        shell: bash
+        env:
+          CMAKE_BUILD_PARALLEL_LEVEL: 2
+          BUILD_CONFIG: ${{ matrix.debug && 'Debug' || 'Release' }}
+          EXPECT_DEBUG: ${{ matrix.debug && 'ON' || 'OFF' }}
+          WITH_TBB: ${{ matrix.tbb && 'ON' || 'OFF' }}
+          EXPECT_NO_TBB: ${{ matrix.tbb && 'OFF' || 'ON' }}
+        run: |
+          for shared in ON OFF; do
+            build="$RUNNER_TEMP/mathicgb-$shared"
+            prefix="$build/install"
+            cmake -S . -B "$build" -GNinja \
+              -DCMAKE_BUILD_TYPE="$BUILD_CONFIG" -DBUILD_SHARED_LIBS="$shared" \
+              -DBUILD_TESTING=OFF -Dwith_tbb="$WITH_TBB" \
+              -DCMAKE_INSTALL_PREFIX="$prefix"
+            cmake --build "$build" --target install
+            pc=$(find "$prefix" -name mathicgb.pc -print -quit)
+            flags=$(PKG_CONFIG_PATH="$(dirname "$pc")${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" pkg-config --cflags mathicgb)
+            if test "$EXPECT_DEBUG" = ON; then
+              [[ "$flags" == *-DMATHICGB_DEBUG* ]]
+            else
+              [[ "$flags" != *-DMATHICGB_DEBUG* ]]
+            fi
+            if test "$EXPECT_NO_TBB" = ON; then
+              [[ "$flags" == *-DMATHICGB_NO_TBB* ]]
+            else
+              [[ "$flags" != *-DMATHICGB_NO_TBB* ]]
+            fi
+            mv "$prefix" "$build/relocated"
+            cmake -S cmake/tests -B "$build/consumer" -GNinja \
+              -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=11 \
+              -DCMAKE_PREFIX_PATH="$build/relocated" \
+              -DEXPECT_DEBUG="$EXPECT_DEBUG" -DEXPECT_NO_TBB="$EXPECT_NO_TBB"
+            cmake --build "$build/consumer"
+            ctest --test-dir "$build/consumer" --output-on-failure
+          done
+
   style:
     runs-on: ubuntu-latest
     steps:
