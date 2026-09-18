@@ -11,6 +11,7 @@
 #include "KoszulQueue.hpp"
 #include "SPairs.hpp"
 #include "MonoProcessor.hpp"
+#include "mtbb.hpp"
 #include <map>
 
 MATHICGB_NAMESPACE_BEGIN
@@ -91,8 +92,10 @@ private:
 
   size_t stats_pairsReduced; // # spairs actually sent for reduction
 
-  mic::Timer mTimer;
+  mic::Timer mTimer;          // CPU time, summed over threads
+  mtbb::tick_count mRealStart;
   double stats_nsecs;
+  double stats_realSeconds;
 
   std::unique_ptr<SigPolyBasis> GB;
   KoszulQueue mKoszuls;
