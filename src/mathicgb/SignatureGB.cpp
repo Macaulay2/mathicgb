@@ -49,6 +49,7 @@ SignatureGB::SignatureGB(
   stats_relativelyPrimeEliminated(0),
   stats_pairsReduced(0),
   stats_nsecs(0.0),
+  stats_realSeconds(0.0),
   GB(make_unique<SigPolyBasis>(*R, divlookup_type, montable_type, preferSparseReducers)),
   mKoszuls(R->monoid()),
   Hsyz(ModuleMonoSet::make(R->monoid(), montable_type, basis.size(), !mPostponeKoszul)),
@@ -88,6 +89,7 @@ void SignatureGB::computeGrobnerBasis()
   size_t counter = 0;
 
   mTimer.reset();
+  mRealStart = mtbb::tick_count::now();
   std::ostream& out = std::cout;
 
   while (step()) {
@@ -128,6 +130,8 @@ void SignatureGB::computeGrobnerBasis()
 
   //  displayMemoryUse(std::cout);
   stats_nsecs = mTimer.getMilliseconds() / 1000.0;
+  stats_realSeconds = static_cast<unsigned long>(
+    (mtbb::tick_count::now() - mRealStart).seconds() * 1000.0) / 1000.0;
   //GB->displayBrief(out);
 
   if (mProcessor->processingNeeded()) {
@@ -291,7 +295,8 @@ void SignatureGB::displayStats(std::ostream &o) const
   o << " divisor tab type: " << GB->basis().monoLookup().getName() << '\n';
   o << " syzygy tab type: " << Hsyz->name() << '\n';
   o << " S-pair queue type: " << SP->name() << '\n';
-  o << " total compute time:  " << stats_nsecs << " -- seconds" << '\n';
+  o << " total CPU time: " << stats_nsecs << " seconds" << '\n';
+  o << " total elapsed time: " << stats_realSeconds << " seconds" << '\n';
 
   displayMemoryUse(o);
   displaySomeStats(o);
@@ -453,7 +458,7 @@ void SignatureGB::displaySomeStats(std::ostream& out) const {
   const double mseconds = mTimer.getMilliseconds();
   const size_t pending = SP->pairCount();
 
-  name << "Time spent:\n";
+  name << "CPU time spent:\n";
   value << mTimer << '\n';
   extra << mic::ColumnPrinter::oneDecimal(mseconds / basisSize)
     << " ms per basis element\n";

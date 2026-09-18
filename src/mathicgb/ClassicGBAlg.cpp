@@ -8,6 +8,7 @@
 #include "PolyBasis.hpp"
 #include "Basis.hpp"
 #include "LogDomain.hpp"
+#include "mtbb.hpp"
 #include "MathicIO.hpp"
 #include <iostream>
 #include <mathic.h>
@@ -110,7 +111,8 @@ private:
   Reducer& mReducer;
   PolyBasis mBasis;
   SPairs mSPairs;
-  mic::Timer mTimer;
+  mic::Timer mTimer;          // CPU time, summed over threads
+  mtbb::tick_count mRealStart;
   unsigned long long mSPolyReductionCount;
 };
 
@@ -314,6 +316,7 @@ void ClassicGBAlg::insertReducedPoly(
 void ClassicGBAlg::computeGrobnerBasis() {
   size_t counter = 0;
   mTimer.reset();
+  mRealStart = mtbb::tick_count::now();
 
   if (mUseAutoTailReduction)
     autoTailReduce();
@@ -441,7 +444,11 @@ void ClassicGBAlg::printStats(std::ostream& out) const {
   out << " reduction type:     " << mReducer.description() << '\n';
   out << " divisor tab type:   " << mBasis.monoLookup().getName() << '\n';
   out << " S-pair queue type:  " << mSPairs.name() << '\n';
-  out << " total compute time: " << mTimer.getMilliseconds()/1000.0 << " seconds " << '\n';
+  out << " total CPU time:     " << mTimer.getMilliseconds()/1000.0
+    << " seconds\n";
+  const auto realMilliseconds = static_cast<unsigned long>(
+    (mtbb::tick_count::now() - mRealStart).seconds() * 1000.0);
+  out << " total elapsed time: " << realMilliseconds/1000.0 << " seconds\n";
   out << " S-pair group size:  " << mSPairGroupSize << '\n';
 
   mic::ColumnPrinter pr;
@@ -457,7 +464,7 @@ void ClassicGBAlg::printStats(std::ostream& out) const {
   const double mseconds = mTimer.getMilliseconds();
   const size_t pending = mSPairs.pairCount();
 
-  name << "Time spent:\n";
+  name << "CPU time spent:\n";
   value << mTimer << '\n';
   extra << mic::ColumnPrinter::oneDecimal(mseconds / basisSize)
         << " ms per basis element\n";
