@@ -21,17 +21,10 @@
 
 #define MATHICGB_STREAM_CHECK(X, MSG) \
   do { \
-    const bool value = (X); \
-    if (!value) { \
-      [[maybe_unused]] const bool ignoreMe = false; \
-      MATHICGB_ASSERT(( \
-        "MathicGB stream protocol error: "#MSG \
-        "\nAssert expression: "#X"\n", \
-        false \
-      )); \
+    if (!(X)) { \
       throw std::invalid_argument( \
         "MathicGB stream protocol error: "#MSG \
-        "\nAssert expression: "#X"\n" \
+        "\nFailed check: "#X"\n" \
       ); \
     } \
   } while (false)
