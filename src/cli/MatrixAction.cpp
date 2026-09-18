@@ -7,13 +7,12 @@
 #include "mathicgb/SparseMatrix.hpp"
 #include "mathicgb/F4MatrixReducer.hpp"
 #include "mathicgb/SparseMatrix.hpp"
-#include "mathicgb/PrimeField.hpp"
 #include "mathicgb/CFile.hpp"
 #include <mathic.h>
 #include <limits>
+#include <string>
 #include <fstream>
 #include <iostream>
-#include <sstream>
 
 MATHICGB_NAMESPACE_BEGIN
 
@@ -34,16 +33,18 @@ namespace {
     return CFile(fileName, "r", CFile::NoThrowTag()).hasFile();
   }
 
-  void checkModulus(
-    const SparseMatrix::Scalar modulus,
+  template<class Matrix>
+  SparseMatrix::Scalar readMatrixFile(
+    Matrix& matrix,
     const std::string& fileName
   ) {
-    if (isPrime(modulus))
-      return;
-    std::ostringstream err;
-    err << "The modulus " << modulus << " from the matrix file " << fileName
-      << " is not prime. MathicGB only supports prime fields.";
-    mathic::reportError(err.str());
+    CFile file(fileName, "rb");
+    try {
+      return matrix.read(file.handle());
+    } catch (const mathic::MathicException&) {
+      std::cerr << "While reading " << fileName << ":\n";
+      throw;
+    }
   }
 }
 
@@ -81,11 +82,8 @@ void MatrixAction::performAction() {
       extension == ""
     ) {
       inputFileName = quadFileName;
-      CFile file(quadFileName, "rb");
       QuadMatrix matrix;
-      modulus = matrix.read(file.handle());
-      file.close();
-      checkModulus(modulus, quadFileName);
+      modulus = readMatrixFile(matrix, quadFileName);
       lowerRightMatrix = F4MatrixReducer(modulus).reduceToBottomRight(matrix);
 
       if (!fileExists(lowerRightFileName)) {
@@ -96,9 +94,7 @@ void MatrixAction::performAction() {
       }
     } else if (extension == LowerRightMatrixExtension) {
       inputFileName = lowerRightFileName;
-      CFile file(lowerRightFileName, "rb");
-      modulus = lowerRightMatrix.read(file.handle());
-      checkModulus(modulus, lowerRightFileName);
+      modulus = readMatrixFile(lowerRightMatrix, lowerRightFileName);
     } else {
       mathic::reportError
         ("Unknown input file extension of " + mParams.inputFileName(i));
@@ -115,8 +111,7 @@ void MatrixAction::performAction() {
       lowerRightMatrix.writePBM(pbmFile.handle());
     } else {
       SparseMatrix referenceMatrix;
-      CFile file(reducedLowerRightFileName.c_str(), "rb");
-      referenceMatrix.read(file.handle());
+      readMatrixFile(referenceMatrix, reducedLowerRightFileName);
 
       if (lowerRightMatrix != referenceMatrix) {
         const std::string wrongFile =

@@ -4,6 +4,7 @@
 #include "SparseMatrix.hpp"
 
 #include "Poly.hpp"
+#include "PrimeField.hpp"
 #include <algorithm>
 
 MATHICGB_NAMESPACE_BEGIN
@@ -503,6 +504,12 @@ SparseMatrix::Scalar SparseMatrix::read(FILE* file) {
     err << "The matrix file has modulus " << modulus
       << ", which does not fit in the " << 8 * sizeof(Scalar)
       << " bits that this file format stores coefficients in.";
+    mathic::reportError(err.str());
+  }
+  if (!isPrime(modulus)) {
+    std::ostringstream err;
+    err << "The modulus " << modulus
+      << " is not prime. MathicGB only supports prime fields.";
     mathic::reportError(err.str());
   }
   const auto entryCount64 = readOne<uint64>(file);
