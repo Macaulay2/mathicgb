@@ -21,3 +21,6 @@ indent_style = unset
 [*.{in,seed}]
 indent_style = tab
 trim_trailing_whitespace = false
+
+[cmake/*.cmake.in]
+indent_style = space

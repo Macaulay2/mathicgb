@@ -1,0 +1,18 @@
+@PACKAGE_INIT@
+include(CMakeFindDependencyMacro)
+find_dependency(Threads)
+set(_mathicgb_module_path "${CMAKE_MODULE_PATH}")
+list(INSERT CMAKE_MODULE_PATH 0 "${CMAKE_CURRENT_LIST_DIR}")
+find_dependency(Memtailor)
+find_dependency(Mathic)
+if(@with_tbb@)
+  find_dependency(TBB)
+endif()
+set(CMAKE_MODULE_PATH "${_mathicgb_module_path}")
+include("${CMAKE_CURRENT_LIST_DIR}/mathicgbTargets.cmake")
+# The ABI is determined by the installed library, not the consumer build type.
+if($<CONFIG:Debug>)
+  set_property(TARGET mathicgb::mathicgb APPEND PROPERTY
+    INTERFACE_COMPILE_DEFINITIONS MATHICGB_DEBUG)
+endif()
+check_required_components(mathicgb)
