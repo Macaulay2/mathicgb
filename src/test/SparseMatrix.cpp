@@ -117,3 +117,24 @@ TEST(SparseMatrix, ReadRejectsAnOversizedModulus) {
   }
   ASSERT_EQ(0, std::remove(fileName));
 }
+
+TEST(SparseMatrix, ReadRejectsACompositeModulus) {
+  const char* const fileName = "SparseMatrix-composite-modulus-test.tmp";
+  SparseMatrix mat;
+  mat.appendEntry(0, 5);
+  mat.rowDone();
+
+  // write() does not check, so a composite modulus goes straight into the
+  // file -- no patching needed, unlike the oversized case above.
+  {
+    CFile file(fileName, "wb");
+    mat.write(100, file.handle());
+  }
+
+  SparseMatrix read;
+  {
+    CFile file(fileName, "rb");
+    ASSERT_THROW(read.read(file.handle()), mathic::MathicException);
+  }
+  ASSERT_EQ(0, std::remove(fileName));
+}
