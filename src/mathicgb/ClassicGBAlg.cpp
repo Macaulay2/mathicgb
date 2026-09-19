@@ -149,7 +149,7 @@ ClassicGBAlg::ClassicGBAlg(
 
 void ClassicGBAlg::setSPairGroupSize(unsigned int groupSize) {
   if (groupSize == 0)
-    groupSize = mReducer.preferredSetSize();
+    mSPairGroupSize = mReducer.preferredSetSize();
   else
     mSPairGroupSize = groupSize;
 }
