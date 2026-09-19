@@ -65,6 +65,43 @@ jobs:
         working-directory: build-dir
         run: make distcheck
 
+  ubsan:
+    name: undefined behaviour sanitizer
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - name: Install dependencies
+        run: |
+          sudo apt-get install -y libgtest-dev libmemtailor-dev \
+                                  libmathic-dev libtbb-dev
+          echo "MAKEFLAGS=-j$(getconf _NPROCESSORS_ONLN || echo 2)" >> $GITHUB_ENV
+      - name: Build and check
+        env:
+          UBSAN_OPTIONS: print_stacktrace=1
+          # automake prints only a summary on failure; VERBOSE makes it cat
+          # the test log, which is where the sanitizer's diagnostics are.
+          VERBOSE: 1
+        run: |
+          mkdir build-dir
+          cd build-dir
+          ../autogen.sh
+          # -fno-sanitize-recover=all is what makes a report fail the job
+          # rather than print and continue.
+          #
+          # Alignment is excluded, and only because of the packaged
+          # dependencies: mathic's KDEntryArray places entries wanting 8-byte
+          # alignment on 4-byte boundaries in memtailor Arena memory. That is
+          # 325 reports across 113 sites, every one of them that single cause,
+          # already fixed in mathic's git but not in the Ubuntu package
+          # installed above. Drop -fno-sanitize=alignment once the package
+          # catches up, and re-check our own sites then -- they share the
+          # cause and should go with it.
+          ../configure --enable-debug \
+            CXXFLAGS="-fsanitize=undefined -fno-sanitize=alignment \
+              -fno-sanitize-recover=all -fno-omit-frame-pointer -g"
+          make
+          make check
+
   style:
     runs-on: ubuntu-latest
     steps:
