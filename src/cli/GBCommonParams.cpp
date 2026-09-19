@@ -3,7 +3,6 @@
 #include "mathicgb/stdinc.h"
 #include "GBCommonParams.hpp"
 
-#include "mathicgb/ModuleMonoSet.hpp"
 #include "mathicgb/MonoLookup.hpp"
 #include "mathicgb/Reducer.hpp"
 
@@ -52,12 +51,6 @@ GBCommonParams::GBCommonParams():
     std::numeric_limits<decltype(mPrintInterval.value())>::max()
   ),
 
-  mMonomialTable(
-    "monomialTable",
-    "The kind of monomial table data structure to use.\n",
-    2
-  ),
-
   mMonoLookup(
     "divisorLookup",
     "The monomial lookup data structure to use.\n",
@@ -86,12 +79,6 @@ GBCommonParams::GBCommonParams():
     MonoLookup::displayCodes(out);
     mMonoLookup.appendToDescription(out.str());
   }
-  {
-    std::ostringstream out;
-    out << "Module monomial set data structures codes:\n";
-    ModuleMonoSet::displayCodes(out);
-    mMonomialTable.appendToDescription(out.str());
-  }
 }
 
 void GBCommonParams::pushBackParameters(
@@ -102,7 +89,6 @@ void GBCommonParams::pushBackParameters(
   parameters.push_back(&mSPairQueue);
   parameters.push_back(&mBreakAfter);
   parameters.push_back(&mPrintInterval);
-  parameters.push_back(&mMonomialTable);
   parameters.push_back(&mMonoLookup);
   parameters.push_back(&mReducer);
   parameters.push_back(&mMemoryQuantum);

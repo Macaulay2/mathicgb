@@ -171,15 +171,12 @@ std::unique_ptr<MonoLookup::Factory> MonoLookup::makeFactory(
   const Monoid& monoid,
   const int type
 ) {
+  checkStaticMonoLookupCode(type);
   return std::unique_ptr<Factory>(new ConcreteFactory(monoid, type));
 }
 
 void MonoLookup::displayCodes(std::ostream& out) {
-  out <<
-   "  1   list, using divmasks\n"
-   "  2   KD-tree, using divmasks\n"
-   "  3   list\n"
-   "  4   KD-tree\n";
+  displayStaticMonoLookupCodes(out);
 }
 
 MATHICGB_NAMESPACE_END

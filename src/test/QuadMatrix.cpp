@@ -42,3 +42,22 @@ TEST(QuadMatrix, ReadWritesAllFourSubmatrices) {
   ASSERT_EQ(in.bottomLeft.toString(), out.bottomLeft.toString());
   ASSERT_EQ(in.bottomRight.toString(), out.bottomRight.toString());
 }
+
+TEST(QuadMatrix, ReadRejectsACompositeModulus) {
+  QuadMatrix in;
+  in.topLeft.appendEntry(0, 11);
+  in.topLeft.rowDone();
+
+  const char* const fileName = "QuadMatrix-composite-modulus-test.tmp";
+  {
+    CFile file(fileName, "wb");
+    in.write(100, file.handle());
+  }
+
+  QuadMatrix out;
+  {
+    CFile file(fileName, "rb");
+    ASSERT_THROW(out.read(file.handle()), mathic::MathicException);
+  }
+  ASSERT_EQ(0, std::remove(fileName));
+}

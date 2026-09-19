@@ -81,6 +81,7 @@ if(BUILD_TESTING)
     test/F4MatrixBuilder.cpp
     test/F4MatrixReducer.cpp
     test/MathicIO.cpp
+    test/MonoLookup.cpp
     test/MonoMonoid.cpp
     test/PrimeField.cpp
     test/QuadMatrix.cpp

@@ -19,7 +19,6 @@ public:
   mathic::IntegerParameter mSPairQueue;
   mathic::IntegerParameter mBreakAfter;
   mathic::IntegerParameter mPrintInterval;
-  mathic::IntegerParameter mMonomialTable;
   mathic::IntegerParameter mMonoLookup;
   mathic::IntegerParameter mReducer;
   mathic::IntegerParameter mMemoryQuantum;

@@ -130,11 +130,7 @@ private:
 ModuleMonoSet::~ModuleMonoSet() {}
 
 void ModuleMonoSet::displayCodes(std::ostream& out) {
-  out <<
-   "  1   list, using divmasks\n"
-   "  2   KD-tree, using divmasks\n"
-   "  3   list\n"
-   "  4   KD-tree\n";
+  displayStaticMonoLookupCodes(out);
 }
 
 namespace {
@@ -178,6 +174,7 @@ std::unique_ptr<ModuleMonoSet> ModuleMonoSet::make(
   const size_t components,
   const bool allowRemovals
 ) {
+  checkStaticMonoLookupCode(type);
   return ModuleMonoSetFactory().make(monoid, type, components, allowRemovals);
 }
 

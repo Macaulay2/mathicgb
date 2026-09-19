@@ -919,3 +919,23 @@ TEST(MathicGBLib, RejectsCompositeModulus) {
   ASSERT_THROW((void)Conf(1, 3, 1), std::runtime_error);
   ASSERT_THROW((void)Conf(0, 3, 1), std::runtime_error);
 }
+
+TEST(MathicGBLib, StreamCheckerThrowsOnAProtocolError) {
+  typedef mgb::mgbi::StreamStateChecker Checker;
+
+  {
+    Checker checker(101, 2, 1);
+    ASSERT_THROW(checker.appendPolynomialBegin(), std::invalid_argument);
+  }
+  {
+    Checker checker(101, 2, 1);
+    checker.idealBegin();
+    ASSERT_THROW(checker.idealBegin(), std::invalid_argument);
+  }
+  {
+    Checker checker(101, 2, 1);
+    checker.idealBegin(1);
+    checker.appendPolynomialBegin();
+    ASSERT_THROW(checker.appendPolynomialBegin(), std::invalid_argument);
+  }
+}
