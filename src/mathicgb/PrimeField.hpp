@@ -115,6 +115,18 @@ inline bool isPrime(const uint64 n) {
   return true;
 }
 
+/// Reports a user error unless modulus is prime. T may be signed, so that a
+/// negative modulus is reported as itself.
+template<class T>
+void checkModulusIsPrime(const T modulus) {
+  if (modulus < 2 || !isPrime(static_cast<uint64>(modulus))) {
+    std::ostringstream str;
+    str << "Modulus " << modulus
+      << " is not prime. MathicGB only supports prime fields.";
+    mathic::reportError(str.str());
+  }
+}
+
 /// Implements arithmetic in a prime field. T must be an unsigned integer type
 /// that is used to store the elements of the field. The characteristic of the
 /// field must be a prime not exceeding std::numeric_limits<T>::max().
