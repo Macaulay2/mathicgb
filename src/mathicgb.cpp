@@ -605,7 +605,8 @@ struct GroebnerInputIdealStream::Pimpl {
     basis(ring),
     poly(ring),
     monomial(ring.allocMonomial()),
-    conf(conf)
+    conf(conf),
+    exponents(new Exponent[conf.varCount()])
 #ifdef MATHICGB_DEBUG
     , hasBeenDestroyed(false),
     checker(conf.modulus(), conf.varCount(), conf.comCount())
@@ -621,6 +622,7 @@ struct GroebnerInputIdealStream::Pimpl {
   Poly poly;
   Monomial monomial;
   const GroebnerConfiguration conf;
+  const std::unique_ptr<Exponent[]> exponents; // what mExponents points to
   MATHICGB_IF_DEBUG(bool hasBeenDestroyed);
   MATHICGB_IF_DEBUG(StreamStateChecker checker);
 };
@@ -628,20 +630,22 @@ struct GroebnerInputIdealStream::Pimpl {
 GroebnerInputIdealStream::GroebnerInputIdealStream(
   const GroebnerConfiguration& conf
 ):
-  mExponents(new Exponent[conf.varCount()]),
-  mPimpl(new Pimpl(conf))
+  GroebnerInputIdealStream(new Pimpl(conf))
+{}
+
+GroebnerInputIdealStream::GroebnerInputIdealStream(Pimpl* const pimpl):
+  mExponents(pimpl->exponents.get()),
+  mPimpl(pimpl)
 {
   MATHICGB_ASSERT(debugAssertValid());
 }
 
 GroebnerInputIdealStream::~GroebnerInputIdealStream() {
   MATHICGB_ASSERT(debugAssertValid());
-  MATHICGB_ASSERT(mExponents != 0);
   MATHICGB_ASSERT(mPimpl != 0);
   MATHICGB_ASSERT_NO_ASSUME(!mPimpl->hasBeenDestroyed);
   MATHICGB_IF_DEBUG(mPimpl->hasBeenDestroyed = true);
   delete mPimpl;
-  delete[] mExponents;
 }
 
 const GroebnerConfiguration& GroebnerInputIdealStream::configuration() const {
@@ -741,8 +745,8 @@ void GroebnerInputIdealStream::idealDone() {
 }
 
 bool GroebnerInputIdealStream::debugAssertValid() const {
-  MATHICGB_ASSERT(mExponents != 0);
   MATHICGB_ASSERT(mPimpl != 0);
+  MATHICGB_ASSERT(mExponents == mPimpl->exponents.get());
   MATHICGB_ASSERT_NO_ASSUME(!mPimpl->hasBeenDestroyed);
   MATHICGB_ASSERT(!mPimpl->monomial.isNull());
   MATHICGB_ASSERT(&mPimpl->basis.ring() == &mPimpl->ring);

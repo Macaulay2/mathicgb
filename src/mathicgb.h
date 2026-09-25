@@ -340,6 +340,8 @@ namespace mgb { // Part of the public interface of MathicGB
     struct Pimpl;
     friend class mgbi::PimplOf;
     Pimpl* const mPimpl;
+
+    explicit GroebnerInputIdealStream(Pimpl* pimpl);
   };
 
   /// After making a configuration and an ideal, use this function to compute
@@ -571,7 +573,7 @@ namespace mgb {
   // ** Functions
 
   // This method is made inline to avoid the overhead from calling a function
-  // for every exponent. This is also why mExponents is not inside the pimpl -
+  // for every exponent. This is why mExponents only points into the pimpl -
   // otherwise we couldn't access it from here. That then explains why
   // mExponents is a raw pointer instead of a std::vector - the compiler for the
   // caller and the library must agree on the memory layout of the object and
