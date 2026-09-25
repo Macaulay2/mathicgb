@@ -33,7 +33,7 @@ TEST(IO, ideal) {
 -bc2+a2e \
 ";
 
-  std::unique_ptr<Basis> I = basisParseFromString(idealA_fromStr_format);
+  auto [ring, I] = ringAndBasisFromString(idealA_fromStr_format);
   EXPECT_EQ("  -bc+ad\n  -b2+af\n  -bc2+a2e\n", toString(I.get()));
 }
 
