@@ -606,7 +606,7 @@ TEST(OldMonomial, findSignatures) {
 
 TEST(Ideal,readwrite) {
   // This also tests Poly::iterator
-  std::unique_ptr<Basis> I = basisParseFromString(ideal1);
+  auto [ring, I] = ringAndBasisFromString(ideal1);
   size_t ngens = I->viewGenerators().size();
   EXPECT_TRUE(2 == ngens);
 
@@ -624,8 +624,7 @@ TEST(Ideal,readwrite) {
 
 TEST(Poly,lead) {
   // This also tests Poly::iterator, Poly::read, Poly::write
-  std::unique_ptr<Basis> I = basisParseFromString(ideal1);
-  std::unique_ptr<const PolyRing> R(I->getPolyRing());
+  auto [R, I] = ringAndBasisFromString(ideal1);
   const auto& monoid = R->monoid();
   monomial lm = stringToMonomial(R.get(), "ab");
   EXPECT_TRUE(monoid.equal(lm, I->getPoly(0)->leadMono()));

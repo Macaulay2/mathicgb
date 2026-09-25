@@ -33,13 +33,14 @@ std::string toString(const Poly *g)
   return o.str();
 }
 
-std::unique_ptr<Basis> basisParseFromString(std::string str)
+std::pair<std::unique_ptr<PolyRing>, std::unique_ptr<Basis>>
+ringAndBasisFromString(std::string str)
 {
   std::istringstream inStream(str);
   Scanner in(inStream);
-  auto p = MathicIO<>().readRing(true, in);
-  auto& ring = *p.first.release(); // todo: fix leak
-  return make_unique<Basis>(MathicIO<>().readBasis(ring, false, in));
+  auto ring = MathicIO<>().readRing(true, in).first;
+  auto basis = make_unique<Basis>(MathicIO<>().readBasis(*ring, false, in));
+  return {std::move(ring), std::move(basis)};
 }
 
 std::unique_ptr<PolyRing> ringFromString(std::string ringStr)

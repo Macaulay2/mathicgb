@@ -4,6 +4,7 @@
 #define MATHICGB_IO_UTIL_GUARD
 
 #include "PolyRing.hpp"
+#include <utility>
 
 MATHICGB_NAMESPACE_BEGIN
 
@@ -28,7 +29,8 @@ std::string toString(SigPolyBasis *, int unused); // also displays signature
 std::string toString(Basis *);
 std::string toString(const Poly *);
 
-std::unique_ptr<Basis> basisParseFromString(std::string str);
+std::pair<std::unique_ptr<PolyRing>, std::unique_ptr<Basis>>
+ringAndBasisFromString(std::string str);
 std::unique_ptr<Poly> polyParseFromString
   (const PolyRing *R, const std::string &s);
 
