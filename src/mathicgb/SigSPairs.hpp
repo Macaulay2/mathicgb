@@ -15,7 +15,6 @@ MATHICGB_NAMESPACE_BEGIN
 class Poly;
 class ModuleMonoSet;
 class SigPolyBasis;
-class Reducer;
 
 // Handles S-pairs in signature Grobner basis algorithms. Responsible
 // for eliminating S-pairs, storing S-pairs and ordering S-pairs.
@@ -33,7 +32,6 @@ public:
     const PolyRing *R0,
     const SigPolyBasis *GB0,
     ModuleMonoSet *Hsyz0,
-    Reducer* reducer,
     bool postponeKoszuls,
     bool useBaseDivisors,
     bool useSingularCriterionEarly);
@@ -125,7 +123,6 @@ private:
   // From elsewhere
   ModuleMonoSet *Hsyz; // we often modify this
   const SigPolyBasis *GB;
-  //  Reducer* mReducer;
   const bool mPostponeKoszuls;
 
   typedef std::vector<PreSPair> PrePairContainer;
