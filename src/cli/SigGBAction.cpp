@@ -84,8 +84,7 @@ void SigGBAction::performAction() {
     mPostponeKoszul.value(),
     mUseBaseDivisors.value(),
     mGBParams.mPreferSparseReducers.value(),
-    mUseSingularCriterionEarly.value(),
-    mGBParams.mSPairQueue.value());
+    mUseSingularCriterionEarly.value());
   alg.setBreakAfter(mGBParams.mBreakAfter.value());
   alg.setPrintInterval(mGBParams.mPrintInterval.value());
   alg.computeGrobnerBasis();

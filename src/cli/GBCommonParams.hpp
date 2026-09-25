@@ -16,7 +16,6 @@ public:
 
   mathic::BoolParameter mPreferSparseReducers;
   mathic::BoolParameter mOutputResult;
-  mathic::IntegerParameter mSPairQueue;
   mathic::IntegerParameter mBreakAfter;
   mathic::IntegerParameter mPrintInterval;
   mathic::IntegerParameter mMonoLookup;
