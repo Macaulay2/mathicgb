@@ -5,19 +5,16 @@
 #  http://en.wikipedia.org/wiki/All-pairs_testing
 #
 # This file is an input file for the Microsoft testing tool PICT.
-# The tool is available at
+# It is open source and builds on Linux as well as Windows:
 #
-#   http://download.microsoft.com/download/f/5/5/f55484df-8494-48fa-8dbd-8c6f76cc014b/pict33.msi 
-#
-# You will need to run this program on Windows. It is a closed source
-# utility. There are open sources alternatives but they are not as good.
+#   https://github.com/microsoft/pict
 #
 # To update the test in gb-test.cpp, do
 #
 #   pict pict.in > pict.out
 #
 # Then place the entire contents of pict.out (including newlines) into
-# the string allPairsTest in gb-test.cpp.
+# the string allPairsTests in gb-test.cpp.
 
 ##############################################################
 # This is the PICT model specifying all parameters and their values
