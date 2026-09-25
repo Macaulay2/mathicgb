@@ -71,7 +71,9 @@ namespace mgbi {
       seenTermCount(0),
 
       lastVar(0)
-    {}
+    {
+      checkModulusIsPrime(modulus);
+    }
 
     bool debugAssertValid() const;
 
@@ -125,12 +127,7 @@ namespace mgbi {
   ):
     mPimpl(new Pimpl(modulus, varCount, comCount))
   {
-    try {
-      MATHICGB_STREAM_CHECK(isPrime(modulus), "The modulus must be prime");
-      MATHICGB_ASSERT(mPimpl->debugAssertValid());
-    } catch (...) {
-      delete mPimpl;
-    }
+    MATHICGB_ASSERT(mPimpl->debugAssertValid());
   }
 
   StreamStateChecker::~StreamStateChecker() {
@@ -351,6 +348,7 @@ struct GroebnerConfiguration::Pimpl {
     , mHasBeenDestroyed(false)
 #endif
   {
+    checkModulusIsPrime(modulus);
   }
 
   ~Pimpl() {
@@ -408,12 +406,6 @@ GroebnerConfiguration::GroebnerConfiguration(
 ):
   mPimpl(new Pimpl(modulus, varCount, comCount))
 {
-  if (!isPrime(modulus)) {
-    std::ostringstream str;
-    str << "Modulus " << modulus
-      << " is not prime. MathicGB only supports prime fields.";
-    mathic::reportError(str.str());
-  }
   MATHICGB_ASSERT(mPimpl->debugAssertValid());
 }
 

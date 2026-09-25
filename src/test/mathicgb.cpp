@@ -920,6 +920,13 @@ TEST(MathicGBLib, RejectsCompositeModulus) {
   ASSERT_THROW((void)Conf(0, 3, 1), std::runtime_error);
 }
 
+TEST(MathicGBLib, StreamCheckerRejectsCompositeModulus) {
+  typedef mgb::mgbi::StreamStateChecker Checker;
+  ASSERT_NO_THROW((void)Checker(101, 2, 1));
+  ASSERT_THROW((void)Checker(4, 2, 1), std::runtime_error);
+  ASSERT_THROW((void)Checker(0, 2, 1), std::runtime_error);
+}
+
 TEST(MathicGBLib, StreamCheckerThrowsOnAProtocolError) {
   typedef mgb::mgbi::StreamStateChecker Checker;
 
