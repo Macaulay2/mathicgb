@@ -103,7 +103,7 @@ public:
     pairs.clear();
   }
 
-  virtual std::string name() const {return "todo";}
+  virtual std::string name() const {return mPairQueue.name();}
 
   virtual size_t memoryUse() const {return mPairQueue.getMemoryUse();}
 
