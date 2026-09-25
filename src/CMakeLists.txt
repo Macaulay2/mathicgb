@@ -56,9 +56,12 @@ add_library(mathicgb
   mathicgb/stdinc.h
   )
 
+add_library(mathicgb::mathicgb ALIAS mathicgb)
+target_compile_features(mathicgb PUBLIC cxx_std_17)
+
 target_compile_definitions(mathicgb PUBLIC
   $<$<NOT:$<BOOL:${with_tbb}>>:MATHICGB_NO_TBB>
-  $<$<CONFIG:Debug>:MATHICGB_DEBUG>
+  $<BUILD_INTERFACE:$<$<CONFIG:Debug>:MATHICGB_DEBUG>>
   )
 
 target_link_libraries(mathicgb
@@ -68,7 +71,7 @@ target_link_libraries(mathicgb
 
 target_include_directories(mathicgb PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
-  $<INSTALL_INTERFACE:include>
+  $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
   )
 
 include(CTest)

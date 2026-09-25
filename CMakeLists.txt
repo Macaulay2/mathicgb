@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.18)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -14,7 +14,7 @@ set_property(CACHE with_tbb PROPERTY STRINGS auto ON OFF)
 
 set(CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake" ${CMAKE_MODULE_PATH})
 
-find_package(Threads 2.1 REQUIRED QUIET)
+find_package(Threads REQUIRED QUIET)
 find_package(Memtailor   REQUIRED)
 find_package(Mathic      REQUIRED)
 # The auto case has to be tested first, as if(with_tbb) is true for "auto".
@@ -37,17 +37,12 @@ else()
 endif()
 message(STATUS "Multithreading with TBB: ${with_tbb}")
 
-add_library(memtailor STATIC IMPORTED)
-set_target_properties(memtailor PROPERTIES
-  IMPORTED_LOCATION             "${MEMTAILOR_LIBRARIES}"
-  INTERFACE_INCLUDE_DIRECTORIES "${MEMTAILOR_INCLUDE_DIR}")
-
-add_library(mathic STATIC IMPORTED)
-set_target_properties(mathic PROPERTIES
-  IMPORTED_LOCATION             "${MATHIC_LIBRARIES}"
-  INTERFACE_INCLUDE_DIRECTORIES "${MATHIC_INCLUDE_DIR}")
+add_library(memtailor ALIAS memtailor::memtailor)
+add_library(mathic ALIAS mathic::mathic)
 
 include(GNUInstallDirs)
+include(CMakePackageConfigHelpers)
+include(CTest)
 
 add_subdirectory(src)
 
@@ -61,7 +56,11 @@ set_target_properties(mathicgb PROPERTIES
   VERSION ${MATHICGB_SOVERSION}.${MATHICGB_SO_AGE}.${MATHICGB_SO_REVISION}
   SOVERSION ${MATHICGB_SOVERSION})
 
-install(TARGETS mathicgb LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
+install(TARGETS mathicgb EXPORT mathicgbTargets
+  ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+  RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+  PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(DIRECTORY src/mathicgb
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   FILES_MATCHING PATTERN "*.hpp" PATTERN "*.h"
@@ -79,13 +78,29 @@ if(with_tbb)
 else()
   set(PC_CFLAGS "-DMATHICGB_NO_TBB")
 endif()
-configure_file(mathicgb.pc.in mathicgb.pc @ONLY)
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/mathicgb.pc
+string(APPEND PC_CFLAGS " $<$<CONFIG:Debug>:-DMATHICGB_DEBUG>")
+configure_file(mathicgb.pc.in mathicgb.pc.in @ONLY)
+file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/mathicgb.pc"
+  INPUT "${CMAKE_CURRENT_BINARY_DIR}/mathicgb.pc.in")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/mathicgb.pc"
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 install(FILES README.md gpl-2.0.txt gpl-3.0.txt
-  DESTINATION licenses/mathicgb
+  DESTINATION ${CMAKE_INSTALL_DOCDIR}
   )
+
+set(mathicgb_cmakedir "${CMAKE_INSTALL_LIBDIR}/cmake/mathicgb")
+configure_package_config_file(cmake/mathicgbConfig.cmake.in
+  "${CMAKE_CURRENT_BINARY_DIR}/mathicgbConfig.cmake.in"
+  INSTALL_DESTINATION "${mathicgb_cmakedir}")
+file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/mathicgbConfig.cmake"
+  INPUT "${CMAKE_CURRENT_BINARY_DIR}/mathicgbConfig.cmake.in")
+write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/mathicgbConfigVersion.cmake"
+  VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
+install(FILES cmake/FindMemtailor.cmake cmake/FindMathic.cmake cmake/FindTBB.cmake DESTINATION "${mathicgb_cmakedir}")
+install(EXPORT mathicgbTargets NAMESPACE mathicgb:: DESTINATION "${mathicgb_cmakedir}")
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/mathicgbConfig.cmake"
+  "${CMAKE_CURRENT_BINARY_DIR}/mathicgbConfigVersion.cmake" DESTINATION "${mathicgb_cmakedir}")
 
 if(enable_mgb)
   add_executable(mgb
