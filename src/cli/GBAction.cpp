@@ -100,7 +100,6 @@ void GBAction::performAction() {
   params.reducer = reducer.get();
   params.monoLookupType = mGBParams.mMonoLookup.value();
   params.preferSparseReducers = mGBParams.mPreferSparseReducers.value();
-  params.sPairQueueType = mGBParams.mSPairQueue.value();
   params.breakAfter = mGBParams.mBreakAfter.value();
   params.printInterval = mGBParams.mPrintInterval.value();
   params.sPairGroupSize = mSPairGroupSize.value();

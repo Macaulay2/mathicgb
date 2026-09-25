@@ -51,114 +51,114 @@ void testGB(
   // pict.in for details.
 #define MATHICGB_ESCAPE_MULTILINE_STRING(str) #str
 char const allPairsTests[] = MATHICGB_ESCAPE_MULTILINE_STRING(
-spairQueue  reducerType divLookup   monTable    buchberger  postponeKoszul  useBaseDivisors autoTailReduce  autoTopReduce   preferSparseReducers    useSingularCriterionEarly   sPairGroupSize  threadCount
-0   25  4   1   1   0   0   0   0   0   0   1   1
-3   11  3   2   0   1   1   0   0   1   1   100 2
-1   9   1   4   1   0   0   1   1   1   0   2   8
-2   21  2   3   1   0   0   1   1   0   0   10  2
-1   9   2   4   0   1   1   0   0   0   1   1   2
-2   7   1   3   0   0   1   0   0   1   1   1   8
-0   21  4   1   0   1   0   0   0   1   1   100 1
-3   26  3   2   1   0   0   0   1   1   0   10  1
-3   26  3   1   1   0   0   1   1   0   0   1   8
-0   25  4   2   1   0   0   1   1   1   0   0   8
-0   14  1   1   0   1   1   0   0   0   1   10  8
-2   22  4   4   1   0   0   1   0   0   0   10  1
-1   14  4   3   0   1   1   0   0   1   0   2   1
-2   10  2   2   0   1   1   0   0   0   1   2   2
-3   17  2   1   0   1   1   0   0   0   1   0   2
-0   18  1   2   0   1   1   0   0   1   1   1   2
-0   23  2   3   1   0   0   1   1   1   0   10  1
-1   10  3   4   1   0   0   1   1   0   0   100 8
-2   19  3   3   0   1   1   0   0   0   1   0   1
-0   26  4   1   1   0   0   0   0   1   0   2   2
-3   13  1   4   1   0   0   1   0   1   0   2   1
-1   15  2   1   1   0   0   1   0   0   0   10  8
-0   21  3   4   1   0   0   1   1   0   0   2   8
-3   10  4   3   0   0   1   0   0   1   1   1   1
-1   12  1   2   0   0   1   0   0   0   1   10  8
-2   19  1   1   1   0   0   1   1   1   0   100 8
-1   19  4   2   1   0   0   0   1   1   0   10  2
-1   16  1   4   1   0   0   0   1   1   0   0   1
-1   26  2   3   1   0   0   1   0   0   0   100 8
-2   16  4   3   0   1   1   0   0   0   1   1   2
-0   7   2   1   1   0   0   1   1   0   0   10  2
-3   9   4   2   0   1   0   0   0   0   1   10  1
-1   17  3   3   1   0   0   1   1   1   0   10  1
-1   23  1   2   0   1   1   0   0   0   1   1   2
-2   14  3   4   1   0   0   1   1   1   0   100 2
-1   7   4   4   1   0   0   1   1   0   0   2   1
-1   13  4   3   0   1   1   0   0   0   1   1   2
-3   23  4   1   0   0   1   0   0   0   1   0   8
-3   7   3   2   0   1   1   0   0   1   1   0   2
-0   17  1   2   1   0   0   1   1   0   0   100 8
-0   10  1   1   0   1   1   0   0   1   0   10  8
-0   12  2   4   1   0   0   1   1   1   0   1   2
-2   12  4   1   1   0   0   1   1   1   0   0   1
-1   18  4   1   1   0   0   1   1   0   0   2   8
-1   22  1   1   0   1   1   0   0   1   1   2   2
-1   21  1   2   0   0   1   0   0   0   1   0   1
-2   11  4   4   1   0   0   1   1   0   0   10  8
-0   15  3   3   0   1   1   0   0   1   1   1   2
-2   23  3   4   1   0   0   0   0   0   0   2   8
-2   17  4   4   0   1   0   0   0   0   1   2   1
-0   13  2   2   1   0   0   1   1   1   0   0   8
-2   13  3   1   0   1   1   0   0   0   1   100 2
-0   9   3   1   1   0   0   1   0   1   0   0   8
-0   20  1   3   0   1   0   0   0   1   1   2   8
-0   11  1   3   1   0   0   0   1   1   0   1   1
-2   8   1   4   1   0   0   1   0   1   0   2   1
-1   20  2   1   1   0   0   1   1   0   0   100 2
-0   22  2   3   0   0   0   0   0   0   1   100 8
-1   13  4   4   1   0   0   0   0   1   0   10  8
-0   16  3   2   0   1   0   0   0   1   1   2   8
-3   22  3   2   0   0   0   0   0   1   1   0   8
-1   8   2   1   0   1   1   0   0   0   1   10  8
-0   19  2   4   0   1   1   0   0   0   1   1   8
-1   11  2   1   1   0   0   1   0   0   0   0   2
-3   15  1   2   1   0   0   0   1   0   0   100 1
-1   17  4   3   0   1   0   0   0   1   1   1   1
-3   24  2   4   0   1   1   0   0   1   1   1   8
-2   24  3   3   1   0   0   1   1   0   0   2   1
-3   8   3   2   1   0   0   1   1   0   0   100 2
-3   21  3   4   0   0   0   0   0   0   0   1   8
-2   26  1   4   1   0   0   1   1   0   0   0   2
-3   14  2   2   0   1   1   0   0   1   1   0   1
-0   8   4   3   0   0   1   0   0   0   1   1   1
-2   9   1   3   1   0   0   1   0   1   0   100 2
-3   12  3   3   0   1   1   0   0   0   1   100 8
-0   7   1   4   1   0   0   1   1   1   0   100 8
-0   10  4   2   0   0   1   0   0   0   1   0   2
-1   24  4   1   0   0   1   0   0   0   1   0   2
-3   16  2   1   0   0   0   0   0   1   1   10  1
-3   18  2   3   0   1   1   0   0   1   1   0   1
-2   16  3   4   0   1   1   0   0   0   1   100 8
-0   11  1   3   0   0   1   0   0   0   1   2   1
-2   14  2   2   0   1   0   0   0   0   1   1   8
-2   12  4   3   1   0   0   1   1   1   0   2   8
-0   8   1   4   0   0   1   0   0   0   1   0   1
-3   25  2   3   1   0   0   1   0   1   0   2   2
-2   15  4   4   1   0   0   1   1   0   0   2   1
-3   20  3   2   1   0   0   1   1   0   0   0   1
-3   23  4   4   0   1   1   0   0   0   1   100 2
-2   25  3   4   1   0   0   0   0   1   0   100 2
-1   25  1   2   1   0   0   0   1   1   0   10  8
-0   24  1   2   0   0   1   0   0   1   1   10  1
-1   15  4   3   1   0   0   1   1   1   0   0   2
-1   24  3   4   0   1   0   0   0   0   1   100 1
-2   20  4   4   0   1   1   0   0   1   0   1   1
-1   22  4   3   1   0   0   0   1   0   0   1   2
-2   18  3   4   0   0   0   0   0   0   0   100 8
-3   19  2   4   0   0   0   0   0   0   1   2   1
-2   18  1   1   1   0   0   0   1   0   0   10  1
-3   16  2   3   1   0   0   1   1   1   0   10  8
-2   20  4   1   0   1   1   0   0   0   1   10  8
+reducerType divLookup   monTable    buchberger  postponeKoszul  useBaseDivisors autoTailReduce  autoTopReduce   preferSparseReducers    useSingularCriterionEarly   sPairGroupSize  threadCount
+25  4   1   1   0   0   0   0   0   0   1   1
+11  3   2   0   1   1   0   0   1   1   100 2
+9   1   4   1   0   0   1   1   1   0   2   8
+21  2   3   1   0   0   1   1   0   0   10  2
+9   2   4   0   1   1   0   0   0   1   1   2
+7   1   3   0   0   1   0   0   1   1   1   8
+21  4   1   0   1   0   0   0   1   1   100 1
+26  3   2   1   0   0   0   1   1   0   10  1
+26  3   1   1   0   0   1   1   0   0   1   8
+25  4   2   1   0   0   1   1   1   0   0   8
+14  1   1   0   1   1   0   0   0   1   10  8
+22  4   4   1   0   0   1   0   0   0   10  1
+14  4   3   0   1   1   0   0   1   0   2   1
+10  2   2   0   1   1   0   0   0   1   2   2
+17  2   1   0   1   1   0   0   0   1   0   2
+18  1   2   0   1   1   0   0   1   1   1   2
+23  2   3   1   0   0   1   1   1   0   10  1
+10  3   4   1   0   0   1   1   0   0   100 8
+19  3   3   0   1   1   0   0   0   1   0   1
+26  4   1   1   0   0   0   0   1   0   2   2
+13  1   4   1   0   0   1   0   1   0   2   1
+15  2   1   1   0   0   1   0   0   0   10  8
+21  3   4   1   0   0   1   1   0   0   2   8
+10  4   3   0   0   1   0   0   1   1   1   1
+12  1   2   0   0   1   0   0   0   1   10  8
+19  1   1   1   0   0   1   1   1   0   100 8
+19  4   2   1   0   0   0   1   1   0   10  2
+16  1   4   1   0   0   0   1   1   0   0   1
+26  2   3   1   0   0   1   0   0   0   100 8
+16  4   3   0   1   1   0   0   0   1   1   2
+7   2   1   1   0   0   1   1   0   0   10  2
+9   4   2   0   1   0   0   0   0   1   10  1
+17  3   3   1   0   0   1   1   1   0   10  1
+23  1   2   0   1   1   0   0   0   1   1   2
+14  3   4   1   0   0   1   1   1   0   100 2
+7   4   4   1   0   0   1   1   0   0   2   1
+13  4   3   0   1   1   0   0   0   1   1   2
+23  4   1   0   0   1   0   0   0   1   0   8
+7   3   2   0   1   1   0   0   1   1   0   2
+17  1   2   1   0   0   1   1   0   0   100 8
+10  1   1   0   1   1   0   0   1   0   10  8
+12  2   4   1   0   0   1   1   1   0   1   2
+12  4   1   1   0   0   1   1   1   0   0   1
+18  4   1   1   0   0   1   1   0   0   2   8
+22  1   1   0   1   1   0   0   1   1   2   2
+21  1   2   0   0   1   0   0   0   1   0   1
+11  4   4   1   0   0   1   1   0   0   10  8
+15  3   3   0   1   1   0   0   1   1   1   2
+23  3   4   1   0   0   0   0   0   0   2   8
+17  4   4   0   1   0   0   0   0   1   2   1
+13  2   2   1   0   0   1   1   1   0   0   8
+13  3   1   0   1   1   0   0   0   1   100 2
+9   3   1   1   0   0   1   0   1   0   0   8
+20  1   3   0   1   0   0   0   1   1   2   8
+11  1   3   1   0   0   0   1   1   0   1   1
+8   1   4   1   0   0   1   0   1   0   2   1
+20  2   1   1   0   0   1   1   0   0   100 2
+22  2   3   0   0   0   0   0   0   1   100 8
+13  4   4   1   0   0   0   0   1   0   10  8
+16  3   2   0   1   0   0   0   1   1   2   8
+22  3   2   0   0   0   0   0   1   1   0   8
+8   2   1   0   1   1   0   0   0   1   10  8
+19  2   4   0   1   1   0   0   0   1   1   8
+11  2   1   1   0   0   1   0   0   0   0   2
+15  1   2   1   0   0   0   1   0   0   100 1
+17  4   3   0   1   0   0   0   1   1   1   1
+24  2   4   0   1   1   0   0   1   1   1   8
+24  3   3   1   0   0   1   1   0   0   2   1
+8   3   2   1   0   0   1   1   0   0   100 2
+21  3   4   0   0   0   0   0   0   0   1   8
+26  1   4   1   0   0   1   1   0   0   0   2
+14  2   2   0   1   1   0   0   1   1   0   1
+8   4   3   0   0   1   0   0   0   1   1   1
+9   1   3   1   0   0   1   0   1   0   100 2
+12  3   3   0   1   1   0   0   0   1   100 8
+7   1   4   1   0   0   1   1   1   0   100 8
+10  4   2   0   0   1   0   0   0   1   0   2
+24  4   1   0   0   1   0   0   0   1   0   2
+16  2   1   0   0   0   0   0   1   1   10  1
+18  2   3   0   1   1   0   0   1   1   0   1
+16  3   4   0   1   1   0   0   0   1   100 8
+11  1   3   0   0   1   0   0   0   1   2   1
+14  2   2   0   1   0   0   0   0   1   1   8
+12  4   3   1   0   0   1   1   1   0   2   8
+8   1   4   0   0   1   0   0   0   1   0   1
+25  2   3   1   0   0   1   0   1   0   2   2
+15  4   4   1   0   0   1   1   0   0   2   1
+20  3   2   1   0   0   1   1   0   0   0   1
+23  4   4   0   1   1   0   0   0   1   100 2
+25  3   4   1   0   0   0   0   1   0   100 2
+25  1   2   1   0   0   0   1   1   0   10  8
+24  1   2   0   0   1   0   0   1   1   10  1
+15  4   3   1   0   0   1   1   1   0   0   2
+24  3   4   0   1   0   0   0   0   1   100 1
+20  4   4   0   1   1   0   0   1   0   1   1
+22  4   3   1   0   0   0   1   0   0   1   2
+18  3   4   0   0   0   0   0   0   0   100 8
+19  2   4   0   0   0   0   0   0   1   2   1
+18  1   1   1   0   0   0   1   0   0   10  1
+16  2   3   1   0   0   1   1   1   0   10  8
+20  4   1   0   1   1   0   0   0   1   10  8
 );
   std::istringstream tests(allPairsTests);
   // skip the initial line with the parameter names.
   {
     char const* params[] = {
-      "spairQueue", "reducerType", "divLookup", "monTable",
+      "reducerType", "divLookup", "monTable",
       "buchberger", "postponeKoszul", "useBaseDivisors", "autoTailReduce",
       "autoTopReduce", "preferSparseReducers", "useSingularCriterionEarly",
       "sPairGroupSize", "threadCount"};
@@ -181,14 +181,10 @@ spairQueue  reducerType divLookup   monTable    buchberger  postponeKoszul  useB
   while (true) {
     // parse a line of the pict file
 
-    int spairQueue;
-    tests >> spairQueue;
-    if (!tests)
-      break; // no more tests
-    MATHICGB_ASSERT(0 <= spairQueue && spairQueue <= 3);
-
     int reducerType;
     tests >> reducerType;
+    if (!tests)
+      break; // no more tests
     MATHICGB_ASSERT(0 <= reducerType && reducerType <= 30);
 
     int divLookup;
@@ -274,7 +270,6 @@ spairQueue  reducerType divLookup   monTable    buchberger  postponeKoszul  useB
       params.reducer = reducer.get();
       params.monoLookupType = divLookup;
       params.preferSparseReducers = preferSparseReducers;
-      params.sPairQueueType = spairQueue;
       params.breakAfter = 0;
       params.printInterval = 0;
       params.sPairGroupSize = sPairGroupSize;
@@ -307,8 +302,7 @@ spairQueue  reducerType divLookup   monTable    buchberger  postponeKoszul  useB
         postponeKoszul,
         useBaseDivisors,
         preferSparseReducers,
-        useSingularCriterionEarly,
-        spairQueue
+        useSingularCriterionEarly
       );
       alg.computeGrobnerBasis();
       EXPECT_EQ(sigBasisStr, toString(alg.getGB(), 1))

@@ -37,8 +37,7 @@ public:
     const Basis& basis,
     Reducer& reducer,
     int monoLookupType,
-    bool preferSparseReducers,
-    size_t queueType
+    bool preferSparseReducers
   );
 
   // Replaces the current basis with a Grobner basis of the same ideal.
@@ -120,8 +119,7 @@ ClassicGBAlg::ClassicGBAlg(
   const Basis& basis,
   Reducer& reducer,
   int monoLookupType,
-  bool preferSparseReducers,
-  size_t queueType
+  bool preferSparseReducers
 ):
   mCallback(nullptr),
   mBreakAfter(0),
@@ -140,7 +138,6 @@ ClassicGBAlg::ClassicGBAlg(
   mSPairs(mBasis, preferSparseReducers),
   mSPolyReductionCount(0)
 {
-  (void)queueType;
   // Reduce and insert the generators of the ideal into the starting basis
   size_t const basisSize = basis.size();
   std::vector<std::unique_ptr<Poly> > polys;
@@ -673,8 +670,7 @@ Basis computeGBClassicAlg(
     inputBasis,
     *params.reducer,
     params.monoLookupType,
-    params.preferSparseReducers,
-    params.sPairQueueType
+    params.preferSparseReducers
   );
   alg.setBreakAfter(params.breakAfter);
   alg.setPrintInterval(params.printInterval);

@@ -36,8 +36,7 @@ public:
     Reducer* reducer,
     bool postponeKoszuls,
     bool useBaseDivisors,
-    bool useSingularCriterionEarly,
-    size_t queueType);
+    bool useSingularCriterionEarly);
   ~SigSPairs();
 
   typedef std::vector<std::pair<size_t, size_t> > PairContainer;

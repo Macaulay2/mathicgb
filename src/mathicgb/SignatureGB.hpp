@@ -37,8 +37,7 @@ public:
     bool postponeKoszul,
     bool useBaseDivisors,
     bool preferSparseReducers,
-    bool useSingularCriterionEarly,
-    size_t queueType);
+    bool useSingularCriterionEarly);
 
   void computeGrobnerBasis();
 

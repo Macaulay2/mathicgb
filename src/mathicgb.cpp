@@ -935,7 +935,6 @@ namespace mgbi {
     params.reducer = reducer.get();
     params.monoLookupType = 2;
     params.preferSparseReducers = true;
-    params.sPairQueueType = 0;
     params.breakAfter = 0;
     params.printInterval = 0;
     params.sPairGroupSize = conf.maxSPairGroupSize();

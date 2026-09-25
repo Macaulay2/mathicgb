@@ -14,7 +14,6 @@ struct ClassicGBAlgParams {
   Reducer* reducer;
   int monoLookupType;
   bool preferSparseReducers;
-  size_t sPairQueueType;
 
   unsigned int breakAfter;
   unsigned int printInterval;

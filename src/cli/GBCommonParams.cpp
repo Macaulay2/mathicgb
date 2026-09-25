@@ -26,16 +26,6 @@ GBCommonParams::GBCommonParams():
     false
   ),
 
-  mSPairQueue(
-    "spairQueue",
-    "The priority queue used to order S-pairs.\n"
-      "  0   tournament tree in front of triangle\n"
-      "  1   heap in front of triangle\n"
-      "  2   tournament tree\n"
-      "  3   heap\n",
-    0
-  ),
-
   mBreakAfter(
     "breakAfter",
     "Stop the computation after this many elements have been added to "
@@ -86,7 +76,6 @@ void GBCommonParams::pushBackParameters(
 ) {
   parameters.push_back(&mPreferSparseReducers);
   parameters.push_back(&mOutputResult);
-  parameters.push_back(&mSPairQueue);
   parameters.push_back(&mBreakAfter);
   parameters.push_back(&mPrintInterval);
   parameters.push_back(&mMonoLookup);

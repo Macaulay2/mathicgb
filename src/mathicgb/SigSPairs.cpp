@@ -19,8 +19,7 @@ SigSPairs::SigSPairs(
   Reducer* reducer,
   bool postponeKoszuls,
   bool useBaseDivisors,
-  bool useSingularCriterionEarly,
-  size_t queueType
+  bool useSingularCriterionEarly
 ):
   R(R0),
   mUseSingularCriterionEarly(useSingularCriterionEarly),
@@ -33,7 +32,6 @@ SigSPairs::SigSPairs(
   mQueue(SigSPairQueue::create(*GB))
 {
   (void)reducer;
-  (void)queueType;
 }
 
 SigSPairs::~SigSPairs()
