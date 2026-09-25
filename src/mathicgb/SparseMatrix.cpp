@@ -506,12 +506,7 @@ SparseMatrix::Scalar SparseMatrix::read(FILE* file) {
       << " bits that this file format stores coefficients in.";
     mathic::reportError(err.str());
   }
-  if (!isPrime(modulus)) {
-    std::ostringstream err;
-    err << "The modulus " << modulus
-      << " is not prime. MathicGB only supports prime fields.";
-    mathic::reportError(err.str());
-  }
+  checkModulusIsPrime(modulus);
   const auto entryCount64 = readOne<uint64>(file);
   if (entryCount64 > std::numeric_limits<size_t>::max())
     throw std::bad_alloc();
