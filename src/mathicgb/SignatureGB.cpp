@@ -54,7 +54,7 @@ SignatureGB::SignatureGB(
   Hsyz(ModuleMonoSet::make(R->monoid(), montable_type, basis.size(), !mPostponeKoszul)),
   Hsyz2(ModuleMonoSet::make(R->monoid(), montable_type, basis.size(), !mPostponeKoszul)),
   reducer(Reducer::makeReducer(reductiontyp, *R)),
-  SP(make_unique<SigSPairs>(R, GB.get(), Hsyz.get(), reducer.get(), mPostponeKoszul, mUseBaseDivisors, useSingularCriterionEarly))
+  SP(make_unique<SigSPairs>(R, GB.get(), Hsyz.get(), mPostponeKoszul, mUseBaseDivisors, useSingularCriterionEarly))
 {
   mProcessor = make_unique<MonoProcessor<Monoid>>(std::move(processor));
   if (basis.size() > std::numeric_limits<Component>::max())

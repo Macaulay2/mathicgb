@@ -5,7 +5,6 @@
 
 #include "SigPolyBasis.hpp"
 #include "ModuleMonoSet.hpp"
-#include "Reducer.hpp"
 #include <limits>
 #include <stdexcept>
 #include <iostream>
@@ -16,7 +15,6 @@ SigSPairs::SigSPairs(
   const PolyRing *R0,
   const SigPolyBasis *GB0,
   ModuleMonoSet *Hsyz0,
-  Reducer* reducer,
   bool postponeKoszuls,
   bool useBaseDivisors,
   bool useSingularCriterionEarly
@@ -27,12 +25,9 @@ SigSPairs::SigSPairs(
   mUseHighBaseDivisors(useBaseDivisors),
   Hsyz(Hsyz0),
   GB(GB0),
-  //  mReducer(reducer),
   mPostponeKoszuls(postponeKoszuls),
   mQueue(SigSPairQueue::create(*GB))
-{
-  (void)reducer;
-}
+{}
 
 SigSPairs::~SigSPairs()
 {
