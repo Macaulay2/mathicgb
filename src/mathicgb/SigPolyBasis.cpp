@@ -15,7 +15,6 @@ MATHICGB_NAMESPACE_BEGIN
 SigPolyBasis::SigPolyBasis(
   const PolyRing& R0,
   int monoLookupType,
-  int monTableType,
   bool preferSparseReducers
 ):
   mMonoLookupFactory

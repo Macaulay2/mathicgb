@@ -35,7 +35,6 @@ public:
   SigPolyBasis(
     const PolyRing& R,
     int monoLookupType,
-    int monTableType,
     bool preferSparseReducers
   );
   ~SigPolyBasis();

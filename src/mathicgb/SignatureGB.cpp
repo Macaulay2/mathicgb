@@ -50,7 +50,7 @@ SignatureGB::SignatureGB(
   stats_pairsReduced(0),
   stats_nsecs(0.0),
   stats_realSeconds(0.0),
-  GB(make_unique<SigPolyBasis>(*R, divlookup_type, montable_type, preferSparseReducers)),
+  GB(make_unique<SigPolyBasis>(*R, divlookup_type, preferSparseReducers)),
   mKoszuls(R->monoid()),
   Hsyz(ModuleMonoSet::make(R->monoid(), montable_type, basis.size(), !mPostponeKoszul)),
   Hsyz2(ModuleMonoSet::make(R->monoid(), montable_type, basis.size(), !mPostponeKoszul)),
