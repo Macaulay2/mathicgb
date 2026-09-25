@@ -44,7 +44,7 @@ void testGB(
   std::string initialIdealStr,
   size_t nonSingularReductions
 ) {
-  // Put the contents of pict.out into allPairsTest as a string. This
+  // Put the contents of pict.out into allPairsTests as a string. This
   // works because pict.out does not have any commas and we do not
   // care about whitespace. pict.out contains a set of tests such that
   // all pairs of parameters are covered by at least one test. See
