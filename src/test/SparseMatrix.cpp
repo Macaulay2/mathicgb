@@ -12,6 +12,7 @@
 #include <cstdio>
 #include <memory>
 #include <string>
+#include <vector>
 
 using namespace mgb;
 
@@ -137,4 +138,49 @@ TEST(SparseMatrix, ReadRejectsACompositeModulus) {
     ASSERT_THROW(read.read(file.handle()), mathic::MathicException);
   }
   ASSERT_EQ(0, std::remove(fileName));
+}
+
+// Build rows of many lengths with small memory quanta, so that rows often
+// outgrow their block while still being built and reserveFreeEntries has to
+// move their pending entries into a new block. GCC 11 and 12 on s390x
+// miscompiled that move at -O2, dropping the last pending column index while
+// keeping all of the scalars (https://github.com/Macaulay2/M2/issues/2162).
+TEST(SparseMatrix, RowsSpanningBlocks) {
+  typedef SparseMatrix::Scalar Scalar;
+  const auto check = [](const size_t quantum,
+                        const std::vector<size_t>& lengths) {
+    SCOPED_TRACE("memory quantum " + std::to_string(quantum));
+    const auto scalarFor = [](SparseMatrix::ColIndex col) {
+      return static_cast<Scalar>(1 + col % 30000);
+    };
+    SparseMatrix mat(quantum);
+    SparseMatrix::ColIndex col = 0;
+    for (const size_t len : lengths) {
+      for (size_t i = 0; i < len; ++i, ++col)
+        mat.appendEntry(col, scalarFor(col));
+      mat.rowDone();
+    }
+
+    ASSERT_EQ(lengths.size(), mat.rowCount());
+    col = 0;
+    for (SparseMatrix::RowIndex row = 0; row < mat.rowCount(); ++row) {
+      SCOPED_TRACE("row " + std::to_string(row));
+      ASSERT_EQ(lengths[row], mat.entryCountInRow(row));
+      for (auto it = mat.rowBegin(row); it != mat.rowEnd(row); ++it, ++col) {
+        ASSERT_EQ(col, it.index());
+        ASSERT_EQ(scalarFor(col), it.scalar());
+      }
+    }
+  };
+
+  std::vector<size_t> lengths;
+  for (size_t len = 0; len < 60; ++len)
+    lengths.push_back(len);
+  for (const size_t quantum : {1, 2, 3, 7, 64})
+    check(quantum, lengths);
+
+  // With no quantum, blocks start at 2^14 entries and double, so it takes
+  // long rows to outgrow one.
+  lengths.insert(lengths.end(), {20000, 3, 40000, 2});
+  check(0, lengths);
 }
