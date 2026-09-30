@@ -84,17 +84,22 @@ jobs:
               -DBUILD_TESTING=OFF -Dwith_tbb="$WITH_TBB" \
               -DCMAKE_INSTALL_PREFIX="$prefix"
             cmake --build "$build" --target install
-            pc=$(find "$prefix" -name mathicgb.pc -print -quit)
-            flags=$(PKG_CONFIG_PATH="$(dirname "$pc")${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" pkg-config --cflags mathicgb)
-            if test "$EXPECT_DEBUG" = ON; then
-              [[ "$flags" == *-DMATHICGB_DEBUG* ]]
+            if pkg-config --exists memtailor mathic &&
+               { test "$WITH_TBB" = OFF || pkg-config --exists tbb; }; then
+              pc=$(find "$prefix" -name mathicgb.pc -print -quit)
+              flags=$(PKG_CONFIG_PATH="$(dirname "$pc")${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" pkg-config --cflags mathicgb)
+              if test "$EXPECT_DEBUG" = ON; then
+                [[ "$flags" == *-DMATHICGB_DEBUG* ]]
+              else
+                [[ "$flags" != *-DMATHICGB_DEBUG* ]]
+              fi
+              if test "$EXPECT_NO_TBB" = ON; then
+                [[ "$flags" == *-DMATHICGB_NO_TBB* ]]
+              else
+                [[ "$flags" != *-DMATHICGB_NO_TBB* ]]
+              fi
             else
-              [[ "$flags" != *-DMATHICGB_DEBUG* ]]
-            fi
-            if test "$EXPECT_NO_TBB" = ON; then
-              [[ "$flags" == *-DMATHICGB_NO_TBB* ]]
-            else
-              [[ "$flags" != *-DMATHICGB_NO_TBB* ]]
+              echo "Skipping pkg-config flags: dependency .pc files are unavailable"
             fi
             mv "$prefix" "$build/relocated"
             cmake -S cmake/tests -B "$build/consumer" -GNinja \
