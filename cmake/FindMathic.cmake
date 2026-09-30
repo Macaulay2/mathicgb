@@ -15,6 +15,22 @@ if(NOT TARGET mathic::mathic)
     endif()
   endif()
 endif()
+# Older installations may provide only headers and a library.
+if(NOT TARGET mathic::mathic)
+  find_path(MATHIC_INCLUDE_DIR NAMES mathic.h
+    PATHS ${INCLUDE_INSTALL_DIR} ${CMAKE_INSTALL_PREFIX}/include
+    PATH_SUFFIXES mathic)
+  find_library(MATHIC_LIBRARY NAMES mathic
+    PATHS ${LIB_INSTALL_DIR} ${CMAKE_INSTALL_PREFIX}/lib)
+  if(MATHIC_INCLUDE_DIR AND MATHIC_LIBRARY)
+    add_library(mathic::mathic UNKNOWN IMPORTED)
+    set_target_properties(mathic::mathic PROPERTIES
+      IMPORTED_LOCATION "${MATHIC_LIBRARY}"
+      INTERFACE_INCLUDE_DIRECTORIES "${MATHIC_INCLUDE_DIR}"
+      INTERFACE_LINK_LIBRARIES memtailor::memtailor)
+  endif()
+  mark_as_advanced(MATHIC_INCLUDE_DIR MATHIC_LIBRARY)
+endif()
 set(MATHIC_FOUND FALSE)
 if(TARGET mathic::mathic)
   set(MATHIC_FOUND TRUE)
