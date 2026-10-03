@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.18)
 
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+  message(FATAL_ERROR
+    "In-source CMake builds are not supported. Use cmake -S . -B build-dir instead.")
+endif()
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
