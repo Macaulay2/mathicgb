@@ -123,3 +123,6 @@ check:
 	@echo "configured without gtest, so unittests cannot be run."
 
 endif
+
+EXTRA_DIST += cmake/mathicgbConfig.cmake.in \
+  cmake/tests/CMakeLists.txt cmake/tests/consumer.cpp

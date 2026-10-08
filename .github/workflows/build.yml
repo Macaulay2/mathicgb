@@ -30,12 +30,13 @@ jobs:
       - name: Install dependencies
         run: |
           if test ${{ matrix.os }} = ubuntu-latest
-          then sudo apt-get install -y libgtest-dev libmemtailor-dev \
+          then sudo apt-get install -y pkg-config libgtest-dev libmemtailor-dev \
                    libmathic-dev libtbb-dev
-          else brew install autoconf automake libtool googletest \
+          else brew install autoconf automake libtool pkgconf googletest \
                    Macaulay2/tap/memtailor Macaulay2/tap/mathic tbb
                echo "CPPFLAGS=-I$(brew --prefix)/include" >> $GITHUB_ENV
                echo "LDFLAGS= -L$(brew --prefix)/lib"     >> $GITHUB_ENV
+               echo "CMAKE_PREFIX_PATH=$(brew --prefix)" >> $GITHUB_ENV
           fi
           # Build in parallel.  make reads MAKEFLAGS from the environment,
           # so this reaches the sub-makes distcheck runs as well.
@@ -64,6 +65,50 @@ jobs:
         if: matrix.build-system == 'autotools' && !matrix.debug && matrix.tbb
         working-directory: build-dir
         run: make distcheck
+
+      - name: Test installed CMake packages
+        if: matrix.build-system == 'cmake'
+        shell: bash
+        env:
+          CMAKE_BUILD_PARALLEL_LEVEL: 2
+          BUILD_CONFIG: ${{ matrix.debug && 'Debug' || 'Release' }}
+          EXPECT_DEBUG: ${{ matrix.debug && 'ON' || 'OFF' }}
+          WITH_TBB: ${{ matrix.tbb && 'ON' || 'OFF' }}
+          EXPECT_NO_TBB: ${{ matrix.tbb && 'OFF' || 'ON' }}
+        run: |
+          for shared in ON OFF; do
+            build="$RUNNER_TEMP/mathicgb-$shared"
+            prefix="$build/install"
+            cmake -S . -B "$build" -GNinja \
+              -DCMAKE_BUILD_TYPE="$BUILD_CONFIG" -DBUILD_SHARED_LIBS="$shared" \
+              -DBUILD_TESTING=OFF -Dwith_tbb="$WITH_TBB" \
+              -DCMAKE_INSTALL_PREFIX="$prefix"
+            cmake --build "$build" --target install
+            if pkg-config --exists memtailor mathic &&
+               { test "$WITH_TBB" = OFF || pkg-config --exists tbb; }; then
+              pc=$(find "$prefix" -name mathicgb.pc -print -quit)
+              flags=$(PKG_CONFIG_PATH="$(dirname "$pc")${PKG_CONFIG_PATH:+:$PKG_CONFIG_PATH}" pkg-config --cflags mathicgb)
+              if test "$EXPECT_DEBUG" = ON; then
+                [[ "$flags" == *-DMATHICGB_DEBUG* ]]
+              else
+                [[ "$flags" != *-DMATHICGB_DEBUG* ]]
+              fi
+              if test "$EXPECT_NO_TBB" = ON; then
+                [[ "$flags" == *-DMATHICGB_NO_TBB* ]]
+              else
+                [[ "$flags" != *-DMATHICGB_NO_TBB* ]]
+              fi
+            else
+              echo "Skipping pkg-config flags: dependency .pc files are unavailable"
+            fi
+            mv "$prefix" "$build/relocated"
+            cmake -S cmake/tests -B "$build/consumer" -GNinja \
+              -DCMAKE_BUILD_TYPE=Release -DCMAKE_CXX_STANDARD=11 \
+              -DCMAKE_PREFIX_PATH="$build/relocated" \
+              -DEXPECT_DEBUG="$EXPECT_DEBUG" -DEXPECT_NO_TBB="$EXPECT_NO_TBB"
+            cmake --build "$build/consumer"
+            ctest --test-dir "$build/consumer" --output-on-failure
+          done
 
   ubsan:
     name: undefined behaviour sanitizer
