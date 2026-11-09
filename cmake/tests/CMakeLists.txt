@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.18)
 project(mathicgb-consumer LANGUAGES CXX)
-find_package(mathicgb 1.4 CONFIG REQUIRED)
+find_package(mathicgb CONFIG REQUIRED)
 add_executable(consumer consumer.cpp)
 target_link_libraries(consumer PRIVATE mathicgb::mathicgb)
 if(EXPECT_DEBUG)

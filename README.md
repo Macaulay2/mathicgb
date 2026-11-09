@@ -35,7 +35,7 @@ Both shared and static installations provide headers, pkg-config metadata,
 and a relocatable CMake package under the platform's library directory:
 
 ```cmake
-find_package(mathicgb 1.4 CONFIG REQUIRED)
+find_package(mathicgb 1.5 CONFIG REQUIRED)
 target_link_libraries(my_program PRIVATE mathicgb::mathicgb)
 ```
 
