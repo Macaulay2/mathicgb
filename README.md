@@ -18,7 +18,7 @@ Mathicgb is licensed for use under the terms of GNU General Public License
 version 2 and under any later version; the option is yours.  See the files
 gpl-*.txt in this directory.
 
-## Building and using the CMake package
+## Building with CMake
 
 This build requires CMake 3.18 or newer and a C++17 compiler.
 
@@ -30,29 +30,46 @@ ctest --test-dir build-dir --output-on-failure
 cmake --install build-dir
 ```
 
-`BUILD_TESTING=OFF` disables the GoogleTest dependency and unit tests.
-Both shared and static installations provide headers, pkg-config metadata,
-and a relocatable CMake package under the platform's library directory:
+Mathicgb needs [Memtailor](https://github.com/Macaulay2/memtailor) and
+[Mathic](https://github.com/Macaulay2/mathic). CMake looks for each in this
+order: its CMake package (installed by Memtailor 1.5 and Mathic 1.6 or later
+when built with CMake), its pkg-config file, and finally its header and
+library directly. Prefer the first two: only they can tell Mathicgb whether
+Memtailor and Mathic were built in Debug mode, which changes their data
+layout, so Mathicgb must be compiled to match. If they are in a nonstandard
+location, pass `-DCMAKE_PREFIX_PATH=/their/prefix` (separate several prefixes
+with semicolons, quoted; the environment variable uses colons).
+
+`-Dwith_tbb=ON` requires TBB for multithreading, `-Dwith_tbb=OFF` builds
+without it, and the default, `auto`, uses TBB if CMake finds it.
+
+`-DBUILD_TESTING=OFF` skips the unit tests and the GoogleTest dependency.
+
+## Using an installed Mathicgb
+
+A CMake installation, shared or static, provides headers, pkg-config metadata,
+and a relocatable CMake package under the platform's library directory. An
+Autotools installation provides headers and pkg-config metadata only. In a
+CMake project:
 
 ```cmake
 find_package(mathicgb 1.5 CONFIG REQUIRED)
 target_link_libraries(my_program PRIVATE mathicgb::mathicgb)
 ```
 
-The target supplies C++17, include paths and transitive dependencies. Dependency
-CMake configs are preferred; pkg-config metadata is supported for existing
-system installations. Older Homebrew CMake bottles may lack both metadata
-formats; build the dependency with its released Autotools build, or install a
-CMake package that supplies the config. Bare header/library discovery is insufficient to propagate
-dependencies' ABI flags. The dependency find modules are shipped with the config.
-Use a quoted semicolon-separated `-DCMAKE_PREFIX_PATH='/prefix/one;/prefix/two'`
-for nonstandard prefixes; the Unix environment variable uses colons instead.
+Linking to `mathicgb::mathicgb` sets up everything needed to build against
+Mathicgb: it adds Mathicgb's include directory, links Memtailor, Mathic and
+(if Mathicgb was built with it) TBB, and compiles your program as C++17 or
+later, which Mathicgb's headers require.
 
-The installed package exports `MATHICGB_DEBUG` if the library was built in
-Debug mode, even when the consumer uses Release. It inherits dependencies' own
-ABI flags instead of forcing their Debug layouts. `pkg-config --cflags mathicgb`
-also reports the installed library's Debug flag; pkg-config consumers should
-select C++17 or later explicitly.
+`find_package(mathicgb)` in turn looks for the CMake packages of Memtailor,
+Mathic and, if needed, TBB. Memtailor installs one only from version 1.5 on
+and Mathic only from version 1.6 on, and each only when built with CMake.
+oneTBB always installs one.
 
-`with_tbb` retains its ON/OFF/auto behavior. Both metadata formats propagate
-`MATHICGB_NO_TBB` for a build without TBB, or the TBB dependency when enabled.
+Two compile flags must match the installed library. A Debug build of Mathicgb
+defines `MATHICGB_DEBUG`, which enables assertions in its headers, and a build
+without TBB defines `MATHICGB_NO_TBB`, which changes Mathicgb's types. Both
+the CMake package and `pkg-config --cflags mathicgb` pass these flags on, so
+programs using Mathicgb match them even when they're built in Release mode.
+With pkg-config you also need to request C++17 or later yourself.
