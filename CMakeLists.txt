@@ -102,7 +102,6 @@ file(GENERATE OUTPUT "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/mathicgbConfig.cmake
   INPUT "${CMAKE_CURRENT_BINARY_DIR}/mathicgbConfig.cmake.in")
 write_basic_package_version_file("${CMAKE_CURRENT_BINARY_DIR}/mathicgbConfigVersion.cmake"
   VERSION ${PROJECT_VERSION} COMPATIBILITY SameMajorVersion)
-install(FILES cmake/FindMemtailor.cmake cmake/FindMathic.cmake cmake/FindTBB.cmake DESTINATION "${mathicgb_cmakedir}")
 install(EXPORT mathicgbTargets NAMESPACE mathicgb:: DESTINATION "${mathicgb_cmakedir}")
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/$<CONFIG>/mathicgbConfig.cmake"
   "${CMAKE_CURRENT_BINARY_DIR}/mathicgbConfigVersion.cmake" DESTINATION "${mathicgb_cmakedir}")
