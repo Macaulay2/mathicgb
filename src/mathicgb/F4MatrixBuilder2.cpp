@@ -78,6 +78,8 @@ public:
     auto cmp = [&](const RowTask& a, const RowTask& b) {
       if (a.sPairPoly == nullptr)
         return b.sPairPoly != nullptr;
+      else if (b.sPairPoly == nullptr)
+        return false;
       else
         return monoid().lessThan(*a.desiredLead, *b.desiredLead);
     };

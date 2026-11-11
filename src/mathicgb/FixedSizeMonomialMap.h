@@ -83,7 +83,7 @@ public:
     mRing(map.ring()),
     mNodeAlloc(std::move(map.mNodeAlloc))
   {
-    // We can store relaxed as the constructor does not run concurrently.
+    // The buckets can be relaxed: nobody sees them until we are done.
     const auto relax = std::memory_order_relaxed;
 
     // The new buckets need nulling, as in the other constructor.
@@ -93,7 +93,9 @@ public:
       for (Node* node = tableIt->load(); node != 0;) {
         const size_t index = hashToIndex(monoid().hash(node->mono()));
         const auto next = node->next(relax);
-        node->setNext(mBuckets[index].load(relax), relax);
+        // Release: a Reader of map may be walking this chain, and its
+        // consume load of mNext must see the node this now points to.
+        node->setNext(mBuckets[index].load(relax), std::memory_order_release);
         mBuckets[index].store(node, relax);
         node = next;
       }

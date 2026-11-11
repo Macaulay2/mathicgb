@@ -5,6 +5,7 @@
 #include "mathicgb/Poly.hpp"
 #include "mathicgb/PolyRing.hpp"
 #include "mathicgb/F4MatrixBuilder.hpp"
+#include "mathicgb/F4MatrixBuilder2.hpp"
 #include "mathicgb/Basis.hpp"
 #include "mathicgb/PolyBasis.hpp"
 #include "mathicgb/io-util.hpp"
@@ -47,6 +48,7 @@ namespace {
     }
 
     const PolyRing& ring() const {return *mRing;}
+    const PolyBasis& basis() const {return mBasis;}
 
   private:
     std::unique_ptr<PolyRing> mRing;
@@ -193,4 +195,38 @@ TEST(F4MatrixBuilder, IteratedReducer) {
       "0: 0#1 1#100 | 0:      \n";
     ASSERT_EQ(str, qm.toCanonical().toString()) << "** qm:\n" << qm;
   }
+}
+
+TEST(F4MatrixBuilder2, SPairsAndPlainRowsTogether) {
+  // The add order matters: it once ran the task sort off the vector's front.
+  BuilderMaker maker;
+  const Poly& p1 = maker.addBasisElement("a4c2-d");
+  const Poly& p2 = maker.addBasisElement("a4b+d");
+  const Poly& p3 = maker.addBasisElement("a4bc+e");
+  const Poly& p4 = maker.addBasisElement("b5+f");
+  const Poly& p5 = maker.addBasisElement("b4c4+e");
+  const Poly& p6 = maker.addBasisElement("c10+1");
+
+  F4MatrixBuilder2 builder(maker.basis());
+  builder.addSPolynomialToMatrix(p1, p2);
+  builder.addPolynomialToMatrix(p6);
+  builder.addSPolynomialToMatrix(p4, p5);
+  builder.addSPolynomialToMatrix(p1, p3);
+  QuadMatrix qm(maker.ring());
+  // Which half of an S-pair becomes the pivot row depends on which row
+  // reaches that column first, so use one thread to get one answer.
+  mtbb::task_arena scheduler(1);
+  scheduler.execute([&builder, &qm]{builder.buildMatrixAndClear(qm);});
+  const char* const str =
+    "Left columns: c10 b5c4 a4bc2\n"
+    "Right columns: c4f c2d bd be ce 1\n"
+    "0: 2#1 | 0: 1#1  \n"
+    "1: 1#1 | 1: 3#1  \n"
+    "2: 0#1 | 2: 5#1  \n"
+    "       |         \n"
+    "0: 2#1 | 0: 2#100\n"
+    "1: 2#1 | 1: 4#1  \n"
+    "2: 1#1 | 2: 0#1  \n"
+    "3: 0#1 | 3: 5#1  \n";
+  ASSERT_EQ(str, qm.toCanonical().toString()) << "** qm:\n" << qm;
 }
