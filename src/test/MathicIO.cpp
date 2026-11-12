@@ -281,12 +281,20 @@ TEST(MathicIO, ReadBaseFieldRejectsBadModulus) {
       << "should have rejected the modulus " << str;
   }
 
-  const char* const good[] = {"2", "101", "32003", "65537", "4294967291"};
+  const char* const good[] = {"2", "101", "32003", "65537", "2147483647"};
   for (const auto str : good) {
     Scanner in(str);
     ASSERT_NO_THROW(MathicIO<>().readBaseField(in))
       << "should have accepted the modulus " << str;
   }
+
+  // The largest 32 bit prime, which is too large where long is 32 bits.
+  Scanner in("4294967291");
+  const auto max = MathicIO<>::BaseField::maxCharacteristic();
+  if (static_cast<uint64>(max) >= 4294967291u)
+    ASSERT_NO_THROW(MathicIO<>().readBaseField(in));
+  else
+    ASSERT_THROW(MathicIO<>().readBaseField(in), mathic::MathicException);
 }
 
 TEST(MathicIO, ReadWriteOrder) {

@@ -236,9 +236,20 @@ TEST(PrimeField, MaxCharacteristic) {
 
   // Limited by the product of two elements having to fit in 64 bits.
   ASSERT_EQ(static_cast<uint64>(1) << 32, PrimeField<uint64>::maxCharacteristic());
+
+  // long is the legacy PolyRing's coefficient type.
+  const bool longIs64Bits = sizeof(long) == sizeof(uint64);
   ASSERT_EQ(
-    static_cast<unsigned long>(1) << 32,
+    longIs64Bits ?
+      PrimeField<uint64>::maxCharacteristic() :
+      PrimeField<uint32>::maxCharacteristic(),
     PrimeField<unsigned long>::maxCharacteristic()
+  );
+  ASSERT_EQ(
+    longIs64Bits ?
+      static_cast<uint64>(1) << 32 :
+      static_cast<uint64>(std::numeric_limits<int32>::max()),
+    static_cast<uint64>(PrimeField<long>::maxCharacteristic())
   );
 
   // It has to be usable as a constant, since the constructor compares
@@ -247,14 +258,19 @@ TEST(PrimeField, MaxCharacteristic) {
 }
 
 TEST(PrimeField, CharacteristicTooLarge) {
-  typedef PrimeField<unsigned long> PF;
+  typedef PrimeField<uint64> PF;
   const auto max = PF::maxCharacteristic();
 
   ASSERT_NO_THROW((void)PF(max));
   ASSERT_NO_THROW((void)PF(4294967291u)); // largest 32 bit prime
   ASSERT_THROW((void)PF(max + 1), mathic::MathicException);
-  ASSERT_THROW((void)PF((static_cast<unsigned long>(1) << 40) + 15),
+  ASSERT_THROW((void)PF((static_cast<uint64>(1) << 40) + 15),
     mathic::MathicException);
+
+  // checkCharacteristic takes values that the element type cannot hold.
+  typedef PrimeField<int32> PF32;
+  ASSERT_NO_THROW(PF32::checkCharacteristic(2147483647)); // 2^31 - 1
+  ASSERT_THROW(PF32::checkCharacteristic(4294967291u), mathic::MathicException);
 }
 
 TEST(PrimeField, IsPrime) {
