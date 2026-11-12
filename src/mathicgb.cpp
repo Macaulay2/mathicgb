@@ -587,12 +587,20 @@ namespace {
       return Internal::LexBaseOrderFromRight;
     }
   }
+
+  /// Checks the modulus first, as long may be too small to hold it.
+  PolyRing::Field makePolyRingField(
+    const GroebnerConfiguration::Coefficient modulus
+  ) {
+    PolyRing::Field::checkCharacteristic(modulus);
+    return PolyRing::Field(modulus);
+  }
 }
 
 struct GroebnerInputIdealStream::Pimpl {
   Pimpl(const GroebnerConfiguration& conf):
     ring(
-      PolyRing::Field(conf.modulus()),
+      makePolyRingField(conf.modulus()),
       PolyRing::Monoid::Order(
         conf.varCount(),
         std::move(conf.monomialOrder().second),
@@ -917,8 +925,8 @@ namespace mgbi {
     case GConf::DefaultReducer:
     case GConf::MatrixReducer:
       // The F4 matrix reducer stores coefficients as 16 bit scalars. The
-      // classic reducers go through PrimeField and handle any modulus that
-      // the interface accepts, so only reject the modulus here.
+      // classic reducers only need it to fit in PrimeField, which
+      // makePolyRingField has checked, so only reject the modulus here.
       if (conf.modulus() > std::numeric_limits<unsigned short>::max()) {
         std::ostringstream str;
         str << "Modulus " << conf.modulus()

@@ -3,6 +3,7 @@
 #include "mathicgb/stdinc.h"
 
 #include "mathicgb.h"
+#include "mathicgb/PolyRing.hpp"
 #include <gtest/gtest.h>
 #include <stdexcept>
 
@@ -843,10 +844,12 @@ TEST(MathicGBLib, GlobalOrderOrNot) {
 }
 
 TEST(MathicGBLib, LargeModulusGB) {
-  // The classic reducer handles any modulus the interface can express, so
-  // the basis of <x^2-y, x^3-z> has to come out the same at every one of
-  // these. makeBasis and makeGroebnerBasis write -1 as modulus-1, so they
-  // do not care what the modulus is.
+  // The classic reducer handles any modulus up to PolyRing's limit, so the
+  // basis of <x^2-y, x^3-z> has to come out the same at every one of these
+  // up to it, and the rest have to be rejected. makeBasis and
+  // makeGroebnerBasis write -1 as modulus-1, so they do not care what the
+  // modulus is.
+  const auto maxModulus = PolyRing::Field::maxCharacteristic();
   const GroebnerConfiguration::Coefficient moduli[] = {
     101,
     65521,      // largest 16 bit prime
@@ -859,6 +862,12 @@ TEST(MathicGBLib, LargeModulusGB) {
     mgb::GroebnerConfiguration configuration(modulus, 3, 1);
     configuration.setReducer
       (mgb::GroebnerConfiguration::ClassicReducer);
+    if (static_cast<uint64>(modulus) > static_cast<uint64>(maxModulus)) {
+      ASSERT_THROW
+        ((void)mgb::GroebnerInputIdealStream(configuration), std::runtime_error)
+        << "\nModulus: " << modulus;
+      continue;
+    }
     mgb::GroebnerInputIdealStream input(configuration);
     std::ostringstream computedStr;
     mgb::IdealStreamLog<> computed(computedStr, modulus, 3, 1);

@@ -194,8 +194,8 @@ public:
   /// multiplied by widening to ModularProdType<T>, so the largest product of
   /// two elements, (charac() - 1)^2, has to fit in that type. For a T that
   /// widens to 64 bits this is 2^32, which is why the legacy PolyRing cannot
-  /// go beyond a 32 bit modulus even though it stores coefficients in 64
-  /// bits.
+  /// go beyond a 32 bit modulus even where it stores coefficients in 64
+  /// bits. Where long is 32 bits, its limit is 2^31 - 1 instead.
   static constexpr T maxCharacteristic() {
     typedef typename PrimeFieldInternal::ModularProdType<T>::type BigT;
     const BigT fromProduct = PrimeFieldInternal::integerSqrt<BigT>(
@@ -206,14 +206,22 @@ public:
       fromProduct < fromStorage ? fromProduct : fromStorage);
   }
 
-  PrimeField(const T primeCharacteristic): mCharac(primeCharacteristic) {
-    if (primeCharacteristic > maxCharacteristic()) {
+  /// Reports an error if charac is larger than maxCharacteristic(). Takes a
+  /// uint64 so that a value can be checked before converting it to T.
+  static void checkCharacteristic(const uint64 charac) {
+    if (charac > static_cast<uint64>(maxCharacteristic())) {
       std::ostringstream str;
-      str << "Modulus " << static_cast<uint64>(primeCharacteristic)
+      str << "Modulus " << charac
         << " is too large. The largest supported modulus is "
         << static_cast<uint64>(maxCharacteristic()) << ".";
       mathic::reportError(str.str());
     }
+  }
+
+  PrimeField(const T primeCharacteristic): mCharac(primeCharacteristic) {
+    // A negative characteristic is left for checkModulusIsPrime to report.
+    if (primeCharacteristic > 0)
+      checkCharacteristic(static_cast<uint64>(primeCharacteristic));
   }
 
   Element zero() const {return Element(0);}
