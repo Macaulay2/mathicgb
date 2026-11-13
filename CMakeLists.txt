@@ -8,7 +8,7 @@ endif()
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-project(mathicgb VERSION 1.5 LANGUAGES CXX)
+project(mathicgb VERSION 1.6 LANGUAGES CXX)
 
 option(enable_mgb "Build mgb" ON)
 
@@ -52,7 +52,7 @@ include(CTest)
 add_subdirectory(src)
 
 set(MATHICGB_SO_CURRENT  0)
-set(MATHICGB_SO_REVISION 5)
+set(MATHICGB_SO_REVISION 6)
 set(MATHICGB_SO_AGE      0)
 math(EXPR MATHICGB_SOVERSION "${MATHICGB_SO_CURRENT} - ${MATHICGB_SO_AGE}")
 
